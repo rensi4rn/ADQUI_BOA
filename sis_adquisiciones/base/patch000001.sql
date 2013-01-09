@@ -49,7 +49,7 @@ CREATE TABLE adq.tsolicitud(
 CREATE TABLE adq.tsolicitud_det(
     id_solicitud_det SERIAL NOT NULL,
     id_solicitud int4 NOT NULL,
-    id_presupuesto int4 NOT NULL,
+    id_centro_costo int4 NOT NULL,
     id_partida int4 NOT NULL,
     id_cuenta int4 NOT NULL,
     id_auxiliar int4 NOT NULL,
