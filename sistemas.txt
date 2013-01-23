@@ -1,3 +1,4 @@
 ../../../sis_adquisiciones/
 ../../../sis_presupuestos/
 ../../../sis_directorio/
+../../../sis_migracion/

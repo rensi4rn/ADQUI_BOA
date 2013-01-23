@@ -1,0 +1,76 @@
+CREATE OR REPLACE FUNCTION migracion.f_trans_tpm_empresa_tempresa (
+			  v_operacion varchar,p_codigo varchar,p_id_empresa int4,p_id_institucion int4,p_denominacion varchar,p_dir_adm int4,p_nro_nit numeric,p_razon_social varchar)
+			RETURNS boolean AS
+			$BODY$
+
+DECLARE
+			 
+			g_registros record;
+			v_consulta varchar;
+			v_res_cone  varchar;
+			v_cadena_cnx varchar;
+			v_cadena_con varchar;
+			resp boolean;
+			
+			g_registros_resp record;
+			v_id_empresa int4;
+			v_estado_reg varchar;
+			v_fecha_mod timestamp;
+			v_fecha_reg timestamp;
+			v_id_usuario_mod int4;
+			v_id_usuario_reg int4;
+			v_logo varchar;
+			v_nit varchar;
+			v_nombre varchar;
+BEGIN
+			
+			
+			          --funcion para obtener cadena de conexion
+			          v_cadena_cnx =  migracion.f_obtener_cadena_con_dblink();
+			          
+			          
+			           ---------------------------------------
+			           --previamente se tranforman los datos  (descomentar)
+			           ---------------------------------------
+
+			           /*
+			           			v_id_empresa=p_id_empresa::int4;
+			v_estado_reg=p_::varchar;
+			v_fecha_mod=p_::timestamp;
+			v_fecha_reg=p_::timestamp;
+			v_id_usuario_mod=p_::int4;
+			v_id_usuario_reg=p_::int4;
+			v_logo=p_::varchar;
+			v_nit=p_nro_nit::varchar;
+			v_nombre=p_denominacion::varchar;
+ */   
+			    --cadena para la llamada a la funcion de insercion en la base de datos destino
+			      
+			        
+			          v_consulta = 'select param.f_on_trig_tpm_empresa_tempresa (
+			               '''||v_operacion::varchar||''','||COALESCE(p_int4::varchar,'NULL')||','||COALESCE(''''||p_estado_reg::varchar||'''','NULL')||','||COALESCE(''''||p_fecha_mod::varchar||'''','NULL')||','||COALESCE(''''||p_fecha_reg::varchar||'''','NULL')||','||COALESCE(p_int4::varchar,'NULL')||','||COALESCE(p_int4::varchar,'NULL')||','||COALESCE(''''||p_logo::varchar||'''','NULL')||','||COALESCE(''''||p_nit::varchar||'''','NULL')||','||COALESCE(''''||p_nombre::varchar||'''','NULL')||')';
+			          --probar la conexion con dblink
+			          resp =  sss.f_probar_con_dblink(v_cadena_cnx);
+			            
+			             IF(not resp) THEN
+			            
+			             	--modificar bandera de fallo  
+			                 raise exception 'FALLA CONEXION A LA BASE DE DATOS CON DBLINK';
+			                 
+			             ELSE
+			               PERFORM * FROM dblink(v_consulta,true) AS ( xx varchar);
+			                v_res_cone=(select dblink_disconnect());
+			             END IF;
+			            
+			           RETURN TRUE;
+			EXCEPTION
+			   WHEN others THEN
+			     RETURN FALSE;
+			
+			END;
+			$BODY$
+
+LANGUAGE 'plpgsql'
+			VOLATILE
+			CALLED ON NULL INPUT
+			SECURITY INVOKER;

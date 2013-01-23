@@ -15,7 +15,7 @@ Phx.vista.PersonaComunicacion=Ext.extend(Phx.gridInterfaz,{
 	constructor:function(config){
 		this.maestro=config.maestro;
 		
-		//this.bloquearMenus();
+		this.bloquearMenus();
     	//llama al constructor de la clase padre
 		Phx.vista.PersonaComunicacion.superclass.constructor.call(this,config);
 		this.init();
