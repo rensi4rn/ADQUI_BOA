@@ -1,6 +1,4 @@
-
-   
-/***********************************I-DATA-RAC-MIGRA-0-31/12/2012*****************************************/
+/***********************************I-DAT-RAC-MIGRA-0-31/12/2012*****************************************/
 
 
 INSERT INTO segu.tsubsistema ("id_subsistema", "codigo", "nombre", "fecha_reg", "prefijo", "estado_reg", "nombre_carpeta", "id_subsis_orig")
@@ -11,7 +9,7 @@ VALUES (6, E'MIGRA', E'Migracion', E'2013-01-14', E'MIG', E'activo', E'migracion
 --COPY LINES TO data.sql FILE  
 ---------------------------------
 
-select pxp.f_insert_tgui ('MIGRACION', '', 'MIGRA', 'si', , '', 1, '', '', 'MIGRA');
+select pxp.f_insert_tgui ('MIGRACION', '', 'MIGRA', 'si', NULL, '', 1, '', '', 'MIGRA');
 select pxp.f_insert_tgui ('Generador', 'Generada Scrip de Migracion', 'TAM', 'si', 1, 'sis_migracion/vista/tabla_mig/TablaMig.php', 2, '', 'TablaMig', 'MIGRA');
 select pxp.f_insert_tfuncion ('migra.f_tabla_mig_ime', 'Funcion para tabla     ', 'MIGRA');
 select pxp.f_insert_tfuncion ('migra.f_tabla_mig_sel', 'Funcion para tabla     ', 'MIGRA');
