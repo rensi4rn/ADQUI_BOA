@@ -11,7 +11,8 @@ DECLARE
 			v_cadena_cnx varchar;
 			v_cadena_con varchar;
 			resp boolean;
-			 v_respuesta varchar[];
+			v_resp varchar;
+			v_respuesta varchar[];
 			
 			g_registros_resp record;
 			v_codigo_financiador varchar;
@@ -53,14 +54,18 @@ BEGIN
 			          v_consulta = 'select migra.f__on_trig_tpm_financiador_tfinanciador (
 			               '''||v_operacion::varchar||''','||COALESCE(''''||v_codigo_financiador::varchar||'''','NULL')||','||COALESCE(v_id_financiador::varchar,'NULL')||','||COALESCE(''''||v_descripcion_financiador::varchar||'''','NULL')||','||COALESCE(''''||v_estado_reg::varchar||'''','NULL')||','||COALESCE(''''||v_fecha_mod::varchar||'''','NULL')||','||COALESCE(''''||v_fecha_reg::varchar||'''','NULL')||','||COALESCE(v_id_financiador_actif::varchar,'NULL')||','||COALESCE(v_id_usuario_mod::varchar,'NULL')||','||COALESCE(v_id_usuario_reg::varchar,'NULL')||','||COALESCE(''''||v_nombre_financiador::varchar||'''','NULL')||')';
 			          --probar la conexion con dblink
-			          resp =  sss.f_probar_con_dblink(v_cadena_cnx);
+			          
+					   --probar la conexion con dblink
+			          v_resp =  (SELECT dblink_connect(v_cadena_cnx));
 			            
-			             IF(not resp) THEN
+			             IF(v_resp!='OK') THEN
 			            
 			             	--modificar bandera de fallo  
 			                 raise exception 'FALLA CONEXION A LA BASE DE DATOS CON DBLINK';
 			                 
 			             ELSE
+					  
+			         
 			               PERFORM * FROM dblink(v_consulta,true) AS ( xx varchar);
 			                v_res_cone=(select dblink_disconnect());
 			             END IF;

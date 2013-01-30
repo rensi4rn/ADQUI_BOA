@@ -306,9 +306,17 @@ class ACTTablaMig extends ACTbase{
 			           ---------------------------------------\n
 			           /*
 			           ";
+				    
 			    foreach ($this->ColumnasDes as $data)
 			    {
-			  	   $texto_archivo=$texto_archivo."\t\t\tv_".$data['columna']."=p_".$data['desc_columna_ori']."::".$data['tipo_dato'].";\n";	
+			    	if($data['tipo_dato']=='varchar' || $data['tipo_dato'] =='text'){
+			    		 $texto_archivo=$texto_archivo."\t\t\tv_".$data['columna']."=convert(p_".$data['desc_columna_ori']."::".$data['tipo_dato'].", 'LATIN1', 'UTF8');\n";	
+			     
+			    	}
+					else
+					{
+			  	       $texto_archivo=$texto_archivo."\t\t\tv_".$data['columna']."=p_".$data['desc_columna_ori']."::".$data['tipo_dato'].";\n";	
+			        }
 			    }
 			    
 			    $texto_archivo=$texto_archivo." */   
@@ -356,6 +364,7 @@ class ACTTablaMig extends ACTbase{
 			     v_respuesta[1]='FALSE';
                  v_respuesta[2]=SQLERRM;
                  v_respuesta[3]=SQLSTATE;
+                 v_respuesta[4]=v_consulta;
                  
     
                  
@@ -510,7 +519,7 @@ class ACTTablaMig extends ACTbase{
 						         raise exception 'FALLA CONEXION A LA BASE DE DATOS CON DBLINK';
 									                 
 						     ELSE
-						       v_consulta = 'select pxp.f_add_remove_foraneas(''".$this->NameTablaDes."'',''".$this->$EsquemaDes."'',''eliminar'')';                   
+						       v_consulta = 'select pxp.f_add_remove_foraneas(''".$this->NameTablaDes."'',''".$this->EsquemaDes."'',''eliminar'')';                   
 						       raise notice '%',v_consulta;
 						       PERFORM * FROM dblink(v_consulta,true) AS ( xx varchar);
 						        v_res_cone=(select dblink_disconnect());
@@ -537,7 +546,7 @@ class ACTTablaMig extends ACTbase{
 			  }
 						        
 				$texto_archivo=$texto_archivo."FROM 
-						          ".$this->$EsquemaDes.".".$this->NameTablaDes.") LOOP
+						          ".$this->EsquemaOri.".".$this->NameTablaOri.") LOOP
 						        
 						        -- inserta en el destino
 						      
@@ -545,11 +554,20 @@ class ACTTablaMig extends ACTbase{
 						            'INSERT'";
 				  
 						foreach ($this->ColumnasOri as $data){
-						     $texto_archivo=$texto_archivo.",g_registros.".$data['columna']."/n/t/t/t/t/t";
+						     $texto_archivo=$texto_archivo.",g_registros.".$data['columna']."\n\t\t\t\t\t";
 						}	  
 				  
 							  
-  						  $texto_archivo=$texto_archivo.");		
+  					$texto_archivo=$texto_archivo.");	
+					
+					
+						        IF v_cadena_resp[1] = 'FALSE' THEN
+					               
+					              RAISE NOTICE 'ERROR ->>>  (%),(%) - %   ', v_cadena_resp[3], v_cadena_resp[2], v_cadena_resp[4];
+					              
+					            END IF; 	
+						
+						
 						
 						
 						    END LOOP;
@@ -563,7 +581,7 @@ class ACTTablaMig extends ACTbase{
 						         raise exception 'FALLA CONEXION A LA BASE DE DATOS CON DBLINK';
 									                 
 						     ELSE
-						       v_consulta = 'select pxp.f_add_remove_foraneas(''".$this->NameTablaDes."'',''".$this->$EsquemaDes."'',''insertar'')';                   
+						       v_consulta = 'select pxp.f_add_remove_foraneas(''".$this->NameTablaDes."'',''".$this->EsquemaDes."'',''insertar'')';                   
 						       raise notice '%',v_consulta;
 						       PERFORM * FROM dblink(v_consulta,true) AS ( xx varchar);
 						        v_res_cone=(select dblink_disconnect());

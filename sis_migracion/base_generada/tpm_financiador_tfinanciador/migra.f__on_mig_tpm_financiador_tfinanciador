@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION migra.f__on_trig_tpm_financiador_tfinanciador (
 
 /*
 						Function:  Para migracion de la tabla param.tgestion
-						Fecha Creacion:  January 30, 2013, 10:50 am
+						Fecha Creacion:  January 30, 2013, 1:26 pm
 						Autor: autogenerado (ADMINISTRADOR DEL SISTEMA )
 						
 						*/

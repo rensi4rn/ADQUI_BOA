@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION migra.f__on_trig_tpm_gestion_tgestion (
 
 /*
 						Function:  Para migracion de la tabla param.tgestion
-						Fecha Creacion:  January 23, 2013, 7:08 pm
+						Fecha Creacion:  January 30, 2013, 1:12 pm
 						Autor: autogenerado (ADMINISTRADOR DEL SISTEMA )
 						
 						*/
