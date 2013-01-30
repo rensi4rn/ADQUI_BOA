@@ -134,14 +134,23 @@ class ACTTablaMig extends ACTbase{
 		
 		//var_dump($this->ColumnasOri);
 		$this->ruta = $this->crearDirectorio();
+		
 		//generar  triguer
 		$this->generarTriguer($this->ruta);
+		
 		//generar funcion triguer
 		$this->generarFuncionTriguer($this->ruta);
+		
 		//generar funcion de tranformacion origen
 		$this->generarFuncionTransformacion($this->ruta);
+		
 		//generar funcion de insercion destino
 		$this->generarFuncionInsercionDestino($this->ruta);
+		
+		//genera funcion de migracion inicial
+		$this->generarFuncionDeMigracionInicial($this->ruta);
+		
+		
 		//Respuesta
 		echo "{success:true,resp:'Archivos generados', registros_ori:".sizeof($this->ColumnasOri).", registros_des:".sizeof($this->ColumnasDes)."}";
 		exit;
@@ -196,7 +205,7 @@ class ACTTablaMig extends ACTbase{
 							  
   $texto_archivo=$texto_archivo.") as res';				  
 		  ELSE 
-		      v_consulta =  ' SELECT migracion.f_trans_tproveedor (
+		      v_consulta =  ' SELECT migracion.f_trans_".$this->NameTablaOri."_".$this->NameTablaDes." (
 		              '''||TG_OP::varchar||'''";
 		              
 		         foreach ($this->ColumnasOri as $data){
@@ -265,7 +274,7 @@ class ACTTablaMig extends ACTbase{
 			  }
 			  
 			 $texto_archivo=$texto_archivo. ")
-			RETURNS boolean AS
+			RETURNS varchar [] AS
 			\$BODY$\n\n".
 			"DECLARE
 			 
@@ -275,6 +284,7 @@ class ACTTablaMig extends ACTbase{
 			v_cadena_cnx varchar;
 			v_cadena_con varchar;
 			resp boolean;
+			 v_respuesta varchar[];
 			
 			g_registros_resp record;\n";
 			
@@ -304,18 +314,18 @@ class ACTTablaMig extends ACTbase{
 			    --cadena para la llamada a la funcion de insercion en la base de datos destino
 			      
 			        
-			          v_consulta = 'select param.f_on_trig_".$this->NameTablaOri."_".$this->NameTablaDes." (
+			          v_consulta = 'select migra.f__on_trig_".$this->NameTablaOri."_".$this->NameTablaDes." (
 			               '''||v_operacion::varchar||'''";
 						   
 			   foreach ($this->ColumnasDes as $data)
 			   {
 			  	 if($data['tipo_dato']=='varchar'  ||$data['tipo_dato']=='text'||$data['tipo_dato']=='date'||$data['tipo_dato']=='timestamp'||$data['tipo_dato']=='time')
 				  {
-				 	$texto_archivo=$texto_archivo.",'||COALESCE(''''||p_".$data['columna']."::varchar||'''','NULL')||'";
+				 	$texto_archivo=$texto_archivo.",'||COALESCE(''''||v_".$data['columna']."::varchar||'''','NULL')||'";
 				  }
 				  else
 				  {
-				 	$texto_archivo=$texto_archivo.",'||COALESCE(p_".$data['tipo_dato']."::varchar,'NULL')||'";
+				 	$texto_archivo=$texto_archivo.",'||COALESCE(v_".$data['columna']."::varchar,'NULL')||'";
 				  }
 			   }		   
 						   
@@ -333,10 +343,18 @@ class ACTTablaMig extends ACTbase{
 			                v_res_cone=(select dblink_disconnect());
 			             END IF;
 			            
-			           RETURN TRUE;
+			            v_respuesta[1]='TRUE';
+                       
+			           RETURN v_respuesta;
 			EXCEPTION
 			   WHEN others THEN
-			     RETURN FALSE;
+			     v_respuesta[1]='FALSE';
+                 v_respuesta[2]=SQLERRM;
+                 v_respuesta[3]=SQLSTATE;
+                 
+    
+                 
+                 RETURN v_respuesta;
 			
 			END;
 			\$BODY$\n\n".
@@ -353,7 +371,7 @@ class ACTTablaMig extends ACTbase{
 	
 	 private function generarFuncionInsercionDestino($ruta){
 	 	
-		$texto_archivo="CREATE OR REPLACE FUNCTION param.f_on_trig_tgestion (
+		$texto_archivo="CREATE OR REPLACE FUNCTION migra.f__on_trig_".$this->NameTablaOri."_".$this->NameTablaDes." (
 						  v_operacion varchar";
 			  foreach ($this->ColumnasDes as $data)
 			  {
@@ -389,7 +407,7 @@ class ACTTablaMig extends ACTbase{
 			  	if($cont<$filas_des)
 			  	{
 			  		$texto_archivo=$texto_archivo."\t\t\t\t\t\t".$data['columna'].",\n";
-					$valores=$valores."\t\t\t\t\t\tv_".$data['columna'].",\n";	
+					$valores=$valores."\t\t\t\t\t\tp_".$data['columna'].",\n";	
 			    }
 				else{
 					$texto_archivo=$texto_archivo."\t\t\t\t\t\t".$data['columna'].")\n";
@@ -402,26 +420,39 @@ class ACTTablaMig extends ACTbase{
 							    ELSEIF  v_operacion = 'UPDATE' THEN
 						               UPDATE 
 						                  ".$this->EsquemaDes.".".$this->NameTablaDes."  
-						                SET 
-						                  
-						                 -- id_usuario_mod = :id_usuario_mod,
-						                 -- fecha_reg = :fecha_reg,
-						                 -- fecha_mod = :fecha_mod,
-						                 -- estado_reg = :estado_reg,
-						                  gestion = v_gestion,
-						                  estado = v_estado,
-						                  id_moneda_base = v_id_moneda_base,
-						                  id_empresa = v_id_empresa
-						                 
-						                WHERE 
-						                  id_gestion = v_id_gestion;
+						                SET"; 
+			  
+			  
+			 $filas_des = sizeof($this->ColumnasDes);	
+			 $cont = 0;	
+			 $valores="";
+			 $sw_ini=0;
+			 
+			 foreach ($this->ColumnasDes as $data)
+			  {
+			  	   $cont++;
+			  	   
+			  		if($data[checks]!='PK' &&  ($cont==1 || $sw_ini==0)){
+			  			$texto_archivo=$texto_archivo."\t\t\t\t\t\t ". $data['columna']."=p_".$data['columna']."\n";	
+			  		    $sw_ini=1;
+					}
+					elseif($data[checks]!='PK' && $sw_ini=1 ){
+						$texto_archivo=$texto_archivo."\t\t\t\t\t\t ,". $data['columna']."=p_".$data['columna']."\n";	
+			  		}
+					elseif($data[checks]=='PK'){
+							
+			  			$valores="\t\t\t\t\t\t WHERE ". $data['columna']."=p_".$data['columna'].";\n";
+			  			
+			  		}
+			}
+			  
+			$texto_archivo=$texto_archivo.$valores."
 						       
 						       ELSEIF  v_operacion = 'DELETE' THEN
 						       
 						         DELETE FROM 
-						              param.tgestion 
-						            WHERE 
-						              id_gestion = v_id_gestion;
+						              ".$this->EsquemaDes.".".$this->NameTablaDes."\n 
+						              ".$valores."
 						       
 						       END IF;  
 						  
@@ -444,7 +475,15 @@ class ACTTablaMig extends ACTbase{
 		$this->guardarArchivo($ruta."/migra.f__on_mig_".$this->NameTablaOri."_".$this->NameTablaDes, $texto_archivo);
 		
 		
-	 }	
+	 }
+
+    private function generarFuncionDeMigracionInicial($ruta){
+         $texto_archivo="";	
+    		
+    	//genera archivo fisicamente	
+		$this->guardarArchivo($ruta."/migracion.f_mig_ini_".$this->NameTablaOri."_".$this->NameTablaDes, $texto_archivo);
+		
+    }	
 	
 	private function guardarArchivo($pNombreArchivo, $pTexto){
 		$arch=fopen($pNombreArchivo,"w+");

@@ -16,8 +16,19 @@ Phx.vista.ColumnaDes=Ext.extend(Phx.gridInterfaz,{
 		this.maestro=config.maestro;
     	//llama al constructor de la clase padre
 		Phx.vista.ColumnaDes.superclass.constructor.call(this,config);
+		
 		this.init();
-		this.bloquearMenus();
+		
+		var dataPadre = Phx.CP.getPagina(this.idContenedorPadre).getSelectedData()
+		if(dataPadre){
+			this.onEnablePanel(this, dataPadre);
+		}
+		else
+		{
+			this.bloquearMenus();
+		}
+		
+		
 	},
 			
 	Atributos:[

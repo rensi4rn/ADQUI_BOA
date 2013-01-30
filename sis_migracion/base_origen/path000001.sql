@@ -9,3 +9,7 @@ CREATE TABLE migracion.tmig_migracion (
   fecha_mig TIMESTAMP WITHOUT TIME ZONE, 
   CONSTRAINT tmig_migracion_pkey PRIMARY KEY(id_migracion)
 ) WITHOUT OIDS;
+
+
+ALTER TABLE migracion.tmig_migracion
+  ADD COLUMN desc_error TEXT;

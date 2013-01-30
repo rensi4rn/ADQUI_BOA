@@ -40,6 +40,8 @@ Phx.vista.TablaMig=Ext.extend(Phx.gridInterfaz,{
 		
 	},
 	
+	
+	
 	GenerarCodigo:function(){
 		var data=this.sm.getSelected().data;
 			Phx.CP.loadingShow();
