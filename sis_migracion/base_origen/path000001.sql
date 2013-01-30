@@ -4,7 +4,7 @@ CREATE TABLE migracion.tmig_migracion (
   verificado VARCHAR(2), 
   consulta TEXT, 
   operacion VARCHAR(15), 
-  migracion VARCHAR(1), 
+  migracion VARCHAR(15), 
   fecha_reg TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL, 
   fecha_mig TIMESTAMP WITHOUT TIME ZONE, 
   CONSTRAINT tmig_migracion_pkey PRIMARY KEY(id_migracion)

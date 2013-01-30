@@ -284,7 +284,8 @@ class ACTTablaMig extends ACTbase{
 			v_cadena_cnx varchar;
 			v_cadena_con varchar;
 			resp boolean;
-			 v_respuesta varchar[];
+			v_resp varchar;
+			v_respuesta varchar[];
 			
 			g_registros_resp record;\n";
 			
@@ -331,14 +332,18 @@ class ACTTablaMig extends ACTbase{
 						   
 				$texto_archivo=$texto_archivo.")';
 			          --probar la conexion con dblink
-			          resp =  sss.f_probar_con_dblink(v_cadena_cnx);
+			          
+					   --probar la conexion con dblink
+			          v_resp =  (SELECT dblink_connect(v_cadena_cnx));
 			            
-			             IF(not resp) THEN
+			             IF(v_resp!='OK') THEN
 			            
 			             	--modificar bandera de fallo  
 			                 raise exception 'FALLA CONEXION A LA BASE DE DATOS CON DBLINK';
 			                 
 			             ELSE
+					  
+			         
 			               PERFORM * FROM dblink(v_consulta,true) AS ( xx varchar);
 			                v_res_cone=(select dblink_disconnect());
 			             END IF;
@@ -478,7 +483,99 @@ class ACTTablaMig extends ACTbase{
 	 }
 
     private function generarFuncionDeMigracionInicial($ruta){
-         $texto_archivo="";	
+         $texto_archivo="CREATE OR REPLACE FUNCTION migracion.f_mig_ini_".$this->NameTablaOri."_".$this->NameTablaDes."()
+						RETURNS boolean AS
+						\$BODY$\n\n"."
+						DECLARE
+						 
+						g_registros record;
+						v_consulta varchar;
+						v_res_cone varchar;
+						v_cadena_cnx varchar;
+						v_resp varchar;
+						
+						v_cadena_resp varchar[];
+						
+						BEGIN
+						     --funcion para obtener cadena de conexion
+							 v_cadena_cnx =  migracion.f_obtener_cadena_con_dblink();
+									          
+						  
+						    --quirta llaves foraneas en el destino
+						     v_resp =  (SELECT dblink_connect(v_cadena_cnx));
+									            
+						     IF(v_resp!='OK') THEN
+									            
+						        --modificar bandera de fallo  
+						         raise exception 'FALLA CONEXION A LA BASE DE DATOS CON DBLINK';
+									                 
+						     ELSE
+						       v_consulta = 'select pxp.f_add_remove_foraneas(''".$this->NameTablaDes."'',''".$this->$EsquemaDes."'',''eliminar'')';                   
+						       raise notice '%',v_consulta;
+						       PERFORM * FROM dblink(v_consulta,true) AS ( xx varchar);
+						        v_res_cone=(select dblink_disconnect());
+						     END IF;
+						
+						
+						   --consulta los registro de la tabla origen
+						    FOR g_registros in (
+						        SELECT \n";
+						        
+			 $filas_des = sizeof($this->ColumnasDes);	
+			 $cont = 0;	
+			 
+			 foreach ($this->ColumnasOri as $data)
+			  {
+			  	 $cont++;
+			  	if($cont<$filas_des)
+			  	{
+			  		$texto_archivo=$texto_archivo."\t\t\t\t\t\t".$data['columna'].",\n";
+				}
+				else{
+					$texto_archivo=$texto_archivo."\t\t\t\t\t\t".$data['columna']."\n";
+				}
+			  }
+						        
+				$texto_archivo=$texto_archivo."FROM 
+						          ".$this->$EsquemaDes.".".$this->NameTablaDes.") LOOP
+						        
+						        -- inserta en el destino
+						      
+						            v_cadena_resp = migracion.f_trans_".$this->NameTablaOri."_".$this->NameTablaDes."(
+						            'INSERT'";
+				  
+						foreach ($this->ColumnasOri as $data){
+						     $texto_archivo=$texto_archivo.",g_registros.".$data['columna']."/n/t/t/t/t/t";
+						}	  
+				  
+							  
+  						  $texto_archivo=$texto_archivo.");		
+						
+						
+						    END LOOP;
+						
+						     --reconstruye llaves foraneas
+						     v_resp =  (SELECT dblink_connect(v_cadena_cnx));
+									            
+						     IF(v_resp!='OK') THEN
+									            
+						        --modificar bandera de fallo  
+						         raise exception 'FALLA CONEXION A LA BASE DE DATOS CON DBLINK';
+									                 
+						     ELSE
+						       v_consulta = 'select pxp.f_add_remove_foraneas(''".$this->NameTablaDes."'',''".$this->$EsquemaDes."'',''insertar'')';                   
+						       raise notice '%',v_consulta;
+						       PERFORM * FROM dblink(v_consulta,true) AS ( xx varchar);
+						        v_res_cone=(select dblink_disconnect());
+						     END IF;
+						
+						RETURN TRUE;
+						END;
+						\$BODY$\n\n"."
+						LANGUAGE 'plpgsql'
+						VOLATILE
+						CALLED ON NULL INPUT
+						SECURITY INVOKER;";	
     		
     	//genera archivo fisicamente	
 		$this->guardarArchivo($ruta."/migracion.f_mig_ini_".$this->NameTablaOri."_".$this->NameTablaDes, $texto_archivo);
