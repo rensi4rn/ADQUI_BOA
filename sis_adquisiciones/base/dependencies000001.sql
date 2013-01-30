@@ -1,7 +1,7 @@
 
    
 /***********************************I-DEP-RAC-ADQ-0-31/12/2012*****************************************/
-ALTER TABLE adq.tsolicitud ADD CONSTRAINT fk_solicitud__id_solicitud" FOREIGN KEY(
+ALTER TABLE adq.tsolicitud ADD CONSTRAINT fk_solicitud__id_solicitud FOREIGN KEY(
     id_solicitud_ext) REFERENCES adq.tsolicitud(
     id_solicitud);
     

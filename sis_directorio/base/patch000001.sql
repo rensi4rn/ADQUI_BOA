@@ -17,7 +17,7 @@ WITHOUT OIDS;
 /***********************************I-SCP-RAC-DIR-2-08/01/2013****************************************/
 
 
-ALTER TABLE segu.ttipo_comunicacion
+ALTER TABLE dir.ttipo_comunicacion
   ADD COLUMN obs TEXT;
   
   

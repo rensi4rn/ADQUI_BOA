@@ -106,7 +106,7 @@ CREATE TABLE adq.tplan_pago(
     boleta_garantia varchar(255),
     obs_descuentos text,
     descuento_anticipo numeric(19, 2),
-    PRIMARY KEY (id_plan_pago))INHERITS (pxp.tbase) 
+    PRIMARY KEY (id_plan_pago))INHERITS (pxp.tbase);
 
 
 CREATE TABLE adq.tcotizacion_det(
