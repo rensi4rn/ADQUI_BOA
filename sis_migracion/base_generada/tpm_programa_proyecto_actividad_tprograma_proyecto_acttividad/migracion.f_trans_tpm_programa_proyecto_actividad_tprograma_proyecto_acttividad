@@ -51,7 +51,11 @@ BEGIN
 			v_id_programa=p_id_programa::int4;
 			v_id_proyecto=p_id_proyecto::int4;
 			v_id_usuario_mod=NULL::int4;
-			v_id_usuario_reg=p_id_usuario::int4;
+			IF(p_id_usuario IS NULL)THEN 			
+                v_id_usuario_reg=1::int4;
+            ELSE 
+                v_id_usuario_reg=p_id_usuario::int4;
+            END IF;
 			
 			    --cadena para la llamada a la funcion de insercion en la base de datos destino
 			      
@@ -80,6 +84,7 @@ BEGIN
 			           RETURN v_respuesta;
 			EXCEPTION
 			   WHEN others THEN
+			     v_res_cone=(select dblink_disconnect());
 			     v_respuesta[1]='FALSE';
                  v_respuesta[2]=SQLERRM;
                  v_respuesta[3]=SQLSTATE;

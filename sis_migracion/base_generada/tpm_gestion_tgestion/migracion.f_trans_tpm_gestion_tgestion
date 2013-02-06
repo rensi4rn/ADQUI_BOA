@@ -75,6 +75,7 @@ BEGIN
 			           RETURN v_respuesta;
 			EXCEPTION
 			   WHEN others THEN
+			     v_res_cone=(select dblink_disconnect());
 			     v_respuesta[1]='FALSE';
                  v_respuesta[2]=SQLERRM;
                  v_respuesta[3]=SQLSTATE;

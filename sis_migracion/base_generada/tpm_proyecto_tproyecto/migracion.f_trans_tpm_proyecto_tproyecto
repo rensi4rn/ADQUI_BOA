@@ -67,7 +67,11 @@ BEGIN
 			v_id_proyecto_actif=p_id_proyecto_actif::int4;
 			v_id_proyecto_cat_prog=NULL::int4;
 			v_id_usuario_mod=p_id_usr_mod::int4;
-			v_id_usuario_reg=p_id_usuario::int4;
+			IF(p_id_usuario IS NULL)THEN 			
+                v_id_usuario_reg=1::int4;
+            ELSE 
+                v_id_usuario_reg=p_id_usuario::int4;
+            END IF;
 			v_nombre_corto=convert(p_nombre_corto::varchar, 'LATIN1', 'UTF8');
 			v_nombre_proyecto=convert(p_nombre_proyecto::varchar, 'LATIN1', 'UTF8');
  
@@ -98,6 +102,7 @@ BEGIN
 			           RETURN v_respuesta;
 			EXCEPTION
 			   WHEN others THEN
+			     v_res_cone=(select dblink_disconnect());
 			     v_respuesta[1]='FALSE';
                  v_respuesta[2]=SQLERRM;
                  v_respuesta[3]=SQLSTATE;

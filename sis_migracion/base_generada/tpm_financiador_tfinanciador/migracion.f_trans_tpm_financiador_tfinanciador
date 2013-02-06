@@ -55,7 +55,11 @@ BEGIN
 			v_fecha_reg=p_fecha_registro::timestamp;
 			v_id_financiador_actif=p_id_financiador_actif::int4;
 			v_id_usuario_mod=NULL::int4;
-			v_id_usuario_reg=p_id_usuario::int4;
+			IF(p_id_usuario IS NULL)THEN 			
+                v_id_usuario_reg=1::int4;
+            ELSE 
+                v_id_usuario_reg=p_id_usuario::int4;
+            END IF;
 			v_nombre_financiador=convert(p_nombre_financiador::varchar, 'LATIN1', 'UTF8');
    
 			    --cadena para la llamada a la funcion de insercion en la base de datos destino
@@ -87,6 +91,7 @@ BEGIN
 			           RETURN v_respuesta;
 			EXCEPTION
 			   WHEN others THEN
+			     v_res_cone=(select dblink_disconnect());
 			     v_respuesta[1]='FALSE';
                  v_respuesta[2]=SQLERRM;
                  v_respuesta[3]=SQLSTATE;
