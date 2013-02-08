@@ -361,6 +361,8 @@ class ACTTablaMig extends ACTbase{
 			           RETURN v_respuesta;
 			EXCEPTION
 			   WHEN others THEN
+			   
+			    v_res_cone=(select dblink_disconnect());
 			     v_respuesta[1]='FALSE';
                  v_respuesta[2]=SQLERRM;
                  v_respuesta[3]=SQLSTATE;
@@ -530,7 +532,7 @@ class ACTTablaMig extends ACTbase{
 						    FOR g_registros in (
 						        SELECT \n";
 						        
-			 $filas_des = sizeof($this->ColumnasDes);	
+			 $filas_des = sizeof($this->ColumnasOri);	
 			 $cont = 0;	
 			 
 			 foreach ($this->ColumnasOri as $data)
@@ -559,18 +561,10 @@ class ACTTablaMig extends ACTbase{
 				  
 							  
   					$texto_archivo=$texto_archivo.");	
-					
-					
-						        IF v_cadena_resp[1] = 'FALSE' THEN
-					               
+					            IF v_cadena_resp[1] = 'FALSE' THEN
 					              RAISE NOTICE 'ERROR ->>>  (%),(%) - %   ', v_cadena_resp[3], v_cadena_resp[2], v_cadena_resp[4];
-					              
 					            END IF; 	
-						
-						
-						
-						
-						    END LOOP;
+						 END LOOP;
 						
 						     --reconstruye llaves foraneas
 						     v_resp =  (SELECT dblink_connect(v_cadena_cnx));

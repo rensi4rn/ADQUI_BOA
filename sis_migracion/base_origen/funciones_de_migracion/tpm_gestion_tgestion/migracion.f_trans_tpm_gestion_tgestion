@@ -1,8 +1,16 @@
-CREATE OR REPLACE FUNCTION migracion.f_trans_tpm_empresa_tempresa (
-			  v_operacion varchar,p_codigo varchar,p_id_empresa int4,p_id_institucion int4,p_denominacion varchar,p_dir_adm int4,p_nro_nit numeric,p_razon_social varchar)
-			RETURNS varchar [] AS
-			$BODY$
+--------------- SQL ---------------
 
+CREATE OR REPLACE FUNCTION migracion.f_trans_tpm_gestion_tgestion (
+  v_operacion varchar,
+  p_id_gestion integer,
+  p_id_empresa integer,
+  p_id_moneda_base integer,
+  p_estado_ges_gral varchar,
+  p_gestion numeric,
+  p_sincronizado varchar
+)
+RETURNS varchar [] AS
+$body$
 DECLARE
 			 
 			g_registros record;
@@ -15,16 +23,16 @@ DECLARE
 			v_respuesta varchar[];
 			
 			g_registros_resp record;
-			v_id_empresa int4;
-			v_codigo varchar;
+			v_id_gestion int4;
+			v_id_moneda_base int4;
+			v_estado varchar;
 			v_estado_reg varchar;
 			v_fecha_mod timestamp;
 			v_fecha_reg timestamp;
+			v_gestion int4;
+			v_id_empresa int4;
 			v_id_usuario_mod int4;
 			v_id_usuario_reg int4;
-			v_logo varchar;
-			v_nit varchar;
-			v_nombre varchar;
 BEGIN
 			
 			
@@ -36,23 +44,22 @@ BEGIN
 			           --previamente se tranforman los datos  (descomentar)
 			           ---------------------------------------
 
-			           /*
-			           			v_id_empresa=p_::int4;
-			v_codigo=convert(p_::varchar, 'LATIN1', 'UTF8');
-			v_estado_reg=convert(p_::varchar, 'LATIN1', 'UTF8');
-			v_fecha_mod=p_::timestamp;
-			v_fecha_reg=p_::timestamp;
-			v_id_usuario_mod=p_::int4;
-			v_id_usuario_reg=p_::int4;
-			v_logo=convert(p_::varchar, 'LATIN1', 'UTF8');
-			v_nit=convert(p_::varchar, 'LATIN1', 'UTF8');
-			v_nombre=convert(p_::varchar, 'LATIN1', 'UTF8');
- */   
+			v_id_gestion=p_id_gestion::int4;
+			v_id_moneda_base=p_id_moneda_base::int4;
+			v_estado=convert(p_estado_ges_gral::varchar, 'LATIN1', 'UTF8');
+			v_estado_reg='activo';
+			v_fecha_mod=NULL;
+			v_fecha_reg=now();
+			v_gestion=p_gestion::int4;
+			v_id_empresa=p_id_empresa::int4;
+			v_id_usuario_mod=NULL;
+			v_id_usuario_reg=1;
+ 
 			    --cadena para la llamada a la funcion de insercion en la base de datos destino
 			      
 			        
-			          v_consulta = 'select migra.f__on_trig_tpm_empresa_tempresa (
-			               '''||v_operacion::varchar||''','||COALESCE(v_id_empresa::varchar,'NULL')||','||COALESCE(''''||v_codigo::varchar||'''','NULL')||','||COALESCE(''''||v_estado_reg::varchar||'''','NULL')||','||COALESCE(''''||v_fecha_mod::varchar||'''','NULL')||','||COALESCE(''''||v_fecha_reg::varchar||'''','NULL')||','||COALESCE(v_id_usuario_mod::varchar,'NULL')||','||COALESCE(v_id_usuario_reg::varchar,'NULL')||','||COALESCE(''''||v_logo::varchar||'''','NULL')||','||COALESCE(''''||v_nit::varchar||'''','NULL')||','||COALESCE(''''||v_nombre::varchar||'''','NULL')||')';
+			          v_consulta = 'select migra.f__on_trig_tpm_gestion_tgestion (
+			               '''||v_operacion::varchar||''','||COALESCE(v_id_gestion::varchar,'NULL')||','||COALESCE(v_id_moneda_base::varchar,'NULL')||','||COALESCE(''''||v_estado::varchar||'''','NULL')||','||COALESCE(''''||v_estado_reg::varchar||'''','NULL')||','||COALESCE(''''||v_fecha_mod::varchar||'''','NULL')||','||COALESCE(''''||v_fecha_reg::varchar||'''','NULL')||','||COALESCE(v_gestion::varchar,'NULL')||','||COALESCE(v_id_empresa::varchar,'NULL')||','||COALESCE(v_id_usuario_mod::varchar,'NULL')||','||COALESCE(v_id_usuario_reg::varchar,'NULL')||')';
 			          --probar la conexion con dblink
 			          
 					   --probar la conexion con dblink
@@ -75,7 +82,6 @@ BEGIN
 			           RETURN v_respuesta;
 			EXCEPTION
 			   WHEN others THEN
-			   
 			    v_res_cone=(select dblink_disconnect());
 			     v_respuesta[1]='FALSE';
                  v_respuesta[2]=SQLERRM;
@@ -87,9 +93,8 @@ BEGIN
                  RETURN v_respuesta;
 			
 			END;
-			$BODY$
-
+$body$
 LANGUAGE 'plpgsql'
-			VOLATILE
-			CALLED ON NULL INPUT
-			SECURITY INVOKER;
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER;

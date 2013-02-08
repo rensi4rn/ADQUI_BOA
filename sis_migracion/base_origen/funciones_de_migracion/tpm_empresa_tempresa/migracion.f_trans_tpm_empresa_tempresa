@@ -1,8 +1,17 @@
-CREATE OR REPLACE FUNCTION migracion.f_trans_tpm_empresa_tempresa (
-			  v_operacion varchar,p_codigo varchar,p_id_empresa int4,p_id_institucion int4,p_denominacion varchar,p_dir_adm int4,p_nro_nit numeric,p_razon_social varchar)
-			RETURNS varchar [] AS
-			$BODY$
+--------------- SQL ---------------
 
+CREATE OR REPLACE FUNCTION migracion.f_trans_tpm_empresa_tempresa (
+  v_operacion varchar,
+  p_codigo varchar,
+  p_id_empresa integer,
+  p_id_institucion integer,
+  p_denominacion varchar,
+  p_dir_adm integer,
+  p_nro_nit numeric,
+  p_razon_social varchar
+)
+RETURNS varchar [] AS
+$body$
 DECLARE
 			 
 			g_registros record;
@@ -36,18 +45,18 @@ BEGIN
 			           --previamente se tranforman los datos  (descomentar)
 			           ---------------------------------------
 
-			           /*
-			           			v_id_empresa=p_::int4;
-			v_codigo=convert(p_::varchar, 'LATIN1', 'UTF8');
-			v_estado_reg=convert(p_::varchar, 'LATIN1', 'UTF8');
-			v_fecha_mod=p_::timestamp;
-			v_fecha_reg=p_::timestamp;
-			v_id_usuario_mod=p_::int4;
-			v_id_usuario_reg=p_::int4;
-			v_logo=convert(p_::varchar, 'LATIN1', 'UTF8');
-			v_nit=convert(p_::varchar, 'LATIN1', 'UTF8');
-			v_nombre=convert(p_::varchar, 'LATIN1', 'UTF8');
- */   
+			          
+			           			v_id_empresa=p_id_empresa::int4;
+			v_codigo=convert(p_codigo::varchar, 'LATIN1', 'UTF8');
+			v_estado_reg='activo';
+			v_fecha_mod=NULL;
+			v_fecha_reg=now()::timestamp;
+			v_id_usuario_mod=NULL;
+			v_id_usuario_reg=1::int4;
+			v_logo=NULL;
+			v_nit=convert(p_nro_nit::varchar, 'LATIN1', 'UTF8');
+			v_nombre=convert(p_razon_social::varchar, 'LATIN1', 'UTF8');
+    
 			    --cadena para la llamada a la funcion de insercion en la base de datos destino
 			      
 			        
@@ -75,7 +84,6 @@ BEGIN
 			           RETURN v_respuesta;
 			EXCEPTION
 			   WHEN others THEN
-			   
 			    v_res_cone=(select dblink_disconnect());
 			     v_respuesta[1]='FALSE';
                  v_respuesta[2]=SQLERRM;
@@ -87,9 +95,8 @@ BEGIN
                  RETURN v_respuesta;
 			
 			END;
-			$BODY$
-
+$body$
 LANGUAGE 'plpgsql'
-			VOLATILE
-			CALLED ON NULL INPUT
-			SECURITY INVOKER;
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER;
