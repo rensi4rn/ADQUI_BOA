@@ -54,7 +54,11 @@ BEGIN
 			v_id_prog_pory_acti=p_id_prog_proy_acti::int4;
 			v_id_regional=p_id_regional::int4;
 			v_id_usuario_mod=NULL::int4;
-			v_id_usuario_reg=p_id_usuario::int4;
+			IF(p_id_usuario IS NULL)THEN 			
+                v_id_usuario_reg=1::int4;
+            ELSE 
+                v_id_usuario_reg=p_id_usuario::int4;
+            END IF;
 			v_sw_presto=p_sw_presto::int4;
 			
 			    --cadena para la llamada a la funcion de insercion en la base de datos destino
@@ -84,6 +88,7 @@ BEGIN
 			           RETURN v_respuesta;
 			EXCEPTION
 			   WHEN others THEN
+			     v_res_cone=(select dblink_disconnect());
 			     v_respuesta[1]='FALSE';
                  v_respuesta[2]=SQLERRM;
                  v_respuesta[3]=SQLSTATE;

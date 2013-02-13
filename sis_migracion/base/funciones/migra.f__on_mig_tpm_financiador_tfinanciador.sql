@@ -1,11 +1,11 @@
-CREATE OR REPLACE FUNCTION migra.f__on_trig_tpm_empresa_tempresa (
-						  v_operacion varchar,p_id_empresa int4,p_codigo varchar,p_estado_reg varchar,p_fecha_mod timestamp,p_fecha_reg timestamp,p_id_usuario_mod int4,p_id_usuario_reg int4,p_logo varchar,p_nit varchar,p_nombre varchar)
+CREATE OR REPLACE FUNCTION migra.f__on_trig_tpm_financiador_tfinanciador (
+						  v_operacion varchar,p_codigo_financiador varchar,p_id_financiador int4,p_descripcion_financiador text,p_estado_reg varchar,p_fecha_mod timestamp,p_fecha_reg timestamp,p_id_financiador_actif int4,p_id_usuario_mod int4,p_id_usuario_reg int4,p_nombre_financiador varchar)
 						RETURNS text AS
 						$BODY$
 
 /*
 						Function:  Para migracion de la tabla param.tgestion
-						Fecha Creacion:  February 5, 2013, 3:14 pm
+						Fecha Creacion:  January 30, 2013, 1:26 pm
 						Autor: autogenerado (ADMINISTRADOR DEL SISTEMA )
 						
 						*/
@@ -17,51 +17,51 @@ CREATE OR REPLACE FUNCTION migra.f__on_trig_tpm_empresa_tempresa (
 						    if(v_operacion = 'INSERT') THEN
 						
 						          INSERT INTO 
-						            PARAM.tempresa (
-						id_empresa,
-						codigo,
+						            PARAM.tfinanciador (
+						codigo_financiador,
+						id_financiador,
+						descripcion_financiador,
 						estado_reg,
 						fecha_mod,
 						fecha_reg,
+						id_financiador_actif,
 						id_usuario_mod,
 						id_usuario_reg,
-						logo,
-						nit,
-						nombre)
+						nombre_financiador)
 				VALUES (
-						p_id_empresa,
-						p_codigo,
+						p_codigo_financiador,
+						p_id_financiador,
+						p_descripcion_financiador,
 						p_estado_reg,
 						p_fecha_mod,
 						p_fecha_reg,
+						p_id_financiador_actif,
 						p_id_usuario_mod,
 						p_id_usuario_reg,
-						p_logo,
-						p_nit,
-						p_nombre);
+						p_nombre_financiador);
 
 						       
 							    ELSEIF  v_operacion = 'UPDATE' THEN
 						               UPDATE 
-						                  PARAM.tempresa  
-						                SET						 codigo=p_codigo
+						                  PARAM.tfinanciador  
+						                SET						 codigo_financiador=p_codigo_financiador
+						 ,descripcion_financiador=p_descripcion_financiador
 						 ,estado_reg=p_estado_reg
 						 ,fecha_mod=p_fecha_mod
 						 ,fecha_reg=p_fecha_reg
+						 ,id_financiador_actif=p_id_financiador_actif
 						 ,id_usuario_mod=p_id_usuario_mod
 						 ,id_usuario_reg=p_id_usuario_reg
-						 ,logo=p_logo
-						 ,nit=p_nit
-						 ,nombre=p_nombre
-						 WHERE id_empresa=p_id_empresa;
+						 ,nombre_financiador=p_nombre_financiador
+						 WHERE id_financiador=p_id_financiador;
 
 						       
 						       ELSEIF  v_operacion = 'DELETE' THEN
 						       
 						         DELETE FROM 
-						              PARAM.tempresa
+						              PARAM.tfinanciador
  
-						              						 WHERE id_empresa=p_id_empresa;
+						              						 WHERE id_financiador=p_id_financiador;
 
 						       
 						       END IF;  

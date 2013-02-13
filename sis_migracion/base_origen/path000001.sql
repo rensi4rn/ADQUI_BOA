@@ -13,3 +13,6 @@ CREATE TABLE migracion.tmig_migracion (
 
 ALTER TABLE migracion.tmig_migracion
   ADD COLUMN desc_error TEXT;
+  
+ALTER TABLE migracion.tmig_migracion
+  ALTER COLUMN fecha_correo TYPE TIMESTAMP WITHOUT TIME ZONE;

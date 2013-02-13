@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION migracion.f_trans_tpm_empresa_tempresa (
 			  v_operacion varchar,p_codigo varchar,p_id_empresa int4,p_id_institucion int4,p_denominacion varchar,p_dir_adm int4,p_nro_nit numeric,p_razon_social varchar)
-			RETURNS boolean AS
+			RETURNS varchar [] AS
 			$BODY$
 
 DECLARE
@@ -11,9 +11,12 @@ DECLARE
 			v_cadena_cnx varchar;
 			v_cadena_con varchar;
 			resp boolean;
+			v_resp varchar;
+			v_respuesta varchar[];
 			
 			g_registros_resp record;
 			v_id_empresa int4;
+			v_codigo varchar;
 			v_estado_reg varchar;
 			v_fecha_mod timestamp;
 			v_fecha_reg timestamp;
@@ -34,38 +37,54 @@ BEGIN
 			           ---------------------------------------
 
 			           /*
-			           			v_id_empresa=p_id_empresa::int4;
-			v_estado_reg=p_::varchar;
+			           			v_id_empresa=p_::int4;
+			v_codigo=convert(p_::varchar, 'LATIN1', 'UTF8');
+			v_estado_reg=convert(p_::varchar, 'LATIN1', 'UTF8');
 			v_fecha_mod=p_::timestamp;
 			v_fecha_reg=p_::timestamp;
 			v_id_usuario_mod=p_::int4;
 			v_id_usuario_reg=p_::int4;
-			v_logo=p_::varchar;
-			v_nit=p_nro_nit::varchar;
-			v_nombre=p_denominacion::varchar;
+			v_logo=convert(p_::varchar, 'LATIN1', 'UTF8');
+			v_nit=convert(p_::varchar, 'LATIN1', 'UTF8');
+			v_nombre=convert(p_::varchar, 'LATIN1', 'UTF8');
  */   
 			    --cadena para la llamada a la funcion de insercion en la base de datos destino
 			      
 			        
-			          v_consulta = 'select param.f_on_trig_tpm_empresa_tempresa (
-			               '''||v_operacion::varchar||''','||COALESCE(p_int4::varchar,'NULL')||','||COALESCE(''''||p_estado_reg::varchar||'''','NULL')||','||COALESCE(''''||p_fecha_mod::varchar||'''','NULL')||','||COALESCE(''''||p_fecha_reg::varchar||'''','NULL')||','||COALESCE(p_int4::varchar,'NULL')||','||COALESCE(p_int4::varchar,'NULL')||','||COALESCE(''''||p_logo::varchar||'''','NULL')||','||COALESCE(''''||p_nit::varchar||'''','NULL')||','||COALESCE(''''||p_nombre::varchar||'''','NULL')||')';
+			          v_consulta = 'select migra.f__on_trig_tpm_empresa_tempresa (
+			               '''||v_operacion::varchar||''','||COALESCE(v_id_empresa::varchar,'NULL')||','||COALESCE(''''||v_codigo::varchar||'''','NULL')||','||COALESCE(''''||v_estado_reg::varchar||'''','NULL')||','||COALESCE(''''||v_fecha_mod::varchar||'''','NULL')||','||COALESCE(''''||v_fecha_reg::varchar||'''','NULL')||','||COALESCE(v_id_usuario_mod::varchar,'NULL')||','||COALESCE(v_id_usuario_reg::varchar,'NULL')||','||COALESCE(''''||v_logo::varchar||'''','NULL')||','||COALESCE(''''||v_nit::varchar||'''','NULL')||','||COALESCE(''''||v_nombre::varchar||'''','NULL')||')';
 			          --probar la conexion con dblink
-			          resp =  sss.f_probar_con_dblink(v_cadena_cnx);
+			          
+					   --probar la conexion con dblink
+			          v_resp =  (SELECT dblink_connect(v_cadena_cnx));
 			            
-			             IF(not resp) THEN
+			             IF(v_resp!='OK') THEN
 			            
 			             	--modificar bandera de fallo  
 			                 raise exception 'FALLA CONEXION A LA BASE DE DATOS CON DBLINK';
 			                 
 			             ELSE
+					  
+			         
 			               PERFORM * FROM dblink(v_consulta,true) AS ( xx varchar);
 			                v_res_cone=(select dblink_disconnect());
 			             END IF;
 			            
-			           RETURN TRUE;
+			            v_respuesta[1]='TRUE';
+                       
+			           RETURN v_respuesta;
 			EXCEPTION
 			   WHEN others THEN
-			     RETURN FALSE;
+			   
+			    v_res_cone=(select dblink_disconnect());
+			     v_respuesta[1]='FALSE';
+                 v_respuesta[2]=SQLERRM;
+                 v_respuesta[3]=SQLSTATE;
+                 v_respuesta[4]=v_consulta;
+                 
+    
+                 
+                 RETURN v_respuesta;
 			
 			END;
 			$BODY$
