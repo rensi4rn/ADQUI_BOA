@@ -2,3 +2,4 @@
 ../../../sis_presupuestos/
 ../../../sis_directorio/
 ../../../sis_migracion/
+../../../sis_contabilidad/
