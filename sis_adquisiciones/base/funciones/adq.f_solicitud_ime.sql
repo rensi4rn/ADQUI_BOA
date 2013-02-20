@@ -1,8 +1,13 @@
-CREATE OR REPLACE FUNCTION "adq"."f_solicitud_ime" (	
-				p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
-RETURNS character varying AS
-$BODY$
+--------------- SQL ---------------
 
+CREATE OR REPLACE FUNCTION adq.f_solicitud_ime (
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
+)
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA:		Adquisiciones
  FUNCION: 		adq.f_solicitud_ime
@@ -27,6 +32,9 @@ DECLARE
 	v_nombre_funcion        text;
 	v_mensaje_error         text;
 	v_id_solicitud	integer;
+    
+    v_num_sol   varchar;
+    v_id_periodo integer;
 			    
 BEGIN
 
@@ -43,61 +51,97 @@ BEGIN
 	if(p_transaccion='ADQ_SOL_INS')then
 					
         begin
+        
+        --determina la fecha del periodo
+        
+         select id_periodo into v_id_periodo from
+                        param.tperiodo per 
+                       where per.fecha_ini <= v_parametros.fecha_soli 
+                         and per.fecha_fin >=  v_parametros.fecha_soli
+                         limit 1 offset 0;
+        
+        
+        --obtener correlativo
+        IF  v_parametros.tipo = 'Bien' THEN
+        
+           v_num_sol =   param.f_obtener_correlativo(
+                  'SOLB', 
+                   v_id_periodo,-- par_id, 
+                   NULL, --id_uo 
+                   1,    -- id_depto
+                   1, 
+                   'ADQ', 
+                   NULL);
+         ELSE
+           v_num_sol =   param.f_obtener_correlativo(
+                  'SOLS', 
+                   v_id_periodo,-- par_id, 
+                   NULL, --id_uo 
+                   1, 
+                   1, 
+                   'ADQ', 
+                   NULL);
+         
+         END IF;
+        
+        
         	--Sentencia de la insercion
         	insert into adq.tsolicitud(
 			estado_reg,
-			id_solicitud_ext,
-			presu_revertido,
-			fecha_apro,
-			estado,
-			id_funcionario_aprobador,
+			--id_solicitud_ext,
+			--presu_revertido,
+			--fecha_apro,
+			--estado,
+		--	id_funcionario_aprobador,
 			id_moneda,
 			id_gestion,
 			tipo,
-			num_tramite,
+			--num_tramite,
 			justificacion,
 			id_depto,
 			lugar_entrega,
 			extendida,
 			numero,
 			posibles_proveedores,
-			id_proceso_wf,
+			--id_proceso_wf,
 			comite_calificacion,
 			id_categoria_compra,
 			id_funcionario,
-			id_estado_wf,
+			--id_estado_wf,
 			fecha_soli,
 			fecha_reg,
 			id_usuario_reg,
 			fecha_mod,
-			id_usuario_mod
+			id_usuario_mod,
+            id_uo
           	) values(
 			'activo',
-			v_parametros.id_solicitud_ext,
-			v_parametros.presu_revertido,
-			v_parametros.fecha_apro,
-			v_parametros.estado,
-			v_parametros.id_funcionario_aprobador,
+			--v_parametros.id_solicitud_ext,
+			--v_parametros.presu_revertido,
+			--v_parametros.fecha_apro,
+			--v_parametros.estado,
+			--v_parametros.id_funcionario_aprobador,
 			v_parametros.id_moneda,
 			v_parametros.id_gestion,
 			v_parametros.tipo,
-			v_parametros.num_tramite,
+			--v_parametros.num_tramite,
 			v_parametros.justificacion,
 			v_parametros.id_depto,
 			v_parametros.lugar_entrega,
-			v_parametros.extendida,
-			v_parametros.numero,
+			'no',
+			v_num_sol,--v_parametros.numero,
 			v_parametros.posibles_proveedores,
-			v_parametros.id_proceso_wf,
+			--v_parametros.id_proceso_wf,
 			v_parametros.comite_calificacion,
 			v_parametros.id_categoria_compra,
 			v_parametros.id_funcionario,
-			v_parametros.id_estado_wf,
+			--v_parametros.id_estado_wf,
 			v_parametros.fecha_soli,
 			now(),
 			p_id_usuario,
 			null,
-			null
+			null,
+            v_parametros.id_uo
 							
 			)RETURNING id_solicitud into v_id_solicitud;
 			
@@ -122,29 +166,30 @@ BEGIN
 		begin
 			--Sentencia de la modificacion
 			update adq.tsolicitud set
-			id_solicitud_ext = v_parametros.id_solicitud_ext,
-			presu_revertido = v_parametros.presu_revertido,
-			fecha_apro = v_parametros.fecha_apro,
-			estado = v_parametros.estado,
-			id_funcionario_aprobador = v_parametros.id_funcionario_aprobador,
+			--id_solicitud_ext = v_parametros.id_solicitud_ext,
+			--presu_revertido = v_parametros.presu_revertido,
+			--fecha_apro = v_parametros.fecha_apro,
+			--estado = v_parametros.estado,
+			--id_funcionario_aprobador = v_parametros.id_funcionario_aprobador,
 			id_moneda = v_parametros.id_moneda,
 			id_gestion = v_parametros.id_gestion,
 			tipo = v_parametros.tipo,
-			num_tramite = v_parametros.num_tramite,
+			--num_tramite = v_parametros.num_tramite,
 			justificacion = v_parametros.justificacion,
 			id_depto = v_parametros.id_depto,
 			lugar_entrega = v_parametros.lugar_entrega,
-			extendida = v_parametros.extendida,
-			numero = v_parametros.numero,
+			--extendida = v_parametros.extendida,
+			--numero = v_parametros.numero,
 			posibles_proveedores = v_parametros.posibles_proveedores,
-			id_proceso_wf = v_parametros.id_proceso_wf,
+			--id_proceso_wf = v_parametros.id_proceso_wf,
 			comite_calificacion = v_parametros.comite_calificacion,
 			id_categoria_compra = v_parametros.id_categoria_compra,
 			id_funcionario = v_parametros.id_funcionario,
-			id_estado_wf = v_parametros.id_estado_wf,
+			--id_estado_wf = v_parametros.id_estado_wf,
 			fecha_soli = v_parametros.fecha_soli,
 			fecha_mod = now(),
-			id_usuario_mod = p_id_usuario
+			id_usuario_mod = p_id_usuario,
+            id_uo = v_parametros.id_uo
 			where id_solicitud=v_parametros.id_solicitud;
                
 			--Definicion de la respuesta
@@ -195,7 +240,9 @@ EXCEPTION
 		raise exception '%',v_resp;
 				        
 END;
-$BODY$
-LANGUAGE 'plpgsql' VOLATILE
+$body$
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
 COST 100;
-ALTER FUNCTION "adq"."f_solicitud_ime"(integer, integer, character varying, character varying) OWNER TO postgres;

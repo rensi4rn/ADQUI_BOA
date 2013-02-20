@@ -33,7 +33,7 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 		},
 	       	{
 	       		config:{
-	       			name:'Tipo',
+	       			name:'tipo',
 	       			fieldLabel:'Tipo',
 	       			allowBlank:false,
 	       			emptyText:'Tipo...',
@@ -439,6 +439,12 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},
 		{name:'id_uo', type: 'string'},
+		'desc_funcionario',
+		'desc_funcionario_apro',
+		'desc_uo',
+		'desc_gestion',
+		'desc_moneda',
+		'desc_depto'
 		
 	],
 	sortInfo:{
