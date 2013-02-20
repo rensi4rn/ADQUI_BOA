@@ -1,14 +1,29 @@
+/***********************************I-DEP-GSS-CONTA-48-20/02/2013*****************************************/
 
-   
-/***********************************I-DEP-RAC-ADQ-0-31/12/2012*****************************************/
-ALTER TABLE adq.tsolicitud ADD CONSTRAINT fk_solicitud__id_solicitud FOREIGN KEY(
-    id_solicitud_ext) REFERENCES adq.tsolicitud(
-    id_solicitud);
-    
-    
-ALTER TABLE adq.tplan_pago ADD CONSTRAINT fk_tpllan_pago_id_pla_pago_dev FOREIGN KEY(
-    id_plan_pago_dev) REFERENCES adq.tplan_pago(
-    id_plan_pago);
-    
+--tabla tcuenta
 
-/***********************************F-DEP-RAC-ADQ-0-04/01/2013*****************************************/
+ALTER TABLE conta.tcuenta
+  ADD CONSTRAINT fk_tcuenta__id_empresa FOREIGN KEY (id_empresa)
+    REFERENCES param.tempresa(id_empresa)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+    
+ALTER TABLE conta.tcuenta
+  ADD CONSTRAINT fk_tcuenta__id_cuenta_padre FOREIGN KEY (id_cuenta_padre)
+    REFERENCES conta.tcuenta(id_cuenta)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;    
+
+--tabla tauxiliar
+
+ALTER TABLE conta.tauxiliar
+  ADD CONSTRAINT fk_tauxiliar__id_empresa FOREIGN KEY (id_empresa)
+    REFERENCES param.tempresa(id_empresa)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+
+    
+/***********************************F-DEP-GSS-CONTA-48-20/02/2013*****************************************/
