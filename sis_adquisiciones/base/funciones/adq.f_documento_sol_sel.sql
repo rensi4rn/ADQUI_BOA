@@ -1,7 +1,11 @@
-CREATE OR REPLACE FUNCTION "adq"."f_documento_sol_sel"(	
-				p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
-RETURNS character varying AS
-$BODY$
+CREATE OR REPLACE FUNCTION adq.f_documento_sol_sel (
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
+)
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA:		Adquisiciones
  FUNCION: 		adq.f_documento_sol_sel
@@ -54,10 +58,12 @@ BEGIN
 						docsol.id_usuario_mod,
 						docsol.fecha_mod,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod	
+						usu2.cuenta as usr_mod,
+                        catcomp.nombre AS desc_categoria_compra
 						from adq.tdocumento_sol docsol
 						inner join segu.tusuario usu1 on usu1.id_usuario = docsol.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = docsol.id_usuario_mod
+                        INNER JOIN adq.tcategoria_compra catcomp on catcomp.id_categoria_compra = docsol.id_categoria_compra
 				        where  ';
 			
 			--Definicion de la respuesta
@@ -84,6 +90,7 @@ BEGIN
 					    from adq.tdocumento_sol docsol
 					    inner join segu.tusuario usu1 on usu1.id_usuario = docsol.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = docsol.id_usuario_mod
+                        INNER JOIN adq.tcategoria_compra catcomp on catcomp.id_categoria_compra = docsol.id_categoria_compra
 					    where ';
 			
 			--Definicion de la respuesta		    
@@ -109,7 +116,9 @@ EXCEPTION
 			v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
 			raise exception '%',v_resp;
 END;
-$BODY$
-LANGUAGE 'plpgsql' VOLATILE
+$body$
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
 COST 100;
-ALTER FUNCTION "adq"."f_documento_sol_sel"(integer, integer, character varying, character varying) OWNER TO postgres;

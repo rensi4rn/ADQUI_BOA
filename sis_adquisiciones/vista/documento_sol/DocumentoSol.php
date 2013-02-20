@@ -53,7 +53,7 @@ Phx.vista.DocumentoSol=Ext.extend(Phx.gridInterfaz,{
 				typeAhead: false,
 				forceSelection: false,
 				allowBlank: false,
-				emptyText: 'Equipos...',
+				emptyText: 'Categorias...',
 				store: new Ext.data.JsonStore({
 					url: '../../sis_adquisiciones/control/CategoriaCompra/listarCategoriaCompra',
 					id: 'id_categoria_compra',
@@ -66,13 +66,11 @@ Phx.vista.DocumentoSol=Ext.extend(Phx.gridInterfaz,{
 					fields: ['id_categoria_compra', 'codigo', 'nombre'],
 					// turn on remote sorting
 					remoteSort: true,
-					baseParams: {
-						par_filtro: 'catcomp.codigo#catcomp.nombre'
-					}
+					baseParams: {par_filtro: 'catcomp.codigo#catcomp.nombre'}
 				}),
 				valueField: 'id_categoria_compra',
 				displayField: 'nombre',
-				gdisplayField: 'codigo',
+				gdisplayField: 'desc_categoria_compra',
 				triggerAction: 'all',
 				lazyRender: true,
 				mode: 'remote',
@@ -81,9 +79,9 @@ Phx.vista.DocumentoSol=Ext.extend(Phx.gridInterfaz,{
 				anchor: '80%',
 				minChars: 2,
 				renderer: function(value, p, record) {
-					return String.format('{0}', record.data['codigo']);
+					return String.format('{0}', record.data['desc_categoria_compra']);
 				},
-				tpl: '<tpl for="."><div class="x-combo-list-item"><p>{codigo}</p><p>{nombre}</p> </div></tpl>'
+				tpl: '<tpl for="."><div class="x-combo-list-item"><p>{nombre}</p><p>{codigo}</p> </div></tpl>'
 			},
 			type: 'ComboBox',
 			id_grupo: 0,
@@ -148,7 +146,7 @@ Phx.vista.DocumentoSol=Ext.extend(Phx.gridInterfaz,{
 				gwidth: 100
 			},
 			type:'Checkbox',
-			filters:{pfiltro:'docsol.chequeado',type:'boolean'},
+			filters:{pfiltro:'docsol.chequeado',type:'string'},
 			id_grupo:1,
 			grid:true,
 			form:true
@@ -244,7 +242,7 @@ Phx.vista.DocumentoSol=Ext.extend(Phx.gridInterfaz,{
 		{name:'nombre_doc', type: 'string'},
 		{name:'nombre_arch_doc', type: 'string'},
 		{name:'nombre_tipo_doc', type: 'string'},
-		{name:'chequeado', type: 'boolean'},
+		{name:'chequeado', type: 'string'},
 		{name:'estado_reg', type: 'string'},
 		{name:'id_usuario_reg', type: 'numeric'},
 		{name:'fecha_reg', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
@@ -252,6 +250,7 @@ Phx.vista.DocumentoSol=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},
+		{name:'desc_categoria_compra', type: 'string'}
 		
 	],
 	sortInfo:{

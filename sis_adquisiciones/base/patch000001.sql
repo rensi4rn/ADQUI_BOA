@@ -16,7 +16,7 @@ CREATE TABLE adq.tdocumento_sol(
     nombre_tipo_doc varchar(255),
     nombre_doc varchar(255),
     nombre_arch_doc varchar(150),
-    chequeado boolean,
+    chequeado varchar(5),
     PRIMARY KEY (id_documento_sol))INHERITS (pxp.tbase);   
 
 CREATE TABLE adq.tsolicitud (

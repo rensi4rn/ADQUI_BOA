@@ -26,7 +26,7 @@ class MODDocumentoSol extends MODbase{
 		$this->captura('nombre_doc','varchar');
 		$this->captura('nombre_arch_doc','varchar');
 		$this->captura('nombre_tipo_doc','varchar');
-		$this->captura('chequeado','bool');
+		$this->captura('chequeado','varchar');
 		$this->captura('estado_reg','varchar');
 		$this->captura('id_usuario_reg','int4');
 		$this->captura('fecha_reg','timestamp');
@@ -34,9 +34,10 @@ class MODDocumentoSol extends MODbase{
 		$this->captura('fecha_mod','timestamp');
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
+		$this->captura('desc_categoria_compra','varchar');
 		
 		//Ejecuta la instruccion
-		$this->armarConsulta();
+		$this->armarConsulta();		
 		$this->ejecutarConsulta();
 		
 		//Devuelve la respuesta
@@ -59,7 +60,7 @@ class MODDocumentoSol extends MODbase{
 		$this->setParametro('estado_reg','estado_reg','varchar');
 
 		//Ejecuta la instruccion
-		$this->armarConsulta();
+		$this->armarConsulta();		
 		$this->ejecutarConsulta();
 
 		//Devuelve la respuesta
@@ -83,7 +84,7 @@ class MODDocumentoSol extends MODbase{
 		$this->setParametro('estado_reg','estado_reg','varchar');
 
 		//Ejecuta la instruccion
-		$this->armarConsulta();
+		$this->armarConsulta();		
 		$this->ejecutarConsulta();
 
 		//Devuelve la respuesta

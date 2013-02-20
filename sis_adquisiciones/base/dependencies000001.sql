@@ -24,6 +24,7 @@ ALTER TABLE adq.tsolicitud ADD CONSTRAINT fk_solicitud__id_gestion FOREIGN KEY (
 ALTER TABLE adq.tsolicitud ADD CONSTRAINT fk_solicitud__id_categoria_compra FOREIGN KEY (id_categoria_compra) REFERENCES adq.tcategoria_compra (id_categoria_compra);
 ALTER TABLE adq.tsolicitud ADD CONSTRAINT fk_solicitud__id_moneda FOREIGN KEY (id_moneda) REFERENCES param.tmoneda (id_moneda);
 ALTER TABLE adq.tsolicitud ADD CONSTRAINT fk_solicitud__id_estado FOREIGN KEY (id_estado) REFERENCES wf.testado (id_estado);
+ALTER TABLE adq.tsolicitud ADD CONSTRAINT fk_solicitud__id_solicitud_ext FOREIGN KEY (id_solicitud_ext) REFERENCES adq.tsolicitud (id_solicitud);
 
 
 /***********************************F-DEP-FRH-ADQ-0-15/02/2013*****************************************/
