@@ -10,14 +10,13 @@
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-Phx.vista.Cuenta=Ext.extend(Phx.gridInterfaz,{
+Phx.vista.Cuenta=Ext.extend(Phx.arbInterfaz,{
 
 	constructor:function(config){
 		this.maestro=config.maestro;
     	//llama al constructor de la clase padre
 		Phx.vista.Cuenta.superclass.constructor.call(this,config);
 		this.init();
-		this.load({params:{start:0, limit:50}})
 	},
 			
 	Atributos:[
@@ -624,8 +623,13 @@ Phx.vista.Cuenta=Ext.extend(Phx.gridInterfaz,{
 	title:'Cuenta',
 	ActSave:'../../sis_contabilidad/control/Cuenta/insertarCuenta',
 	ActDel:'../../sis_contabilidad/control/Cuenta/eliminarCuenta',
-	ActList:'../../sis_contabilidad/control/Cuenta/listarCuenta',
+	ActList:'../../sis_contabilidad/control/Cuenta/listarCuentaArb',
 	id_store:'id_cuenta',
+	
+	textRoot:'Plan de Cuentas',
+ id_nodo:'id_cuenta',
+ id_nodo_p:'id_cuenta_padre',
+	
 	fields: [
 		{name:'id_cuenta', type: 'numeric'},
 		{name:'estado_reg', type: 'string'},
@@ -637,7 +641,6 @@ Phx.vista.Cuenta=Ext.extend(Phx.gridInterfaz,{
 		{name:'tipo_cuenta', type: 'string'},
 		{name:'id_empresa', type: 'numeric'},
 		{name:'id_cuenta_padre', type: 'numeric'},
-		{name:'nombre_cuenta_padre', type: 'string'},
 		{name:'descripcion', type: 'string'},
 		{name:'id_auxiliar_dif', type: 'numeric'},
 		{name:'tipo_plantilla', type: 'string'},
@@ -671,9 +674,49 @@ Phx.vista.Cuenta=Ext.extend(Phx.gridInterfaz,{
 		direction: 'ASC'
 	},
 	bdel:true,
-	bsave:true
+	bsave:true,
+	rootVisible:true,
+	
+	onButtonNew:function(){
+        var nodo = this.sm.getSelectedNode();           
+        Phx.vista.Cuenta.superclass.onButtonNew.call(this);
+    },
+    
+    preparaMenu:function(n){
+        if(n.attributes.tipo_nodo == 'hijo' || n.attributes.tipo_nodo == 'raiz' || n.attributes.id == 'id'){
+            this.tbar.items.get('b-new-'+this.idContenedor).enable()
+        }
+        else {
+            this.tbar.items.get('b-new-'+this.idContenedor).disable()
+        }
+        // llamada funcion clase padre
+            Phx.vista.Cuenta.superclass.preparaMenu.call(this,n);
+    },
+    
+    EnableSelect:function(n){
+        var nivel = n.getDepth();
+        var direc = this.getNombrePadre(n)
+        if(direc){            
+            Phx.vista.Cuenta.superclass.EnableSelect.call(this,n)
+        }        
+    },
+    
+    getNombrePadre:function(n){
+        var direc
+        var padre = n.parentNode;
+        if(padre){
+            if(padre.attributes.id!='id'){
+               direc = n.attributes.nombre +' - '+ this.getNombrePadre(padre)
+               return direc;
+            }else{
+                
+                return n.attributes.nombre;
+            }
+        }
+        else{
+                return undefined;
+        }       
+     }
 	}
 )
 </script>
-		
-		

@@ -30,7 +30,6 @@ class MODCuenta extends MODbase{
 		$this->captura('tipo_cuenta','varchar');
 		$this->captura('id_empresa','int4');
 		$this->captura('id_cuenta_padre','int4');
-		$this->captura('nombre_cuenta_padre','varchar');
 		$this->captura('descripcion','varchar');
 		$this->captura('id_auxiliar_dif','int4');
 		$this->captura('tipo_plantilla','varchar');
@@ -65,6 +64,31 @@ class MODCuenta extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+ function listarCuentaArb(){
+    //Definicion de variables para ejecucion del procedimientp
+    $this->procedimiento='conta.f_cuenta_sel';
+    $this-> setCount(false);
+    $this->transaccion='CONTA_CTA_ARB_SEL';
+    $this->tipo_procedimiento='SEL';//tipo de transaccion
+    
+    $id_padre = $this->objParam->getParametro('id_padre');
+    
+    $this->setParametro('id_padre','id_padre','varchar');       
+            
+    //Definicion de la lista del resultado del query
+    $this->captura('id_cuenta','int4');
+    $this->captura('id_cuenta_padre','int4');
+    $this->captura('nombre_cuenta','varchar');
+    $this->captura('descripcion','varchar');
+    $this->captura('tipo_nodo','varchar');
+    
+    //Ejecuta la instruccion
+    $this->armarConsulta();
+    $this->ejecutarConsulta();
+    
+    return $this->respuesta;       
+ }
 			
 	function insertarCuenta(){
 		//Definicion de variables para ejecucion del procedimiento
