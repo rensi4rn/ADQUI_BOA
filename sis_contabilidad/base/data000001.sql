@@ -23,16 +23,34 @@ Para  definir la la metadata, menus, roles, etc
 INSERT INTO segu.tsubsistema ( codigo, nombre, prefijo, estado_reg, nombre_carpeta, id_subsis_orig)
 VALUES ('CONTA', 'Sistema de Contabilidad', 'CONTA', 'activo', 'contabilidad', NULL);
 
-----------------------------------
---COPY LINES TO data.sql FILE  
----------------------------------
+-------------------------------------
+--DEFINICION DE INTERFACES
+-----------------------------------
 
 select pxp.f_insert_tgui ('SISTEMA DE CONTABILIDAD', '', 'CONTA', 'si', 1, '', 1, '', '', 'CONTA');
+select pxp.f_insert_tgui ('Cuenta', 'Cuenta', 'CTA', 'si', 1, 'sis_contabilidad/vista/cuenta/Cuenta.php', 2, '', 'Cuenta', 'CONTA');
 
-----------------------------------
---COPY LINES TO dependencies.sql FILE 
----------------------------------
 
 select pxp.f_insert_testructura_gui ('CONTA', 'SISTEMA');
-   
+select pxp.f_insert_testructura_gui ('CTA', 'CONTA');
+ 
+ 
+
+----------------------------------------------
+--  DEF DE FUNCIONES
+--------------------------------------------------
+
+select pxp.f_insert_tfuncion ('conta.f_cuenta_ime', 'Funcion para tabla     ', 'CONTA');
+select pxp.f_insert_tfuncion ('conta.f_cuenta_sel', 'Funcion para tabla     ', 'CONTA');
+
+---------------------------------
+--DEF DE PROCEDIMIETOS
+---------------------------------
+
+select pxp.f_insert_tprocedimiento ('CONTA_CTA_INS', 'Insercion de registros', 'si', '', '', 'conta.f_cuenta_ime');
+select pxp.f_insert_tprocedimiento ('CONTA_CTA_MOD', 'Modificacion de registros', 'si', '', '', 'conta.f_cuenta_ime');
+select pxp.f_insert_tprocedimiento ('CONTA_CTA_ELI', 'Eliminacion de registros', 'si', '', '', 'conta.f_cuenta_ime');
+select pxp.f_insert_tprocedimiento ('CONTA_CTA_SEL', 'Consulta de datos', 'si', '', '', 'conta.f_cuenta_sel');
+select pxp.f_insert_tprocedimiento ('CONTA_CTA_CONT', 'Conteo de registros', 'si', '', '', 'conta.f_cuenta_sel');
+
 /***********************************F-DAT-GSS-CONTA-48-20/02/2013*****************************************/
