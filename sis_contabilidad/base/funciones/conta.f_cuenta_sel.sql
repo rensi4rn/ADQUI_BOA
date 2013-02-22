@@ -27,6 +27,7 @@ DECLARE
 	v_parametros  		record;
 	v_nombre_funcion   	text;
 	v_resp				varchar;
+    v_where 			varchar;
 			    
 BEGIN
 
@@ -55,7 +56,6 @@ BEGIN
 						cta.tipo_cuenta,
 						cta.id_empresa,
 						cta.id_cuenta_padre,
-                        ctap.nombre_cuenta as nombre_cuenta_padre,
 						cta.descripcion,
 						cta.id_auxiliar_dif,
 						cta.tipo_plantilla,
@@ -85,8 +85,7 @@ BEGIN
 						from conta.tcuenta cta
 						inner join segu.tusuario usu1 on usu1.id_usuario = cta.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = cta.id_usuario_mod
-						left join conta.tcuenta ctap on ctap.id_cuenta=cta.id_cuenta_padre
-				        where  ';
+						where  ';
 			
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -96,6 +95,45 @@ BEGIN
 			return v_consulta;
 						
 		end;
+    /*********************************   
+     #TRANSACCION:  'CONTA_CTA_ARB_SEL'
+     #DESCRIPCION:    Consulta de datos
+     #AUTOR:            Gonzalo Sarmiento
+     #FECHA:            21-02-2013
+    ***********************************/
+
+    elseif(p_transaccion='CONTA_CTA_ARB_SEL')then
+                    
+        begin       
+              if(v_parametros.id_padre = '%') then
+                v_where := ' cta.id_cuenta_padre is NULL';   
+                     
+              else
+                v_where := ' cta.id_cuenta_padre = '||v_parametros.id_padre;
+              end if;
+       
+       
+            --Sentencia de la consulta
+            v_consulta:='select
+                        cta.id_cuenta,
+                        cta.id_cuenta_padre,
+                        cta.nombre_cuenta,
+                        cta.descripcion,
+                         case
+                          when (cta.id_cuenta_padre is null )then
+                               ''raiz''::varchar
+                          ELSE
+                              ''hijo''::varchar
+                          END as tipo_nodo
+                        from conta.tcuenta cta
+                        where  '||v_where|| ' 
+                        ORDER BY cta.id_cuenta';
+            raise notice '%',v_consulta;
+           
+            --Devuelve la respuesta
+            return v_consulta;
+                       
+        end;     
 
 	/*********************************    
  	#TRANSACCION:  'CONTA_CTA_CONT'

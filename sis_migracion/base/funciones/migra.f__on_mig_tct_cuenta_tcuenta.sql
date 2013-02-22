@@ -1,8 +1,6 @@
 CREATE OR REPLACE FUNCTION migra.f__on_trig_tct_cuenta_tcuenta (
   v_operacion varchar,
   p_id_cuenta integer,
-  p_id_cuenta_padre integer,
-  p_id_empresa integer,
   p_cuenta_flujo_sigma varchar,
   p_cuenta_sigma varchar,
   p_desc_cuenta varchar,
@@ -14,7 +12,9 @@ CREATE OR REPLACE FUNCTION migra.f__on_trig_tct_cuenta_tcuenta (
   p_id_auxliar_actualizacion integer,
   p_id_cuenta_actualizacion integer,
   p_id_cuenta_dif integer,
+  p_id_cuenta_padre integer,
   p_id_cuenta_sigma integer,
+  p_id_empresa integer,
   p_id_gestion integer,
   p_id_moneda integer,
   p_id_parametro integer,
@@ -39,7 +39,7 @@ RETURNS text AS
 $body$
 /*
 						Function:  Para migracion de la tabla param.tgestion
-						Fecha Creacion:  February 20, 2013, 4:32 pm
+						Fecha Creacion:  February 21, 2013, 7:18 pm
 						Autor: autogenerado (ADMINISTRADOR DEL SISTEMA )
 						
 						*/
@@ -47,14 +47,11 @@ $body$
 						DECLARE
 						
 						BEGIN
-						
 						    if(v_operacion = 'INSERT') THEN
 						
 						          INSERT INTO 
 						            CONTA.tcuenta (
 						id_cuenta,
-						id_cuenta_padre,
-						id_empresa,
 						cuenta_flujo_sigma,
 						cuenta_sigma,
 						desc_cuenta,
@@ -66,7 +63,9 @@ $body$
 						id_auxliar_actualizacion,
 						id_cuenta_actualizacion,
 						id_cuenta_dif,
+						id_cuenta_padre,
 						id_cuenta_sigma,
+						id_empresa,
 						id_gestion,
 						id_moneda,
 						id_parametro,
@@ -88,8 +87,6 @@ $body$
 						vigente)
 				VALUES (
 						p_id_cuenta,
-						p_id_cuenta_padre,
-						p_id_empresa,
 						p_cuenta_flujo_sigma,
 						p_cuenta_sigma,
 						p_desc_cuenta,
@@ -101,7 +98,9 @@ $body$
 						p_id_auxliar_actualizacion,
 						p_id_cuenta_actualizacion,
 						p_id_cuenta_dif,
+						p_id_cuenta_padre,
 						p_id_cuenta_sigma,
+						p_id_empresa,
 						p_id_gestion,
 						p_id_moneda,
 						p_id_parametro,
@@ -126,9 +125,7 @@ $body$
 							    ELSEIF  v_operacion = 'UPDATE' THEN
 						               UPDATE 
 						                  CONTA.tcuenta  
-						                SET						 id_cuenta_padre=p_id_cuenta_padre
-						 ,id_empresa=p_id_empresa
-						 ,cuenta_flujo_sigma=p_cuenta_flujo_sigma
+						                SET						 cuenta_flujo_sigma=p_cuenta_flujo_sigma
 						 ,cuenta_sigma=p_cuenta_sigma
 						 ,desc_cuenta=p_desc_cuenta
 						 ,descripcion=p_descripcion
@@ -139,7 +136,9 @@ $body$
 						 ,id_auxliar_actualizacion=p_id_auxliar_actualizacion
 						 ,id_cuenta_actualizacion=p_id_cuenta_actualizacion
 						 ,id_cuenta_dif=p_id_cuenta_dif
+						 ,id_cuenta_padre=p_id_cuenta_padre
 						 ,id_cuenta_sigma=p_id_cuenta_sigma
+						 ,id_empresa=p_id_empresa
 						 ,id_gestion=p_id_gestion
 						 ,id_moneda=p_id_moneda
 						 ,id_parametro=p_id_parametro

@@ -34,7 +34,7 @@ CREATE TABLE conta.tcuenta (
   sw_sigma VARCHAR(2), 
   id_cuenta_actualizacion INTEGER, 
   id_auxliar_actualizacion INTEGER, 
-  sw_sistema_actualizacion VARCHAR(2), 
+  sw_sistema_actualizacion VARCHAR(12), 
   id_cuenta_dif INTEGER, 
   id_auxiliar_dif INTEGER, 
   id_cuenta_sigma INTEGER, 
