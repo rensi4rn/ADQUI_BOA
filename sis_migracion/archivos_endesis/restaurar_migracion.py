@@ -186,3 +186,21 @@ for f in funciones:
             child = pexpect.spawn(command)
             child.expect(message)
             child.sendline(password)
+#crear funciones de unidad organizacional
+funciones_dir = url + '/funciones_de_migracion/tkp_unidad_organizacional_tuo/'
+funciones = os.listdir( funciones_dir )
+for f in funciones:
+    if f.endswith('.sql'):
+            command = 'psql -q -U ' + cuenta + ' -h ' + ip + ' -d ' + nameDb + ' -f ' + funciones_dir + f
+            child = pexpect.spawn(command)
+            child.expect(message)
+            child.sendline(password)
+#crear funciones de estructura organizacional
+funciones_dir = url + '/funciones_de_migracion/tkp_estructura_organizacional_testructura_uo/'
+funciones = os.listdir( funciones_dir )
+for f in funciones:
+    if f.endswith('.sql'):
+            command = 'psql -q -U ' + cuenta + ' -h ' + ip + ' -d ' + nameDb + ' -f ' + funciones_dir + f
+            child = pexpect.spawn(command)
+            child.expect(message)
+            child.sendline(password)
