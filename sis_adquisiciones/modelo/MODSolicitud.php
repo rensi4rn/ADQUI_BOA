@@ -50,12 +50,18 @@ class MODSolicitud extends MODbase{
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
 		
+		$this->captura('id_uo','integer');
+		
 		$this->captura('desc_funcionario','text');
 		$this->captura('desc_funcionario_apro','text');
-		$this->captura('desc_uo','varchar');
+		$this->captura('desc_uo','text');
 		$this->captura('desc_gestion','integer');
 		$this->captura('desc_moneda','varchar');
 		$this->captura('desc_depto','varchar');
+		$this->captura('desc_proceso_macro','varchar');
+		$this->captura('desc_categoria_compra','varchar');
+		$this->captura('id_proceso_macro','integer');
+		
 		
 		
 		
@@ -99,6 +105,7 @@ class MODSolicitud extends MODbase{
 		$this->setParametro('fecha_soli','fecha_soli','date');
 		
 		$this->setParametro('id_uo','id_uo','int4');
+		$this->setParametro('id_proceso_macro','id_proceso_macro','int4');
 		
 
 		//Ejecuta la instruccion
@@ -139,6 +146,10 @@ class MODSolicitud extends MODbase{
 		$this->setParametro('id_funcionario','id_funcionario','int4');
 		$this->setParametro('id_estado_wf','id_estado_wf','int4');
 		$this->setParametro('fecha_soli','fecha_soli','date');
+		
+		$this->setParametro('id_uo','id_uo','int4');
+		$this->setParametro('id_proceso_macro','id_proceso_macro','int4');
+		
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

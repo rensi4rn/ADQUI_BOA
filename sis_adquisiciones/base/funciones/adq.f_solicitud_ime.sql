@@ -35,6 +35,11 @@ DECLARE
     
     v_num_sol   varchar;
     v_id_periodo integer;
+    v_num_tramite varchar;
+    v_id_proceso_wf integer;
+    v_id_estado_wf integer;
+    v_nombre_estado varchar;
+    v_codigo_tipo_proceso varchar;
 			    
 BEGIN
 
@@ -84,64 +89,97 @@ BEGIN
          
          END IF;
         
+        -- obtener el codigo del tipo_proceso
+       
+        select   tp.codigo 
+            into v_codigo_tipo_proceso
+        from  wf.ttipo_proceso tp 
+        where   tp.id_proceso_macro = v_parametros.id_proceso_macro
+                and tp.estado_reg = 'activo' and tp.inicio = 'si';
+            
+         
         
-        	--Sentencia de la insercion
+        -- inciiar el tramite en el sistema de WF
+        
+      -- raise exception '%- % -% -% -%',p_id_usuario,v_parametros.id_gestion,v_codigo_tipo_proceso,v_parametros.id_funcionario, v_parametros.fecha_soli;
+        SELECT 
+             ps_num_tramite ,
+             ps_id_proceso_wf ,
+             ps_id_estado_wf ,
+             ps_nombre_estado 
+          into
+             v_num_tramite,
+             v_id_proceso_wf,
+             v_id_estado_wf,
+             v_nombre_estado   
+              
+        FROM wf.f_inicia_tramite(
+             p_id_usuario, 
+             v_parametros.id_gestion, 
+             v_codigo_tipo_proceso, 
+             v_parametros.id_funcionario, 
+             v_parametros.fecha_soli);
+        
+        
+        
         	insert into adq.tsolicitud(
 			estado_reg,
 			--id_solicitud_ext,
 			--presu_revertido,
 			--fecha_apro,
-			--estado,
+			estado,
 		--	id_funcionario_aprobador,
 			id_moneda,
 			id_gestion,
 			tipo,
-			--num_tramite,
+			num_tramite,
 			justificacion,
 			id_depto,
 			lugar_entrega,
 			extendida,
 			numero,
 			posibles_proveedores,
-			--id_proceso_wf,
+			id_proceso_wf,
 			comite_calificacion,
 			id_categoria_compra,
 			id_funcionario,
-			--id_estado_wf,
+			id_estado_wf,
 			fecha_soli,
 			fecha_reg,
 			id_usuario_reg,
 			fecha_mod,
 			id_usuario_mod,
-            id_uo
+            id_uo,
+            id_proceso_macro
           	) values(
 			'activo',
 			--v_parametros.id_solicitud_ext,
 			--v_parametros.presu_revertido,
 			--v_parametros.fecha_apro,
-			--v_parametros.estado,
+			v_nombre_estado,
 			--v_parametros.id_funcionario_aprobador,
 			v_parametros.id_moneda,
 			v_parametros.id_gestion,
 			v_parametros.tipo,
-			--v_parametros.num_tramite,
+			v_num_tramite,
 			v_parametros.justificacion,
 			v_parametros.id_depto,
 			v_parametros.lugar_entrega,
 			'no',
 			v_num_sol,--v_parametros.numero,
 			v_parametros.posibles_proveedores,
-			--v_parametros.id_proceso_wf,
+			v_id_proceso_wf,
 			v_parametros.comite_calificacion,
 			v_parametros.id_categoria_compra,
 			v_parametros.id_funcionario,
-			--v_parametros.id_estado_wf,
+			v_id_estado_wf,
 			v_parametros.fecha_soli,
 			now(),
 			p_id_usuario,
 			null,
 			null,
-            v_parametros.id_uo
+            v_parametros.id_uo,
+            v_parametros.id_proceso_macro
 							
 			)RETURNING id_solicitud into v_id_solicitud;
 			
@@ -189,7 +227,8 @@ BEGIN
 			fecha_soli = v_parametros.fecha_soli,
 			fecha_mod = now(),
 			id_usuario_mod = p_id_usuario,
-            id_uo = v_parametros.id_uo
+            id_uo = v_parametros.id_uo,
+            id_proceso_macro=id_proceso_macro
 			where id_solicitud=v_parametros.id_solicitud;
                
 			--Definicion de la respuesta

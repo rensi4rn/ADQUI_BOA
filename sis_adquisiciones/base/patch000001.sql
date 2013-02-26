@@ -27,6 +27,7 @@ CREATE TABLE adq.tdocumento_sol(
 	  id_solicitud_ext INTEGER, 
 	  id_categoria_compra INTEGER NOT NULL, 
 	  id_moneda INTEGER NOT NULL, 
+	  id_proceso_macro INTEGER NOT NULL, 
 	  id_gestion INTEGER NOT NULL, 
 	  id_funcionario_aprobador INTEGER, 
 	  id_depto INTEGER NOT NULL, 

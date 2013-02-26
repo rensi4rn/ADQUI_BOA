@@ -1,7 +1,13 @@
-CREATE OR REPLACE FUNCTION "adq"."f_solicitud_sel"(	
-				p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
-RETURNS character varying AS
-$BODY$
+--------------- SQL ---------------
+
+CREATE OR REPLACE FUNCTION adq.f_solicitud_sel (
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
+)
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA:		Adquisiciones
  FUNCION: 		adq.f_solicitud_sel
@@ -69,9 +75,31 @@ BEGIN
 						sol.fecha_mod,
 						sol.id_usuario_mod,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod	
+						usu2.cuenta as usr_mod,
+                        sol.id_uo,	
+						fun.desc_funcionario1 as desc_funcionario,
+                        funa.desc_funcionario1 as desc_funcionario_apro,
+                        uo.codigo||''-''||uo.nombre_unidad as desc_uo,
+                        ges.gestion as desc_gestion,
+                        mon.codigo as desc_moneda,
+						dep.codigo as desc_depto,
+                        pm.nombre as desc_proceso_macro,
+                        cat.nombre as desc_categoria_compra,
+                        sol.id_proceso_macro
+                        	
 						from adq.tsolicitud sol
 						inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
+                        
+                        inner join orga.vfuncionario fun on fun.id_funcionario = sol.id_funcionario
+                        inner join orga.tuo uo on uo.id_uo = sol.id_uo
+                        inner join param.tmoneda mon on mon.id_moneda = sol.id_moneda
+                        inner join param.tgestion ges on ges.id_gestion = sol.id_gestion
+                        inner join param.tdepto dep on dep.id_depto = sol.id_depto 
+                        inner join wf.tproceso_macro pm on pm.id_proceso_macro = sol.id_proceso_macro
+                        inner join adq.tcategoria_compra cat on cat.id_categoria_compra = sol.id_categoria_compra
+                        
+                        left join orga.vfuncionario funa on funa.id_funcionario = sol.id_funcionario_aprobador
+                        
 						left join segu.tusuario usu2 on usu2.id_usuario = sol.id_usuario_mod
 				        where  ';
 			
@@ -96,10 +124,21 @@ BEGIN
 		begin
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_solicitud)
-					    from adq.tsolicitud sol
-					    inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
+			            from adq.tsolicitud sol
+						inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
+                        
+                        inner join orga.vfuncionario fun on fun.id_funcionario = sol.id_funcionario
+                        inner join orga.tuo uo on uo.id_uo = sol.id_uo
+                        inner join param.tmoneda mon on mon.id_moneda = sol.id_moneda
+                        inner join param.tgestion ges on ges.id_gestion = sol.id_gestion
+                        inner join param.tdepto dep on dep.id_depto = sol.id_depto 
+                        inner join wf.tproceso_macro pm on pm.id_proceso_macro = sol.id_proceso_macro
+                        inner join adq.tcategoria_compra cat on cat.id_categoria_compra = sol.id_categoria_compra
+                        
+                        left join orga.vfuncionario funa on funa.id_funcionario = sol.id_funcionario_aprobador
+                        
 						left join segu.tusuario usu2 on usu2.id_usuario = sol.id_usuario_mod
-					    where ';
+				        where ';
 			
 			--Definicion de la respuesta		    
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -124,7 +163,9 @@ EXCEPTION
 			v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
 			raise exception '%',v_resp;
 END;
-$BODY$
-LANGUAGE 'plpgsql' VOLATILE
+$body$
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
 COST 100;
-ALTER FUNCTION "adq"."f_solicitud_sel"(integer, integer, character varying, character varying) OWNER TO postgres;

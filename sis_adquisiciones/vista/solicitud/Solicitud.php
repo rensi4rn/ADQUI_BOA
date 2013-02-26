@@ -30,6 +30,20 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 			},
 			type:'Field',
 			form:true 
+		},{
+			config:{
+				name: 'estado',
+				fieldLabel: 'estado',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:50
+			},
+			type:'TextField',
+			filters:{pfiltro:'sol.estado',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:false
 		},
 	       	{
 	       		config:{
@@ -42,6 +56,7 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 	       		    lazyRender:true,
 	       		    mode: 'local',
 	       		    valueField: 'estilo',
+	       		    gwidth: 100,
 	       		    store:['Bien','Servicio']
 	       		},
 	       		type:'ComboBox',
@@ -52,7 +67,55 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 	       		 	},
 	       		grid:true,
 	       		form:true
-	       	},		
+	       	},
+	     
+		{
+			config: {
+				name: 'id_proceso_macro',
+				fieldLabel: 'Proceso',
+				typeAhead: false,
+				forceSelection: false,
+				allowBlank: false,
+				emptyText: 'Lista de Procesos...',
+				store: new Ext.data.JsonStore({
+					url: '../../sis_workflow/control/ProcesoMacro/listarProcesoMacro',
+					id: 'id_proceso_macro',
+					root: 'datos',
+					sortInfo: {
+						field: 'nombre',
+						direction: 'ASC'
+					},
+					totalProperty: 'total',
+					fields: ['id_proceso_macro', 'nombre', 'codigo'],
+					// turn on remote sorting
+					remoteSort: true,
+					baseParams: {par_filtro: 'promac.nombre#promac.codigo',codigo_subsistema:'ADQ'}
+				}),
+				valueField: 'id_proceso_macro',
+				displayField: 'nombre',
+				gdisplayField: 'desc_proceso_macro',
+				triggerAction: 'all',
+				lazyRender: true,
+				mode: 'remote',
+				pageSize: 20,
+				queryDelay: 200,
+				listWidth:280,
+				minChars: 2,
+				gwidth: 170,
+				renderer: function(value, p, record) {
+					return String.format('{0}', record.data['desc_proceso_macro']);
+				},
+				tpl: '<tpl for="."><div class="x-combo-list-item"><p>{nombre}</p>Codigo: <strong>{codigo}</strong> </div></tpl>'
+			},
+			type: 'ComboBox',
+			id_grupo: 0,
+			filters: {
+				pfiltro: 'pm.nombre',
+				type: 'string'
+			},
+			grid: true,
+			form: true
+		},		
 		   {
 			config:{
 				name: 'id_gestion',
@@ -61,8 +124,8 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 				fieldLabel: 'Gestion',
 				gdisplayField:'desc_gestion',//mapea al store del grid
 				allowBlank:false,
-				anchor: '80%',
-				gwidth: 200,
+				
+				gwidth: 100,
 				renderer:function (value, p, record){return String.format('{0}', record.data['desc_gestion']);}
 			},
 			type:'ComboRec',
@@ -79,7 +142,7 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 	   				fieldLabel: 'Depto',
 	   				gdisplayField:'desc_depto',//dibuja el campo extra de la consulta al hacer un inner join con orra tabla
 	   				width:250,
-   			        gwidth:200,
+   			        gwidth:180,
 	   				baseParams:{estado:'activo',codigo_subsistema:'ADQ'},//parametros adicionales que se le pasan al store
 	      			renderer:function (value, p, record){return String.format('{0}', record.data['desc_depto']);}
    			},
@@ -96,7 +159,7 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 				fieldLabel: 'numero',
 				allowBlank: true,
 				anchor: '80%',
-				gwidth: 100,
+				gwidth: 150,
 				maxLength:50
 			},
 			type:'TextField',
@@ -266,19 +329,51 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 			form:true
 		},
 		{
-			config:{
+			config: {
 				name: 'id_categoria_compra',
 				fieldLabel: 'Categoria de Compra',
+				typeAhead: false,
+				forceSelection: false,
 				allowBlank: false,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:4
+				emptyText: 'Categorias...',
+				store: new Ext.data.JsonStore({
+					url: '../../sis_adquisiciones/control/CategoriaCompra/listarCategoriaCompra',
+					id: 'id_categoria_compra',
+					root: 'datos',
+					sortInfo: {
+						field: 'nombre',
+						direction: 'ASC'
+					},
+					totalProperty: 'total',
+					fields: ['id_categoria_compra', 'nombre', 'codigo'],
+					// turn on remote sorting
+					remoteSort: true,
+					baseParams: {par_filtro: 'catcomp.nombre#catcomp.codigo',codigo_subsistema:'ADQ'}
+				}),
+				valueField: 'id_categoria_compra',
+				displayField: 'nombre',
+				gdisplayField: 'desc_categoria_compra',
+				triggerAction: 'all',
+				lazyRender: true,
+				mode: 'remote',
+				pageSize: 20,
+				queryDelay: 200,
+				listWidth:280,
+				minChars: 2,
+				gwidth: 170,
+				renderer: function(value, p, record) {
+					return String.format('{0}', record.data['desc_categoria_compra']);
+				},
+				tpl: '<tpl for="."><div class="x-combo-list-item"><p>{nombre}</p>Codigo: <strong>{codigo}</strong> </div></tpl>'
 			},
-			type:'NumberField',
-			filters:{pfiltro:'sol.id_categoria_compra',type:'numeric'},
-			id_grupo:1,
-			grid:true,
-			form:true
+			type: 'ComboBox',
+			id_grupo: 0,
+			filters: {
+				pfiltro: 'cat.nombre',
+				type: 'string'
+			},
+			grid: true,
+			form: true
 		},
 		{
 			config:{
@@ -286,7 +381,7 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 				fieldLabel: 'Tramite',
 				allowBlank: true,
 				anchor: '80%',
-				gwidth: 100,
+				gwidth: 150,
 				maxLength:200
 			},
 			type:'TextField',
@@ -306,20 +401,6 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 			},
 			type:'TextField',
 			filters:{pfiltro:'sol.extendida',type:'string'},
-			id_grupo:1,
-			grid:true,
-			form:false
-		},{
-			config:{
-				name: 'estado',
-				fieldLabel: 'estado',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:50
-			},
-			type:'TextField',
-			filters:{pfiltro:'sol.estado',type:'string'},
 			id_grupo:1,
 			grid:true,
 			form:false
@@ -444,7 +525,10 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 		'desc_uo',
 		'desc_gestion',
 		'desc_moneda',
-		'desc_depto'
+		'desc_depto',
+		'desc_proceso_macro',
+		'desc_categoria_compra',
+		'id_proceso_macro'
 		
 	],
 	sortInfo:{

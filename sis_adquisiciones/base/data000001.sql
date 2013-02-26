@@ -53,3 +53,28 @@ select pxp.f_insert_tfuncion ('adq.f_documento_sol_ime', 'Funcion para tabla    
 select pxp.f_insert_tfuncion ('adq.f_documento_sol_sel', 'Funcion para tabla     ', 'ADQ');
 
 /***********************************F-DAT-FRH-ADQ-0-06/02/2013*****************************************/
+
+
+
+/***********************************I-DAT-RAC-ADQ-0-25/02/2013*****************************************/
+--inserta documentos de adquisiciones
+
+SELECT * FROM param.f_inserta_documento('ADQ', 'SOLB', 'Solicitud de Compra de Bienes', 'periodo', NULL, 'depto', NULL);
+SELECT * FROM param.f_inserta_documento('ADQ', 'SOLS', 'Solicitud de Compra de Servicios', 'periodo', NULL, 'depto', NULL);
+
+--INSERTAR CATEGORIAS DE COMPRA
+
+INSERT INTO adq.tcategoria_compra ("id_usuario_reg", "id_usuario_mod", "fecha_reg", "fecha_mod", "estado_reg", "codigo", "nombre", "min", "max", "obs")
+VALUES (1, NULL, E'2013-02-25 09:22:56.914', NULL, E'activo', E'CLOC', E'Compra Local', '0', NULL, E'Para todas las compras Locales');
+
+INSERT INTO adq.tcategoria_compra ("id_usuario_reg", "id_usuario_mod", "fecha_reg", "fecha_mod", "estado_reg", "codigo", "nombre", "min", "max", "obs")
+VALUES (1, NULL, E'2013-02-25 09:23:20.583', NULL, E'activo', E'CINT', E'Compras Internacionales', '0', NULL, E'Para todas las compras Internacionales');
+
+INSERT INTO adq.tcategoria_compra ("id_usuario_reg", "id_usuario_mod", "fecha_reg", "fecha_mod", "estado_reg", "codigo", "nombre", "min", "max", "obs")
+VALUES (1, NULL, E'2013-02-25 09:23:51.125', NULL, E'activo', E'CMIM', E'Compra Minima', '1', '20000', E'Prueba con rangode compras');
+
+
+/***********************************F-DAT-RAC-ADQ-0-25/02/2013*****************************************/
+
+
+
