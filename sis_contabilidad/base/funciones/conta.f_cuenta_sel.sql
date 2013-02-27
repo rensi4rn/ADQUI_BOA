@@ -1,3 +1,5 @@
+--------------- SQL ---------------
+
 CREATE OR REPLACE FUNCTION conta.f_cuenta_sel (
   p_administrador integer,
   p_id_usuario integer,
@@ -48,32 +50,15 @@ BEGIN
 			v_consulta:='select
 						cta.id_cuenta,
 						cta.estado_reg,
-						cta.vigente,
 						cta.nombre_cuenta,
-						cta.sw_oec,
 						cta.sw_auxiliar,
 						cta.nivel_cuenta,
 						cta.tipo_cuenta,
-						cta.id_empresa,
 						cta.id_cuenta_padre,
-						cta.descripcion,
-						cta.id_auxiliar_dif,
-						cta.tipo_plantilla,
-						cta.desc_cuenta,
-						cta.sw_sigma,
-						cta.cuenta_sigma,
+					    cta.desc_cuenta,
 						cta.tipo_cuenta_pat,
-						cta.obs,
-						cta.sw_sistema_actualizacion,
-						cta.id_cuenta_actualizacion,
-						cta.id_parametro,
-						cta.id_auxliar_actualizacion,
-						cta.plantilla,
 						cta.nro_cuenta,
 						cta.id_moneda,
-						cta.cuenta_flujo_sigma,
-						cta.id_cuenta_dif,
-						cta.id_cuenta_sigma,
 						cta.sw_transaccional,
 						cta.id_gestion,
 						cta.fecha_reg,
@@ -81,9 +66,11 @@ BEGIN
 						cta.fecha_mod,
 						cta.id_usuario_mod,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod	
-						from conta.tcuenta cta
+						usu2.cuenta as usr_mod,
+                        mon.codigo as desc_moneda
+                        from conta.tcuenta cta
 						inner join segu.tusuario usu1 on usu1.id_usuario = cta.id_usuario_reg
+                        inner join param.tmoneda mon on mon.id_moneda = cta.id_moneda	
 						left join segu.tusuario usu2 on usu2.id_usuario = cta.id_usuario_mod
 						where  ';
 			
@@ -118,16 +105,30 @@ BEGIN
                         cta.id_cuenta,
                         cta.id_cuenta_padre,
                         cta.nombre_cuenta,
-                        cta.descripcion,
-                         case
+                          case
                           when (cta.id_cuenta_padre is null )then
                                ''raiz''::varchar
-                          ELSE
-                              ''hijo''::varchar
-                          END as tipo_nodo
+                          
+                          when (cta.sw_transaccional=''titular'' )then
+                               ''hijo''::varchar
+                          when (cta.sw_transaccional=''movimiento'' )then
+                               ''hoja''::varchar
+                          END as tipo_nodo,
+                        cta.nro_cuenta,
+                        cta.desc_cuenta,
+                        cta.id_moneda,
+                        mon.codigo as desc_moneda,
+                        cta.tipo_cuenta,
+                        cta.sw_auxiliar,
+                        cta.tipo_cuenta_pat,
+                        cta.sw_transaccional,
+                        cta.id_gestion                       
                         from conta.tcuenta cta
+                        inner join param.tmoneda mon on mon.id_moneda = cta.id_moneda
                         where  '||v_where|| ' 
-                        ORDER BY cta.id_cuenta';
+                           and cta.id_gestion = '||COALESCE(v_parametros.id_gestion,0)||'
+                           and cta.estado_reg = ''activo''
+                        ORDER BY cta.nro_cuenta';
             raise notice '%',v_consulta;
            
             --Devuelve la respuesta
@@ -149,6 +150,7 @@ BEGIN
 			v_consulta:='select count(id_cuenta)
 					    from conta.tcuenta cta
 					    inner join segu.tusuario usu1 on usu1.id_usuario = cta.id_usuario_reg
+						inner join param.tmoneda mon on mon.id_moneda = cta.id_moneda	
 						left join segu.tusuario usu2 on usu2.id_usuario = cta.id_usuario_mod
                         where ';
 			

@@ -51,9 +51,9 @@ class ACTCuenta extends ACTbase{
         array_push($arreglo,array('nombre'=>'id_p','valor'=>'id_cuenta_padre'));
         
         
-        array_push($arreglo,array('nombre'=>'text','valor'=>'nombre_cuenta'));
+        array_push($arreglo,array('nombre'=>'text','valores'=>'<b> #nro_cuenta# - #nombre_cuenta#</b>'));
         array_push($arreglo,array('nombre'=>'cls','valor'=>'nombre_cuenta'));
-        array_push($arreglo,array('nombre'=>'qtip','valores'=>'<b> #nombre_cuenta#</b><br> #descripcion#'));
+        array_push($arreglo,array('nombre'=>'qtip','valores'=>'<b> #nro_cuenta#</b><br/><b> #nombre_cuenta#</b><br> #desc_cuenta#'));
         
         
         $this->res->addNivelArbol('tipo_nodo','raiz',array('leaf'=>false,
@@ -76,6 +76,16 @@ class ACTCuenta extends ACTbase{
                                                         'tipo_nodo'=>'hijo',
                                                         'icon'=>'../../../lib/imagenes/a_form.png'),
                                                         $arreglo);
+														
+		
+		$this->res->addNivelArbol('tipo_nodo','hoja',array(
+                                                        'leaf'=>true,
+                                                        'allowDelete'=>true,
+                                                        'allowEdit'=>true,
+                                                        'tipo_nodo'=>'hoja',
+                                                        'icon'=>'../../../lib/imagenes/a_table_gear.png'),
+                                                        $arreglo);												
+														
 
         $this->res->imprimirRespuesta($this->res->generarJson());         
 

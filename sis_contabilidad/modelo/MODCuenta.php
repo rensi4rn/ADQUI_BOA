@@ -74,14 +74,26 @@ class MODCuenta extends MODbase{
     
     $id_padre = $this->objParam->getParametro('id_padre');
     
-    $this->setParametro('id_padre','id_padre','varchar');       
+    $this->setParametro('id_padre','id_padre','varchar'); 
+	$this->setParametro('id_gestion','id_gestion','integer');       
             
     //Definicion de la lista del resultado del query
-    $this->captura('id_cuenta','int4');
-    $this->captura('id_cuenta_padre','int4');
-    $this->captura('nombre_cuenta','varchar');
-    $this->captura('descripcion','varchar');
-    $this->captura('tipo_nodo','varchar');
+     $this->captura('id_cuenta','int4');
+     $this->captura('id_cuenta_padre','int4');
+     $this->captura('nombre_cuenta','varchar');
+     $this->captura('tipo_nodo','varchar');
+	 $this->captura('nro_cuenta','varchar');
+	 $this->captura('desc_cuenta','varchar');
+	 $this->captura('id_moneda','integer');
+	 $this->captura('desc_moneda','varchar');
+	 $this->captura('tipo_cuenta','varchar');
+	 $this->captura('sw_auxiliar','varchar');
+	 $this->captura('tipo_cuenta_pat','varchar');
+	 $this->captura('sw_transaccional','varchar');
+	 $this->captura('id_gestion','integer');
+	 
+
+    
     
     //Ejecuta la instruccion
     $this->armarConsulta();
@@ -97,33 +109,14 @@ class MODCuenta extends MODbase{
 		$this->tipo_procedimiento='IME';
 				
 		//Define los parametros para la funcion
-		$this->setParametro('estado_reg','estado_reg','varchar');
-		$this->setParametro('vigente','vigente','varchar');
-		$this->setParametro('nombre_cuenta','nombre_cuenta','varchar');
-		$this->setParametro('sw_oec','sw_oec','int4');
-		$this->setParametro('sw_auxiliar','sw_auxiliar','int4');
-		$this->setParametro('nivel_cuenta','nivel_cuenta','int4');
-		$this->setParametro('tipo_cuenta','tipo_cuenta','varchar');
-		$this->setParametro('id_empresa','id_empresa','int4');
-		$this->setParametro('id_cuenta_padre','id_cuenta_padre','int4');
-		$this->setParametro('descripcion','descripcion','varchar');
-		$this->setParametro('id_auxiliar_dif','id_auxiliar_dif','int4');
-		$this->setParametro('tipo_plantilla','tipo_plantilla','varchar');
-		$this->setParametro('desc_cuenta','desc_cuenta','varchar');
-		$this->setParametro('sw_sigma','sw_sigma','varchar');
-		$this->setParametro('cuenta_sigma','cuenta_sigma','varchar');
-		$this->setParametro('tipo_cuenta_pat','tipo_cuenta_pat','varchar');
-		$this->setParametro('obs','obs','varchar');
-		$this->setParametro('sw_sistema_actualizacion','sw_sistema_actualizacion','varchar');
-		$this->setParametro('id_cuenta_actualizacion','id_cuenta_actualizacion','int4');
-		$this->setParametro('id_parametro','id_parametro','int4');
-		$this->setParametro('id_auxliar_actualizacion','id_auxliar_actualizacion','int4');
-		$this->setParametro('plantilla','plantilla','varchar');
+		$this->setParametro('id_cuenta_padre','id_cuenta_padre','varchar');
 		$this->setParametro('nro_cuenta','nro_cuenta','varchar');
+		$this->setParametro('nombre_cuenta','nombre_cuenta','varchar');
+		$this->setParametro('desc_cuenta','desc_cuenta','varchar');
+		$this->setParametro('sw_auxiliar','sw_auxiliar','varchar');
+		$this->setParametro('tipo_cuenta','tipo_cuenta','varchar');
+		$this->setParametro('tipo_cuenta_pat','tipo_cuenta_pat','varchar');
 		$this->setParametro('id_moneda','id_moneda','int4');
-		$this->setParametro('cuenta_flujo_sigma','cuenta_flujo_sigma','varchar');
-		$this->setParametro('id_cuenta_dif','id_cuenta_dif','int4');
-		$this->setParametro('id_cuenta_sigma','id_cuenta_sigma','int4');
 		$this->setParametro('sw_transaccional','sw_transaccional','varchar');
 		$this->setParametro('id_gestion','id_gestion','int4');
 
@@ -143,36 +136,16 @@ class MODCuenta extends MODbase{
 				
 		//Define los parametros para la funcion
 		$this->setParametro('id_cuenta','id_cuenta','int4');
-		$this->setParametro('estado_reg','estado_reg','varchar');
-		$this->setParametro('vigente','vigente','varchar');
-		$this->setParametro('nombre_cuenta','nombre_cuenta','varchar');
-		$this->setParametro('sw_oec','sw_oec','int4');
-		$this->setParametro('sw_auxiliar','sw_auxiliar','int4');
-		$this->setParametro('nivel_cuenta','nivel_cuenta','int4');
-		$this->setParametro('tipo_cuenta','tipo_cuenta','varchar');
-		$this->setParametro('id_empresa','id_empresa','int4');
-		$this->setParametro('id_cuenta_padre','id_cuenta_padre','int4');
-		$this->setParametro('descripcion','descripcion','varchar');
-		$this->setParametro('id_auxiliar_dif','id_auxiliar_dif','int4');
-		$this->setParametro('tipo_plantilla','tipo_plantilla','varchar');
-		$this->setParametro('desc_cuenta','desc_cuenta','varchar');
-		$this->setParametro('sw_sigma','sw_sigma','varchar');
-		$this->setParametro('cuenta_sigma','cuenta_sigma','varchar');
-		$this->setParametro('tipo_cuenta_pat','tipo_cuenta_pat','varchar');
-		$this->setParametro('obs','obs','varchar');
-		$this->setParametro('sw_sistema_actualizacion','sw_sistema_actualizacion','varchar');
-		$this->setParametro('id_cuenta_actualizacion','id_cuenta_actualizacion','int4');
-		$this->setParametro('id_parametro','id_parametro','int4');
-		$this->setParametro('id_auxliar_actualizacion','id_auxliar_actualizacion','int4');
-		$this->setParametro('plantilla','plantilla','varchar');
+		$this->setParametro('id_cuenta_padre','id_cuenta_padre','varchar');
 		$this->setParametro('nro_cuenta','nro_cuenta','varchar');
+		$this->setParametro('nombre_cuenta','nombre_cuenta','varchar');
+		$this->setParametro('desc_cuenta','desc_cuenta','varchar');
+		$this->setParametro('sw_auxiliar','sw_auxiliar','varchar');
+		$this->setParametro('tipo_cuenta','tipo_cuenta','varchar');
+		$this->setParametro('tipo_cuenta_pat','tipo_cuenta_pat','varchar');
 		$this->setParametro('id_moneda','id_moneda','int4');
-		$this->setParametro('cuenta_flujo_sigma','cuenta_flujo_sigma','varchar');
-		$this->setParametro('id_cuenta_dif','id_cuenta_dif','int4');
-		$this->setParametro('id_cuenta_sigma','id_cuenta_sigma','int4');
 		$this->setParametro('sw_transaccional','sw_transaccional','varchar');
 		$this->setParametro('id_gestion','id_gestion','int4');
-
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
