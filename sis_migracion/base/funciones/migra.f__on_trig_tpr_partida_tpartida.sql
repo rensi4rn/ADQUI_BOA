@@ -18,7 +18,7 @@ CREATE OR REPLACE FUNCTION migra.f__on_trig_tpr_partida_tpartida (
   p_nivel_partida integer,
   p_nombre_partida varchar,
   p_sw_movimiento varchar,
-  p_sw_trasacional varchar,
+  p_sw_transaccional varchar,
   p_tipo varchar
 )
 RETURNS text AS
@@ -56,7 +56,7 @@ $body$
 						nivel_partida,
 						nombre_partida,
 						sw_movimiento,
-						sw_trasacional,
+						sw_transaccional,
 						tipo)
 				VALUES (
 						p_id_partida,
@@ -77,7 +77,7 @@ $body$
 						p_nivel_partida,
 						p_nombre_partida,
 						p_sw_movimiento,
-						p_sw_trasacional,
+						p_sw_transaccional,
 						p_tipo);
 
 						       
@@ -101,7 +101,7 @@ $body$
 						 ,nivel_partida=p_nivel_partida
 						 ,nombre_partida=p_nombre_partida
 						 ,sw_movimiento=p_sw_movimiento
-						 ,sw_trasacional=p_sw_trasacional
+						 ,sw_transaccional=p_sw_transaccional
 						 ,tipo=p_tipo
 						 WHERE id_partida=p_id_partida;
 

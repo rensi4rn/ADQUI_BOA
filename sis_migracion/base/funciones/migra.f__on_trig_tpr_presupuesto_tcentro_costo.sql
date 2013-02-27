@@ -1,27 +1,14 @@
 CREATE OR REPLACE FUNCTION migra.f__on_trig_tpr_presupuesto_tcentro_costo (
   v_operacion varchar,
   p_id_centro_costo integer,
-  p_cod_act varchar,
-  p_cod_fin varchar,
-  p_codigo varchar,
-  p_cod_prg varchar,
-  p_cod_pry varchar,
-  p_descripcion varchar,
-  p_estado varchar,
   p_estado_reg varchar,
   p_fecha_mod timestamp,
   p_fecha_reg timestamp,
-  p_id_categoria_prog integer,
-  p_id_concepto_colectivo integer,
   p_id_ep integer,
-  p_id_fuente_financiammiento integer,
   p_id_gestion integer,
-  p_id_parametro integer,
   p_id_uo integer,
   p_id_usuario_mod integer,
-  p_id_usuario_reg integer,
-  p_nombre_agrupador varchar,
-  p_tipo_pres varchar
+  p_id_usuario_reg integer
 )
 RETURNS text AS
 $body$
@@ -41,76 +28,37 @@ $body$
 						          INSERT INTO 
 						            PARAM.tcentro_costo (
 						id_centro_costo,
-						cod_act,
-						cod_fin,
-						codigo,
-						cod_prg,
-						cod_pry,
-						descripcion,
-						estado,
 						estado_reg,
 						fecha_mod,
 						fecha_reg,
-						id_categoria_prog,
-						id_concepto_colectivo,
 						id_ep,
-						id_fuente_financiammiento,
 						id_gestion,
-						id_parametro,
 						id_uo,
 						id_usuario_mod,
-						id_usuario_reg,
-						nombre_agrupador,
-						tipo_pres)
+						id_usuario_reg)
 				VALUES (
 						p_id_centro_costo,
-						p_cod_act,
-						p_cod_fin,
-						p_codigo,
-						p_cod_prg,
-						p_cod_pry,
-						p_descripcion,
-						p_estado,
 						p_estado_reg,
 						p_fecha_mod,
 						p_fecha_reg,
-						p_id_categoria_prog,
-						p_id_concepto_colectivo,
 						p_id_ep,
-						p_id_fuente_financiammiento,
 						p_id_gestion,
-						p_id_parametro,
 						p_id_uo,
 						p_id_usuario_mod,
-						p_id_usuario_reg,
-						p_nombre_agrupador,
-						p_tipo_pres);
+						p_id_usuario_reg);
 
 						       
 							    ELSEIF  v_operacion = 'UPDATE' THEN
 						               UPDATE 
 						                  PARAM.tcentro_costo  
-						                SET						 cod_act=p_cod_act
-						 ,cod_fin=p_cod_fin
-						 ,codigo=p_codigo
-						 ,cod_prg=p_cod_prg
-						 ,cod_pry=p_cod_pry
-						 ,descripcion=p_descripcion
-						 ,estado=p_estado
-						 ,estado_reg=p_estado_reg
+						                SET						 estado_reg=p_estado_reg
 						 ,fecha_mod=p_fecha_mod
 						 ,fecha_reg=p_fecha_reg
-						 ,id_categoria_prog=p_id_categoria_prog
-						 ,id_concepto_colectivo=p_id_concepto_colectivo
 						 ,id_ep=p_id_ep
-						 ,id_fuente_financiammiento=p_id_fuente_financiammiento
 						 ,id_gestion=p_id_gestion
-						 ,id_parametro=p_id_parametro
 						 ,id_uo=p_id_uo
 						 ,id_usuario_mod=p_id_usuario_mod
 						 ,id_usuario_reg=p_id_usuario_reg
-						 ,nombre_agrupador=p_nombre_agrupador
-						 ,tipo_pres=p_tipo_pres
 						 WHERE id_centro_costo=p_id_centro_costo;
 
 						       

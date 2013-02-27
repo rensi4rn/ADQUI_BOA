@@ -29,7 +29,10 @@ $body$
 						       v_consulta = 'select pxp.f_add_remove_foraneas(''tcentro_costo'',''PARAM'',''eliminar'')';                   
 						       raise notice '%',v_consulta;
 						       PERFORM * FROM dblink(v_consulta,true) AS ( xx varchar);
-						        v_res_cone=(select dblink_disconnect());
+						       v_consulta = 'select pxp.f_add_remove_foraneas(''tpresupuesto'',''PRE'',''eliminar'')';                   
+						       raise notice '%',v_consulta;
+						       PERFORM * FROM dblink(v_consulta,true) AS ( xx varchar);
+						       v_res_cone=(select dblink_disconnect());
 						     END IF;
 						
 						
@@ -83,7 +86,9 @@ FROM
 					);	
 					            IF v_cadena_resp[1] = 'FALSE' THEN
 					              RAISE NOTICE 'ERROR ->>>  (%),(%) - %   ', v_cadena_resp[3], v_cadena_resp[2], v_cadena_resp[4];
-					            END IF; 	
+					            END IF; 
+                                
+                                	
 						 END LOOP;
 						
 						     --reconstruye llaves foraneas
@@ -96,6 +101,9 @@ FROM
 									                 
 						     ELSE
 						       v_consulta = 'select pxp.f_add_remove_foraneas(''tcentro_costo'',''PARAM'',''insertar'')';                   
+						       raise notice '%',v_consulta;
+						       PERFORM * FROM dblink(v_consulta,true) AS ( xx varchar);
+                               v_consulta = 'select pxp.f_add_remove_foraneas(''tpresupuesto'',''PRE'',''insertar'')';                   
 						       raise notice '%',v_consulta;
 						       PERFORM * FROM dblink(v_consulta,true) AS ( xx varchar);
 						        v_res_cone=(select dblink_disconnect());

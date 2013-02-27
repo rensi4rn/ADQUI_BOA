@@ -23,7 +23,6 @@ CREATE OR REPLACE FUNCTION migracion.f_trans_tkp_unidad_organizacional_tuo (
   p_sw_presto numeric,
   p_sw_rep_resumen varchar,
   p_url_archivo varchar,
-  p_vector_prioridad varchar,
   p_vigente varchar
 )
 RETURNS varchar [] AS
@@ -61,7 +60,7 @@ BEGIN
 			
 			          --funcion para obtener cadena de conexion
 			          v_cadena_cnx =  migracion.f_obtener_cadena_con_dblink();
-			          
+          
 			          
 			           ---------------------------------------
 			           --previamente se tranforman los datos  (descomentar)

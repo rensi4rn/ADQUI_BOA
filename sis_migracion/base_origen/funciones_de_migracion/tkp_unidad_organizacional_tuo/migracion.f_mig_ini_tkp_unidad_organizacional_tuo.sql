@@ -59,7 +59,6 @@ $body$
 						sw_presto,
 						sw_rep_resumen,
 						url_archivo,
-						vector_prioridad,
 						vigente
 FROM 
 						          KARD.tkp_unidad_organizacional) LOOP
@@ -90,7 +89,6 @@ FROM
 					,g_registros.sw_presto
 					,g_registros.sw_rep_resumen
 					,g_registros.url_archivo
-					,g_registros.vector_prioridad
 					,g_registros.vigente
 					);	
 					            IF v_cadena_resp[1] = 'FALSE' THEN

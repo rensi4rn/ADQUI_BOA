@@ -141,8 +141,17 @@ for f in funciones:
             child = pexpect.spawn(command)
             child.expect(message)
             child.sendline(password)
+#crear funciones de presupuesto
+funciones_dir = url + '/funciones_de_migracion/tpm_institucion_tinstitucion/'
+funciones = os.listdir( funciones_dir )
+for f in funciones:
+    if f.endswith('.sql'):
+            command = 'psql -q -U ' + cuenta + ' -h ' + ip + ' -d ' + nameDb + ' -f ' + funciones_dir + f
+            child = pexpect.spawn(command)
+            child.expect(message)
+            child.sendline(password)
 #crear funciones de concepto cuenta
-funciones_dir = url + '/funciones_de_migracion/tpr_concepto_cta_tconcepto_cta/'
+funciones_dir = url + '/funciones_de_migracion/tpr_presupuesto_tcentro_costo/'
 funciones = os.listdir( funciones_dir )
 for f in funciones:
     if f.endswith('.sql'):
@@ -186,6 +195,16 @@ for f in funciones:
             child = pexpect.spawn(command)
             child.expect(message)
             child.sendline(password)
+#crear funciones de orden de trabajo
+funciones_dir = url + '/funciones_de_migracion/tct_orden_trabajo_torden_trabajo/'
+funciones = os.listdir( funciones_dir )
+for f in funciones:
+    if f.endswith('.sql'):
+            command = 'psql -q -U ' + cuenta + ' -h ' + ip + ' -d ' + nameDb + ' -f ' + funciones_dir + f
+            child = pexpect.spawn(command)
+            child.expect(message)
+            child.sendline(password)
+
 #crear funciones de unidad organizacional
 funciones_dir = url + '/funciones_de_migracion/tkp_unidad_organizacional_tuo/'
 funciones = os.listdir( funciones_dir )

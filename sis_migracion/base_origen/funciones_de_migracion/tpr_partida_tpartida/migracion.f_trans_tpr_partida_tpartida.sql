@@ -52,7 +52,7 @@ DECLARE
 			v_nivel_partida int4;
 			v_nombre_partida varchar;
 			v_sw_movimiento varchar;
-			v_sw_trasacional varchar;
+			v_sw_transaccional varchar;
 			v_tipo varchar;
             v_aux varchar;
 BEGIN
@@ -84,15 +84,26 @@ BEGIN
 			v_id_usuario_reg=p_id_usr_reg::int4;
 			v_nivel_partida=p_nivel_partida::int4;
 			v_nombre_partida=convert(p_nombre_partida::varchar, 'LATIN1', 'UTF8');
-			v_sw_movimiento=convert(p_sw_movimiento::varchar, 'LATIN1', 'UTF8');
-			v_sw_trasacional=convert(p_sw_transaccional::varchar, 'LATIN1', 'UTF8');
-			v_tipo=convert(p_tipo_partida::varchar, 'LATIN1', 'UTF8');
- 
+            if p_sw_movimiento=1 then 
+				v_sw_movimiento=convert('presupuestaria'::varchar, 'LATIN1', 'UTF8');
+            else 
+            	v_sw_movimiento=convert('flujo'::varchar, 'LATIN1', 'UTF8');
+            end if;
+			if p_sw_transaccional=1 then
+	            v_sw_transaccional=convert('movimiento'::varchar, 'LATIN1', 'UTF8');
+			else 
+                v_sw_transaccional=convert('titular'::varchar, 'LATIN1', 'UTF8');
+            end if;
+            if p_tipo_partida=1 then
+				v_tipo=convert('recurso'::varchar, 'LATIN1', 'UTF8');
+ 			else
+            	v_tipo=convert('gasto'::varchar, 'LATIN1', 'UTF8');
+            end if;
 			    --cadena para la llamada a la funcion de insercion en la base de datos destino
 			      
 			        
 			          v_consulta = 'select migra.f__on_trig_tpr_partida_tpartida (
-			               '''||v_operacion::varchar||''','||COALESCE(v_id_partida::varchar,'NULL')||','||COALESCE(v_id_partida_fk::varchar,'NULL')||','||COALESCE(''''||v_cod_ascii::varchar||'''','NULL')||','||COALESCE(''''||v_cod_excel::varchar||'''','NULL')||','||COALESCE(''''||v_codigo::varchar||'''','NULL')||','||COALESCE(''''||v_cod_trans::varchar||'''','NULL')||','||COALESCE(''''||v_descripcion::varchar||'''','NULL')||','||COALESCE(''''||v_ent_trf::varchar||'''','NULL')||','||COALESCE(''''||v_estado_reg::varchar||'''','NULL')||','||COALESCE(''''||v_fecha_mod::varchar||'''','NULL')||','||COALESCE(''''||v_fecha_reg::varchar||'''','NULL')||','||COALESCE(v_id_gestion::varchar,'NULL')||','||COALESCE(v_id_parametros::varchar,'NULL')||','||COALESCE(v_id_usuario_mod::varchar,'NULL')||','||COALESCE(v_id_usuario_reg::varchar,'NULL')||','||COALESCE(v_nivel_partida::varchar,'NULL')||','||COALESCE(''''||v_nombre_partida::varchar||'''','NULL')||','||COALESCE(''''||v_sw_movimiento::varchar||'''','NULL')||','||COALESCE(''''||v_sw_trasacional::varchar||'''','NULL')||','||COALESCE(''''||v_tipo::varchar||'''','NULL')||')';
+			               '''||v_operacion::varchar||''','||COALESCE(v_id_partida::varchar,'NULL')||','||COALESCE(v_id_partida_fk::varchar,'NULL')||','||COALESCE(''''||v_cod_ascii::varchar||'''','NULL')||','||COALESCE(''''||v_cod_excel::varchar||'''','NULL')||','||COALESCE(''''||v_codigo::varchar||'''','NULL')||','||COALESCE(''''||v_cod_trans::varchar||'''','NULL')||','||COALESCE(''''||v_descripcion::varchar||'''','NULL')||','||COALESCE(''''||v_ent_trf::varchar||'''','NULL')||','||COALESCE(''''||v_estado_reg::varchar||'''','NULL')||','||COALESCE(''''||v_fecha_mod::varchar||'''','NULL')||','||COALESCE(''''||v_fecha_reg::varchar||'''','NULL')||','||COALESCE(v_id_gestion::varchar,'NULL')||','||COALESCE(v_id_parametros::varchar,'NULL')||','||COALESCE(v_id_usuario_mod::varchar,'NULL')||','||COALESCE(v_id_usuario_reg::varchar,'NULL')||','||COALESCE(v_nivel_partida::varchar,'NULL')||','||COALESCE(''''||v_nombre_partida::varchar||'''','NULL')||','||COALESCE(''''||v_sw_movimiento::varchar||'''','NULL')||','||COALESCE(''''||v_sw_transaccional::varchar||'''','NULL')||','||COALESCE(''''||v_tipo::varchar||'''','NULL')||')';
 			          --probar la conexion con dblink
 			          
 					   --probar la conexion con dblink
