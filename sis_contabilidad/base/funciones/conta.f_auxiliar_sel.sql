@@ -1,3 +1,5 @@
+--------------- SQL ---------------
+
 CREATE OR REPLACE FUNCTION conta.f_auxiliar_sel (
   p_administrador integer,
   p_id_usuario integer,
@@ -60,7 +62,7 @@ BEGIN
 						from conta.tauxiliar auxcta
 						inner join segu.tusuario usu1 on usu1.id_usuario = auxcta.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = auxcta.id_usuario_mod
-				        inner join param.tempresa emp on emp.id_empresa=auxcta.id_empresa
+				        left join param.tempresa emp on emp.id_empresa=auxcta.id_empresa
 				        where  ';
 			
 			--Definicion de la respuesta

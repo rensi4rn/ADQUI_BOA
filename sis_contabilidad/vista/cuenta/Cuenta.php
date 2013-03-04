@@ -200,11 +200,6 @@ Phx.vista.Cuenta=Ext.extend(Phx.arbInterfaz,{
        	     },
    			type:'ComboRec',
    			id_grupo:1,
-   			filters:{	
-		        pfiltro:'mon.codigo',
-				type:'string'
-			},
-   		    grid:true,
    			form:true
    	      },
    	      {
@@ -250,7 +245,7 @@ Phx.vista.Cuenta=Ext.extend(Phx.arbInterfaz,{
 		{name:'nro_cuenta', type: 'string'},
 		{name:'id_moneda', type: 'numeric'},
 		{name:'sw_transaccional', type: 'string'},
-		{name:'id_gestion', type: 'numeric'}
+		{name:'id_gestion', type: 'numeric'},'desc_moneda'
 		
 	],cmbGestion:new Ext.form.ComboBox({
 				fieldLabel: 'Gestion',
@@ -342,7 +337,7 @@ Phx.vista.Cuenta=Ext.extend(Phx.arbInterfaz,{
 	},
 	
     onButtonNew:function(n){
-    	console.log('bnew',n)
+    	
     	if(this.cmbGestion.getValue()){
     		
     		this.ocultarComponente(this.cmpTipoCuentaPat);

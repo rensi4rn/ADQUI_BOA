@@ -98,6 +98,11 @@ BEGIN
                 and tp.estado_reg = 'activo' and tp.inicio = 'si';
             
          
+        IF v_codigo_tipo_proceso is NULL THEN
+        
+           raise exception 'No existe un proceso inicial para el proceso macro indicado (Revise la configuración)';
+        
+        END IF;
         
         -- inciiar el tramite en el sistema de WF
         

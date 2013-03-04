@@ -30,23 +30,8 @@ Phx.vista.Auxiliar=Ext.extend(Phx.gridInterfaz,{
 			},
 			type:'Field',
 			form:true 
-		},/*
-		{
-			config:{
-				name: 'id_empresa',
-				fieldLabel: 'Id Empresa',
-				allowBlank: false,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:4
-			},
-			type:'NumberField',
-			filters:{pfiltro:'auxcta.id_empresa',type:'numeric'},
-			id_grupo:1,
-			grid:true,
-			form:true
-		},*/
-		{
+		},
+		/*{
  			config:{
  				name:'id_empresa',
  				fieldLabel:'Empresa',
@@ -91,7 +76,7 @@ Phx.vista.Auxiliar=Ext.extend(Phx.gridInterfaz,{
  					},
  			grid:true,
  			form:true
-	 },
+	 },*/
 		{
 			config:{
 				name: 'codigo_auxiliar',

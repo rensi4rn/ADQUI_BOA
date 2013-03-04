@@ -47,32 +47,37 @@ BEGIN
      				
     	begin
     		--Sentencia de la consulta
-			v_consulta:='select
-						cta.id_cuenta,
-						cta.estado_reg,
-						cta.nombre_cuenta,
-						cta.sw_auxiliar,
-						cta.nivel_cuenta,
-						cta.tipo_cuenta,
-						cta.id_cuenta_padre,
-					    cta.desc_cuenta,
-						cta.tipo_cuenta_pat,
-						cta.nro_cuenta,
-						cta.id_moneda,
-						cta.sw_transaccional,
-						cta.id_gestion,
-						cta.fecha_reg,
-						cta.id_usuario_reg,
-						cta.fecha_mod,
-						cta.id_usuario_mod,
-						usu1.cuenta as usr_reg,
+			v_consulta:='SELECT 
+                        cta.id_cuenta,
+                        cta.id_usuario_reg,
+                        cta.id_usuario_mod,
+                        cta.fecha_reg,
+                        cta.fecha_mod,
+                        cta.estado_reg,
+                       
+                        cta.id_empresa,
+                        cta.id_parametro,
+                        cta.id_cuenta_padre,
+                        cta.nro_cuenta,
+                        cta.id_gestion,
+                        cta.id_moneda,
+                        cta.nombre_cuenta,
+                        cta.desc_cuenta,
+                        cta.nivel_cuenta,
+                        cta.tipo_cuenta,
+                        cta.sw_transaccional,
+                        cta.sw_auxiliar,
+                        cta.tipo_cuenta_pat,
+                        usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod,
-                        mon.codigo as desc_moneda
+                        mon.codigo as desc_moneda,
+                        ges.gestion
                         from conta.tcuenta cta
 						inner join segu.tusuario usu1 on usu1.id_usuario = cta.id_usuario_reg
-                        inner join param.tmoneda mon on mon.id_moneda = cta.id_moneda	
+                        inner join param.tmoneda mon on mon.id_moneda = cta.id_moneda
+                        inner join param.tgestion ges on ges.id_gestion = cta.id_gestion
 						left join segu.tusuario usu2 on usu2.id_usuario = cta.id_usuario_mod
-						where  ';
+                        where  ';
 			
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -149,8 +154,9 @@ BEGIN
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_cuenta)
 					    from conta.tcuenta cta
-					    inner join segu.tusuario usu1 on usu1.id_usuario = cta.id_usuario_reg
-						inner join param.tmoneda mon on mon.id_moneda = cta.id_moneda	
+						inner join segu.tusuario usu1 on usu1.id_usuario = cta.id_usuario_reg
+                        inner join param.tmoneda mon on mon.id_moneda = cta.id_moneda
+                        inner join param.tgestion ges on ges.id_gestion = cta.id_gestion
 						left join segu.tusuario usu2 on usu2.id_usuario = cta.id_usuario_mod
                         where ';
 			

@@ -1,8 +1,13 @@
-CREATE OR REPLACE FUNCTION "conta"."f_auxiliar_ime" (	
-				p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
-RETURNS character varying AS
-$BODY$
+--------------- SQL ---------------
 
+CREATE OR REPLACE FUNCTION conta.f_auxiliar_ime (
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
+)
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA:		Sistema de Contabilidad
  FUNCION: 		conta.f_auxiliar_ime
@@ -45,7 +50,7 @@ BEGIN
         begin
         	--Sentencia de la insercion
         	insert into conta.tauxiliar(
-			id_empresa,
+			--id_empresa,
 			estado_reg,
 			codigo_auxiliar,
 			nombre_auxiliar,
@@ -54,7 +59,7 @@ BEGIN
 			id_usuario_mod,
 			fecha_mod
           	) values(
-			v_parametros.id_empresa,
+			--v_parametros.id_empresa,
 			'activo',
 			v_parametros.codigo_auxiliar,
 			v_parametros.nombre_auxiliar,
@@ -86,7 +91,7 @@ BEGIN
 		begin
 			--Sentencia de la modificacion
 			update conta.tauxiliar set
-			id_empresa = v_parametros.id_empresa,
+			--id_empresa = v_parametros.id_empresa,
 			codigo_auxiliar = v_parametros.codigo_auxiliar,
 			nombre_auxiliar = v_parametros.nombre_auxiliar,
 			id_usuario_mod = p_id_usuario,
@@ -141,7 +146,9 @@ EXCEPTION
 		raise exception '%',v_resp;
 				        
 END;
-$BODY$
-LANGUAGE 'plpgsql' VOLATILE
+$body$
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
 COST 100;
-ALTER FUNCTION "conta"."f_auxiliar_ime"(integer, integer, character varying, character varying) OWNER TO postgres;

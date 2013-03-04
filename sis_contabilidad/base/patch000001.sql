@@ -61,7 +61,7 @@ ALTER TABLE conta.tcuenta OWNER TO postgres;
 
 CREATE TABLE conta.tauxiliar (
   id_auxiliar SERIAL NOT NULL, 
-  id_empresa INTEGER NOT NULL, 
+  id_empresa INTEGER, 
   codigo_auxiliar VARCHAR(15), 
   nombre_auxiliar VARCHAR(300), 
   CONSTRAINT pk_tauxiliar__id_auxiliar PRIMARY KEY(id_auxiliar)
