@@ -32,20 +32,54 @@ Phx.vista.DocumentoSol=Ext.extend(Phx.gridInterfaz,{
 			form:true 
 		},
 		{
-			config:{
-				name: 'id_solicitud',
-				fieldLabel: 'id_solicitud',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:4
-			},
-			type:'NumberField',
-			filters:{pfiltro:'docsol.id_solicitud',type:'numeric'},
-			id_grupo:1,
-			grid:true,
-			form:true
-		},
+            config: {
+                name: 'id_solicitud',
+                fieldLabel: 'Solicitud de compra',
+                typeAhead: false,
+                forceSelection: false,
+                allowBlank: false,
+                emptyText: 'Solicitud de compra...',
+                store: new Ext.data.JsonStore({
+                    url: '../../sis_adquisiciones/control/Solicitud/listarSolicitud',
+                    id: 'id_solicitud',
+                    root: 'datos',
+                    sortInfo: {
+                        field: 'id_solicitud',
+                        direction: 'ASC'
+                    },
+                    totalProperty: 'total',
+                    fields: ['id_solicitud', 'tipo', 'desc_proceso_macro', 'desc_gestion', 'desc_depto', 'desc_funcionario'],
+                    // turn on remote sorting
+                    remoteSort: true,
+                    baseParams: {par_filtro: 'depto.nombre'}
+                }),
+                valueField: 'id_solicitud',
+                displayField: 'desc_proceso_macro',
+                gdisplayField: 'desc_proceso_macro',
+                triggerAction: 'all',
+                lazyRender: true,
+                mode: 'remote',
+                pageSize: 20,
+                queryDelay: 200,
+                anchor: '80%',
+                minChars: 2,
+                gwidth: 200,
+                renderer: function(value, p, record) {
+                    return String.format('{0}', record.data['desc_proceso_macro']+'-'+
+                                                record.data['desc_gestion']+'-'+
+                                                record.data['desc_depto']);
+                },
+                tpl: '<tpl for="."><div class="x-combo-list-item"><p>{desc_proceso_macro}-{desc_gestion}-{desc_depto}/p>Funcionario: <strong>{desc_funcionario}</strong> </div></tpl>'
+            },
+            type: 'ComboBox',
+            id_grupo: 0,
+            filters: {
+                pfiltro: 'depto.nombre',
+                type: 'string'
+            },
+            grid: true,
+            form: true
+        },
 		{
 			config: {
 				name: 'id_categoria_compra',
