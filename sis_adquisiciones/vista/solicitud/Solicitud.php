@@ -57,13 +57,13 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 	       		    mode: 'local',
 	       		    valueField: 'estilo',
 	       		    gwidth: 100,
-	       		    store:['Bien','Servicio']
+	       		    store:['Bien','Servicio','Bien - Servicio']
 	       		},
 	       		type:'ComboBox',
 	       		id_grupo:0,
 	       		filters:{	
 	       		         type: 'list',
-	       				 options: ['Bien','Servicio'],	
+	       				 options: ['Bien','Servicio','Bien - Servicio'],	
 	       		 	},
 	       		grid:true,
 	       		form:true
@@ -458,8 +458,8 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-						format: 'd/m/Y', 
-						renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
+				format: 'd/m/Y', 
+				renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
 			},
 			type:'DateField',
 			filters:{pfiltro:'sol.fecha_mod',type:'date'},
@@ -531,6 +531,13 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 		'id_proceso_macro'
 		
 	],
+	south:
+          { 
+          url:'../../../sis_adquisiciones/vista/solicitud_det/SolicitudDet.php',
+          title:'Detalle', 
+          height:'50%',
+          cls:'SolicitudDet'
+         },
 	sortInfo:{
 		field: 'id_solicitud',
 		direction: 'ASC'

@@ -59,8 +59,7 @@ select pxp.f_insert_tfuncion ('adq.f_documento_sol_sel', 'Funcion para tabla    
 /***********************************I-DAT-RAC-ADQ-0-25/02/2013*****************************************/
 --inserta documentos de adquisiciones
 
-SELECT * FROM param.f_inserta_documento('ADQ', 'SOLB', 'Solicitud de Compra de Bienes', 'periodo', NULL, 'depto', NULL);
-SELECT * FROM param.f_inserta_documento('ADQ', 'SOLS', 'Solicitud de Compra de Servicios', 'periodo', NULL, 'depto', NULL);
+SELECT * FROM param.f_inserta_documento('ADQ', 'SOLC', 'Solicitud de Compra', 'periodo', NULL, 'depto', NULL);
 
 --INSERTAR CATEGORIAS DE COMPRA
 

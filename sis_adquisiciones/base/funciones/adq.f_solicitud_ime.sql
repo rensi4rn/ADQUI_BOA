@@ -67,27 +67,21 @@ BEGIN
         
         
         --obtener correlativo
-        IF  v_parametros.tipo = 'Bien' THEN
-        
-           v_num_sol =   param.f_obtener_correlativo(
-                  'SOLB', 
+         v_num_sol =   param.f_obtener_correlativo(
+                  'SOLC', 
                    v_id_periodo,-- par_id, 
                    NULL, --id_uo 
                    1,    -- id_depto
                    1, 
                    'ADQ', 
                    NULL);
-         ELSE
-           v_num_sol =   param.f_obtener_correlativo(
-                  'SOLS', 
-                   v_id_periodo,-- par_id, 
-                   NULL, --id_uo 
-                   1, 
-                   1, 
-                   'ADQ', 
-                   NULL);
-         
-         END IF;
+      
+        
+        IF (v_num_sol is NULL or v_num_sol ='') THEN
+        
+          raise exception 'No se pudo obtener un numero correlativo para la solicitud consulte con el administrador';
+        
+        END IF;
         
         -- obtener el codigo del tipo_proceso
        

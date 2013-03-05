@@ -33,7 +33,7 @@ CREATE TABLE adq.tdocumento_sol(
 	  id_depto INTEGER NOT NULL, 
 	  id_estado_wf INTEGER,
 	  id_proceso_wf INTEGER,  
-	  numero VARCHAR(50), 
+	 
 	  extendida VARCHAR(2), 
 	  tipo VARCHAR(50), 
 	  estado VARCHAR(50), 
@@ -59,7 +59,7 @@ CREATE TABLE adq.tsolicitud_det(
     id_partida int4 NOT NULL,
     id_cuenta int4 NOT NULL,
     id_auxiliar int4 NOT NULL,
-    id_concepto_gasto int4 NOT NULL,
+    id_concepto_ingas int4 NOT NULL,
     id_partida_ejecucion int4,
     id_orden_trabajo int4,
     numero varchar(30),
