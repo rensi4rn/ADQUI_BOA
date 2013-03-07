@@ -62,7 +62,7 @@ BEGIN
 						sol.id_depto,
 						sol.lugar_entrega,
 						sol.extendida,
-						sol.numero,
+					
 						sol.posibles_proveedores,
 						sol.id_proceso_wf,
 						sol.comite_calificacion,

@@ -35,7 +35,7 @@ class MODSolicitud extends MODbase{
 		$this->captura('id_depto','int4');
 		$this->captura('lugar_entrega','varchar');
 		$this->captura('extendida','varchar');
-		$this->captura('numero','varchar');
+		
 		$this->captura('posibles_proveedores','text');
 		$this->captura('id_proceso_wf','int4');
 		$this->captura('comite_calificacion','text');
