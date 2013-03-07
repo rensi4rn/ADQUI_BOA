@@ -223,3 +223,13 @@ for f in funciones:
             child = pexpect.spawn(command)
             child.expect(message)
             child.sendline(password)
+#crear funciones de proveedor
+funciones_dir = url + '/funciones_de_migracion/tad_proveedor_tproveedor/'
+funciones = os.listdir( funciones_dir )
+for f in funciones:
+    if f.endswith('.sql'):
+            command = 'psql -q -U ' + cuenta + ' -h ' + ip + ' -d ' + nameDb + ' -f ' + funciones_dir + f
+            child = pexpect.spawn(command)
+            child.expect(message)
+            child.sendline(password)
+

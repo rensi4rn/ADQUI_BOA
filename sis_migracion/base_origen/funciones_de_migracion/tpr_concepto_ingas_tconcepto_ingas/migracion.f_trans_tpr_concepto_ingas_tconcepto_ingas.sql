@@ -36,6 +36,7 @@ DECLARE
 			v_id_usuario_reg int4;
 			v_sw_tesoro int4;
 			v_tipo varchar;
+            v_id_partida int4;
 BEGIN
 			
 			
@@ -60,12 +61,12 @@ BEGIN
 			v_id_usuario_reg=p_id_usr_reg::int4;
 			v_sw_tesoro=p_sw_tesoro::int4;
 			v_tipo=convert(NULL::varchar, 'LATIN1', 'UTF8');
- 
+ 			v_id_partida=p_id_partida::int4;
 			    --cadena para la llamada a la funcion de insercion en la base de datos destino
 			      
 			        
 			          v_consulta = 'select migra.f__on_trig_tpr_concepto_ingas_tconcepto_ingas (
-			               '''||v_operacion::varchar||''','||COALESCE(v_id_concepto_ingas::varchar,'NULL')||','||COALESCE(''''||v_desc_ingas::varchar||'''','NULL')||','||COALESCE(''''||v_estado_reg::varchar||'''','NULL')||','||COALESCE(''''||v_fecha_mod::varchar||'''','NULL')||','||COALESCE(''''||v_fecha_reg::varchar||'''','NULL')||','||COALESCE(v_id_item::varchar,'NULL')||','||COALESCE(v_id_oec::varchar,'NULL')||','||COALESCE(v_id_servicio::varchar,'NULL')||','||COALESCE(v_id_usuario_mod::varchar,'NULL')||','||COALESCE(v_id_usuario_reg::varchar,'NULL')||','||COALESCE(v_sw_tesoro::varchar,'NULL')||','||COALESCE(''''||v_tipo::varchar||'''','NULL')||')';
+			               '''||v_operacion::varchar||''','||COALESCE(v_id_concepto_ingas::varchar,'NULL')||','||COALESCE(''''||v_desc_ingas::varchar||'''','NULL')||','||COALESCE(''''||v_estado_reg::varchar||'''','NULL')||','||COALESCE(''''||v_fecha_mod::varchar||'''','NULL')||','||COALESCE(''''||v_fecha_reg::varchar||'''','NULL')||','||COALESCE(v_id_item::varchar,'NULL')||','||COALESCE(v_id_oec::varchar,'NULL')||','||COALESCE(v_id_servicio::varchar,'NULL')||','||COALESCE(v_id_usuario_mod::varchar,'NULL')||','||COALESCE(v_id_usuario_reg::varchar,'NULL')||','||COALESCE(v_sw_tesoro::varchar,'NULL')||','||COALESCE(''''||v_tipo::varchar||'''','NULL')||','||COALESCE(''''||v_id_partida::varchar||'''','NULL')||')';
 			          --probar la conexion con dblink
 			          
 					   --probar la conexion con dblink

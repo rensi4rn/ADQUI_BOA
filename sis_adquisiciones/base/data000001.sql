@@ -32,7 +32,7 @@ select pxp.f_insert_tgui ('Configuración', 'Configuración varios', 'ADQ.1', 's
 select pxp.f_insert_tgui ('Categorías de Compra', 'Categorías de Compra', 'ADQ.1.1', 'si', 1, 'sis_adquisiciones/vista/categoria_compra/CategoriaCompra.php', 3, '', 'CategoriaCompra', 'ADQ');
 select pxp.f_insert_tgui ('Documento de Solicitud', 'Documento de Solicitud', 'ADQ.2', 'si', 1, 'sis_adquisiciones/vista/documento_sol/DocumentoSol.php', 2, '', 'DocumentoSol', 'ADQ');
 select pxp.f_insert_tgui ('Solicitud de Compra', 'Solicitud de Compra', 'ADQ.3', 'si', 1, 'sis_adquisiciones/vista/solicitud/Solicitud.php', 2, '', 'Solicitud', 'ADQ');
-
+select pxp.f_insert_tgui ('Proveedores', 'Proveedores de compra', 'ADQ.4', 'si', 1, 'sis_adquisiciones/vista/proveedor/Proveedor.php', 2, '', 'Proveedor', 'ADQ');
 
 -------------------------------------
 select pxp.f_insert_testructura_gui ('ADQ', 'SISTEMA');
@@ -40,7 +40,7 @@ select pxp.f_insert_testructura_gui ('ADQ.1', 'ADQ');
 select pxp.f_insert_testructura_gui ('ADQ.1.1', 'ADQ.1');
 select pxp.f_insert_testructura_gui ('ADQ.2', 'ADQ');
 select pxp.f_insert_testructura_gui ('ADQ.3', 'ADQ');
-
+select pxp.f_insert_testructura_gui ('ADQ.4', 'ADQ');
 
 
 ----------------------------------------------
