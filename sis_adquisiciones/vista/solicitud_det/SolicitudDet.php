@@ -114,7 +114,7 @@ Phx.vista.SolicitudDet=Ext.extend(Phx.gridInterfaz,{
                pageSize:10,
                queryDelay:1000,
                width:350,
-               gwidth:350,
+               gwidth:200,
                minChars:2,
                tpl: '<tpl for="."><div class="x-combo-list-item"><p>{desc_ingas}</p><strong>{tipo}</strong></div></tpl>',
                renderer:function(value, p, record){return String.format('{0}', record.data['desc_concepto_ingas']);}
@@ -130,9 +130,9 @@ Phx.vista.SolicitudDet=Ext.extend(Phx.gridInterfaz,{
 			config:{
 				name: 'descripcion',
 				fieldLabel: 'descripcion',
-				allowBlank: true,
+				allowBlank: false,
 				anchor: '80%',
-				gwidth: 100,
+				gwidth: 250,
 				maxLength:1200
 			},
 			type:'TextArea',
@@ -144,12 +144,11 @@ Phx.vista.SolicitudDet=Ext.extend(Phx.gridInterfaz,{
 		{
             config:{
                 name: 'precio_unitario',
-                currencyChar:'',
+                currencyChar:' ',
                 fieldLabel: 'Prec. Unit.',
-                allowBlank: true,
+                allowBlank: false,
                 width:100,
-                gwidth: 100,
-                renderer:bolFormatter
+                gwidth: 110
             },
             type:'MoneyField',
             filters:{pfiltro:'sold.precio_unitario',type:'numeric'},
@@ -162,7 +161,7 @@ Phx.vista.SolicitudDet=Ext.extend(Phx.gridInterfaz,{
             config:{
                 name: 'cantidad',
                 fieldLabel: 'cantidad',
-                allowBlank: true,
+                allowBlank: false,
                 width: 100,
                 gwidth: 100,
                 maxLength:4
@@ -179,10 +178,10 @@ Phx.vista.SolicitudDet=Ext.extend(Phx.gridInterfaz,{
             config:{
                 name: 'precio_total',
                 fieldLabel: 'Prec. Total',
-                currencyChar:'',
+                currencyChar:' ',
                 allowBlank: true,
                 width: 100,
-                gwidth: 100,
+                gwidth: 120,
                 disabled:true,
                 maxLength:1245186
             },
@@ -196,12 +195,12 @@ Phx.vista.SolicitudDet=Ext.extend(Phx.gridInterfaz,{
         {
             config:{
                 name: 'precio_ga',
-                fieldLabel: 'Monto Actual Gestión',
-                currencyChar:'',
+                fieldLabel: 'Monto Act. Ges.',
+                currencyChar:' ',
                 allowBlank: true,
                 disabled:true,
                  width: 100,
-                gwidth: 100,
+                gwidth: 120,
                 maxLength:1245186
             },
             type:'MoneyField',
@@ -214,12 +213,12 @@ Phx.vista.SolicitudDet=Ext.extend(Phx.gridInterfaz,{
         {
             config:{
                 name: 'precio_sg',
-                fieldLabel: 'Monto Siguiente Gestión',
-                currencyChar:'',
+                fieldLabel: 'Monto Sig. Ges.',
+                currencyChar:' ',
                 allowBlank: true,
                 
                  width: 100,
-                gwidth: 100,
+                gwidth: 120,
                 maxLength:1245186
             },
             type:'MoneyField',
@@ -269,35 +268,65 @@ Phx.vista.SolicitudDet=Ext.extend(Phx.gridInterfaz,{
             id_grupo:1,
             grid:true,
             form:true
+        },
+        
+        {
+            config:{
+                name: 'codigo_partida',
+                fieldLabel: 'Cod. Partida',
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:4
+            },
+            type:'Field',
+            filters:{pfiltro:'par.codigo',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:false
         }
         
         ,
 		
 		{
 			config:{
-				name: 'desc_partida',
+				name: 'nombre_partida',
 				fieldLabel: 'Partida',
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:4
 			},
 			type:'Field',
-			filters:{pfiltro:'par.desc_partida',type:'string'},
+			filters:{pfiltro:'par.nombre_partida',type:'string'},
 			id_grupo:1,
 			grid:true,
 			form:false
 		},
+        
+        {
+            config:{
+                name: 'nro_cuenta',
+                fieldLabel: 'Bro Cta.',
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:4
+            },
+            type:'Field',
+            filters:{pfiltro:'cta.nro_cuenta',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:false
+        },
 		
 		{
 			config:{
-				name: 'desc_cuenta',
+				name: 'nombre_cuenta',
 				fieldLabel: 'Cuenta',
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:4
 			},
 			type:'Field',
-			filters:{pfiltro:'cta.desc_cuenta',type:'string'},
+			filters:{pfiltro:'cta.nombre_cuenta',type:'string'},
 			id_grupo:1,
 			grid:true,
 			form:false
@@ -305,18 +334,33 @@ Phx.vista.SolicitudDet=Ext.extend(Phx.gridInterfaz,{
 		
 		{
 			config:{
-				name: 'desc_auxiliar',
-				fieldLabel: 'Auxiliar',
+				name: 'codigo_auxiliar',
+				fieldLabel: 'Cod. Auxiliar',
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:4
 			},
-			type:'NumberField',
-			filters:{pfiltro:'sold.id_auxiliar',type:'numeric'},
+			type:'Field',
+			filters:{pfiltro:'aux.codigo_auxiliar',type:'string'},
 			id_grupo:1,
 			grid:true,
 			form:false
 		},
+        
+        {
+            config:{
+                name: 'nombre_auxiliar',
+                fieldLabel: 'Nom. Auxiliar',
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:4
+            },
+            type:'Field',
+            filters:{pfiltro:'aux.nombre_auxiliar',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:false
+        },
 		
 		{
 			config:{
@@ -411,7 +455,7 @@ Phx.vista.SolicitudDet=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_partida', type: 'numeric'},
 		{name:'id_orden_trabajo', type: 'numeric'},
 		{name:'precio_sg', type: 'numeric'},
-		{name:'id_concepto_gasto', type: 'numeric'},
+		{name:'id_concepto_ingas', type: 'numeric'},
 		{name:'id_cuenta', type: 'numeric'},
 		{name:'precio_total', type: 'numeric'},
 		{name:'cantidad', type: 'numeric'},
@@ -427,6 +471,13 @@ Phx.vista.SolicitudDet=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},
+		'desc_centro_costo','codigo_partida',
+		'nombre_partida','nro_cuenta',
+		'nombre_cuenta',
+		'codigo_auxiliar',
+		'nombre_auxiliar',
+		'desc_concepto_ingas',
+         'desc_orden_trabajo'
 		
 	],
 	sortInfo:{
@@ -442,8 +493,19 @@ Phx.vista.SolicitudDet=Ext.extend(Phx.gridInterfaz,{
        this.getComponente('id_centro_costo').store.baseParams.id_gestion=this.maestro.id_gestion
        this.getComponente('id_concepto_ingas').modificado = true;
        this.getComponente('id_centro_costo').modificado=true;
-        
        this.load({params:{start:0, limit:50}});
+       
+       
+         this.cmpPrecioUnitario.currencyChar = this.maestro.desc_moneda+' ';   
+         this.cmpPrecioTotal.currencyChar = this.maestro.desc_moneda+' ';
+         this.cmpCantidad.currencyChar = this.maestro.desc_moneda+' ';
+         this.cmpPrecioSg.currencyChar = this.maestro.desc_moneda+' ';
+         this.cmpPrecioGa.currencyChar = this.maestro.desc_moneda+' ';
+         
+        this.setColumnHeader('precio_unitario', this.cmpPrecioUnitario.fieldLabel +' '+this.maestro.desc_moneda)
+        this.setColumnHeader('precio_total', this.cmpPrecioTotal.fieldLabel +' '+this.maestro.desc_moneda)
+        this.setColumnHeader('precio_sg', this.cmpPrecioSg.fieldLabel +' '+this.maestro.desc_moneda)
+        this.setColumnHeader('precio_ga', this.cmpPrecioGa.fieldLabel +' '+this.maestro.desc_moneda)
         
     },
     loadValoresIniciales:function()
@@ -472,7 +534,7 @@ Phx.vista.SolicitudDet=Ext.extend(Phx.gridInterfaz,{
         } ,this);
         
          this.cmpCantidad.on('valid',function(field){
-            var pTot = this.cmpCantidad.getValue() *this.cmpPrecioUnitario.getValue();
+            var pTot = this.cmpCantidad.getValue() * this.cmpPrecioUnitario.getValue();
             this.cmpPrecioTotal.setValue(pTot);
              this.cmpPrecioGa.setValue(pTot);
              this.cmpPrecioSg.setValue(0);
@@ -490,7 +552,7 @@ Phx.vista.SolicitudDet=Ext.extend(Phx.gridInterfaz,{
      },
     
 	bdel:true,
-	bsave:true
+	bsave:false
 	}
 )
 </script>

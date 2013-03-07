@@ -17,7 +17,12 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
     	//llama al constructor de la clase padre
 		Phx.vista.Solicitud.superclass.constructor.call(this,config);
 		this.init();
-		this.load({params:{start:0, limit:50}})
+		this.load({params:{start:0, limit:50}});
+		
+		this.addButton('fin_requerimiento',{text:'Finalizar',iconCls: 'badelante',disabled:true,handler:this.fin_requerimiento,tooltip: '<b>Finalizar</b>'});
+        
+		
+		
 	},
 			
 	Atributos:[
@@ -225,7 +230,7 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 			config:{
 				name: 'fecha_soli',
 				fieldLabel: 'Fecha Sol.',
-				allowBlank: true,
+				allowBlank: false,
 				gwidth: 100,
 						format: 'd/m/Y', 
 						renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
@@ -531,6 +536,58 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 		'id_proceso_macro'
 		
 	],
+	
+	fin_requerimiento:function()
+        {                   
+            var v_id_solicitud = this.sm.getSelected().data.id_solicitud;
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                // form:this.form.getForm().getEl(),
+                url:'../../sis_adquisiciones/control/Solicitud/insertarFinalizarSolicitud',
+                params:{id_solicitud:v_id_solicitud,operacion:'siguiente',tipo_operacion:'cambiar_estado'},
+                success:this.successSinc,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });     
+        },
+	   successSinc:function(resp){
+            
+            Phx.CP.loadingHide();
+            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+            if(!reg.ROOT.error){
+                alert(reg.ROOT.detalle.mensaje)
+                
+            }else{
+                
+                alert('ocurrio un error durante el proceso')
+            }
+            this.reload();
+            
+        },
+    preparaMenu:function(n){
+      var data = this.getSelectedData();
+      var tb =this.tbar;
+          if(data['estado']=='Borrador'){
+                this.getBoton('fin_requerimiento').enable();
+               
+          }
+          else{
+               this.getBoton('fin_requerimiento').disable();
+          }
+          
+        Phx.vista.Solicitud.superclass.preparaMenu.call(this,n);  
+         return tb 
+     }, 
+     liberaMenu:function(){
+        var tb = Phx.vista.Solicitud.superclass.liberaMenu.call(this);
+        if(tb){
+            this.getBoton('fin_requerimiento').disable();
+           
+        }
+        return tb
+    },    
+        
 	south:
           { 
           url:'../../../sis_adquisiciones/vista/solicitud_det/SolicitudDet.php',
@@ -543,7 +600,7 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 		direction: 'ASC'
 	},
 	bdel:true,
-	bsave:true
+	bsave:false
 	}
 )
 </script>

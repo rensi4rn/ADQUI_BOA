@@ -30,6 +30,7 @@ CREATE TABLE adq.tdocumento_sol(
 	  id_proceso_macro INTEGER NOT NULL, 
 	  id_gestion INTEGER NOT NULL, 
 	  id_funcionario_aprobador INTEGER, 
+	  id_funcionario_rpc INTEGER, 
 	  id_depto INTEGER NOT NULL, 
 	  id_estado_wf INTEGER,
 	  id_proceso_wf INTEGER,  

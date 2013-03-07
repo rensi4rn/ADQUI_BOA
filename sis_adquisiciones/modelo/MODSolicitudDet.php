@@ -28,7 +28,7 @@ class MODSolicitudDet extends MODbase{
 		$this->captura('id_partida','int4');
 		$this->captura('id_orden_trabajo','int4');
 		$this->captura('precio_sg','numeric');
-		$this->captura('id_concepto_gasto','int4');
+		$this->captura('id_concepto_ingas','int4');
 		$this->captura('id_cuenta','int4');
 		$this->captura('precio_total','numeric');
 		$this->captura('cantidad','int4');
@@ -43,6 +43,17 @@ class MODSolicitudDet extends MODbase{
 		$this->captura('id_usuario_mod','int4');
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
+		
+		$this->captura('desc_centro_costo','text');
+        $this->captura('codigo_partida','varchar');
+        $this->captura('nombre_partida','varchar');
+        $this->captura('nro_cuenta','varchar');
+        $this->captura('nombre_cuenta','varchar');
+        $this->captura('codigo_auxiliar','varchar');
+        $this->captura('nombre_auxiliar','varchar');
+        $this->captura('desc_concepto_ingas','varchar');
+        
+        $this->captura('desc_orden_trabajo','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -63,15 +74,12 @@ class MODSolicitudDet extends MODbase{
 		$this->setParametro('descripcion','descripcion','text');
 		$this->setParametro('precio_unitario','precio_unitario','numeric');
 		$this->setParametro('id_solicitud','id_solicitud','int4');
-		
 		$this->setParametro('id_orden_trabajo','id_orden_trabajo','int4');
 		$this->setParametro('precio_sg','precio_sg','numeric');
+		$this->setParametro('precio_ga','precio_ga','numeric');
 		$this->setParametro('id_concepto_ingas','id_concepto_ingas','int4');
-		
 		$this->setParametro('precio_total','precio_total','numeric');
-		
-		$this->setParametro('cantidad','cantidad_sol','int4');
-		
+		$this->setParametro('cantidad_sol','cantidad','int4');
 		$this->setParametro('estado_reg','estado_reg','varchar');
 		
 
@@ -97,9 +105,10 @@ class MODSolicitudDet extends MODbase{
         $this->setParametro('id_solicitud','id_solicitud','int4');
         $this->setParametro('id_orden_trabajo','id_orden_trabajo','int4');
         $this->setParametro('precio_sg','precio_sg','numeric');
+        $this->setParametro('precio_ga','precio_ga','numeric');
         $this->setParametro('id_concepto_ingas','id_concepto_ingas','int4');
         $this->setParametro('precio_total','precio_total','numeric');
-        $this->setParametro('cantidad','cantidad','int4');
+        $this->setParametro('cantidad_sol','cantidad','int4');
         $this->setParametro('estado_reg','estado_reg','varchar');
         
 

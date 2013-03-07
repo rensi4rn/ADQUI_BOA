@@ -85,7 +85,7 @@ BEGIN
 			id_partida,
 			id_orden_trabajo,
 			precio_sg,
-			id_concepto_gasto,
+			id_concepto_ingas,
 			id_cuenta,
 			precio_total,
 			cantidad,
@@ -95,6 +95,7 @@ BEGIN
 		
 		
 			precio_ga,
+            precio_gs,
 			id_usuario_reg,
 			fecha_reg,
 			fecha_mod,
@@ -106,11 +107,12 @@ BEGIN
 			v_parametros.id_solicitud,
 			v_id_partida,
 			v_parametros.id_orden_trabajo,
-			v_parametros.precio_sg,
+			v_parametros.precio_ga,
+            v_parametros.precio_sg,
 			v_parametros.id_concepto_ingas,
 			v_id_cuenta,
 			v_parametros.precio_total,
-			v_parametros.cantidad,
+			v_parametros.cantidad_sol,
 			v_id_auxiliar,
 			0,--v_parametros.precio_presupuestado_mb,
 			'activo',
@@ -143,24 +145,40 @@ BEGIN
 	elsif(p_transaccion='ADQ_SOLD_MOD')then
 
 		begin
+        
+             --obtener partida, cuenta auxiliar del concepto de gasto
+            
+          
+            
+            SELECT ps_id_partida, 
+                   ps_id_cuenta, 
+                   ps_id_auxiliar 
+             into
+                   v_id_partida, 
+                   v_id_cuenta, 
+                   v_id_auxiliar       
+            FROM pre.f_obtener_partida_cuenta_cig(v_parametros.id_concepto_ingas, v_parametros.id_centro_costo);
+            
+            
+        
+        
 			--Sentencia de la modificacion
 			update adq.tsolicitud_det set
 			id_centro_costo = v_parametros.id_centro_costo,
 			descripcion = v_parametros.descripcion,
 			precio_unitario = v_parametros.precio_unitario,
 			id_solicitud = v_parametros.id_solicitud,
-			id_partida = v_parametros.id_partida,
+			id_partida = v_id_partida,
 			id_orden_trabajo = v_parametros.id_orden_trabajo,
 			precio_sg = v_parametros.precio_sg,
-			id_concepto_gasto = v_parametros.id_concepto_gasto,
-			id_cuenta = v_parametros.id_cuenta,
+            precio_ga = v_parametros.precio_ga,
+			id_concepto_ingas = v_parametros.id_concepto_ingas,
+			id_cuenta = v_id_cuenta,
 			precio_total = v_parametros.precio_total,
-			cantidad = v_parametros.cantidad,
-			id_auxiliar = v_parametros.id_auxiliar,
-			precio_presupuestado_mb = v_parametros.precio_presupuestado_mb,
-			id_partida_ejecucion = v_parametros.id_partida_ejecucion,
-			numero = v_parametros.numero,
-			precio_ga = v_parametros.precio_ga,
+			cantidad = v_parametros.cantidad_sol,
+			id_auxiliar = v_id_auxiliar,
+			
+            
 			fecha_mod = now(),
 			id_usuario_mod = p_id_usuario
 			where id_solicitud_det=v_parametros.id_solicitud_det;
