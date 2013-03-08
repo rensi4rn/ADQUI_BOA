@@ -185,7 +185,7 @@ class MODSolicitud extends MODbase{
                 
         //Define los parametros para la funcion
         $this->setParametro('id_solicitud','id_solicitud','int4');
-        $this->setParametro('operacion','operacion','verificar');
+        $this->setParametro('operacion','operacion','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

@@ -70,6 +70,7 @@ CREATE TABLE adq.tsolicitud_det(
     precio_ga numeric(19, 2),
     precio_sg numeric(19, 2),
     precio_ga_mb numeric(19,2),
+    precio_sg_mb numeric(19,2),
     descripcion text,
     PRIMARY KEY (id_solicitud_det))INHERITS (pxp.tbase);
     

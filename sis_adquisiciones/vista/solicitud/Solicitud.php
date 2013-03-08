@@ -23,6 +23,102 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
         
 		this.iniciarEventos();
 		
+		//agrega ventana para selecion de RPC
+		
+	        
+        this.formUC = new Ext.form.FormPanel({
+        baseCls: 'x-plain',
+        autoDestroy: true,
+        labelWidth: 55,
+        layout: {
+            type: 'vbox',
+            align: 'stretch'  // Child items are stretched to full width
+        },
+       
+
+        items: [{
+                xtype: 'combo',
+                name: 'id_funcionario_rpc',
+                fieldLabel: 'RPC',
+                allowBlank: false,
+                emptyText:'Elija un funcionario',
+                store:new Ext.data.JsonStore(
+                {
+                    url: '../../sis_adquisiciones/control/SOlicitud/listarRPC',
+                    id: 'id_funcionario',
+                    root:'datos',
+                    sortInfo:{
+                        field:'prioridad',
+                        direction:'ASC'
+                    },
+                    totalProperty:'total',
+                    fields: ['id_funcionario','desc_funcionario','prioridad'],
+                    // turn on remote sorting
+                    remoteSort: true,
+                    baseParams:{par_filtro:'desc_funcionario'}
+                }),
+                valueField: 'id_uni_cons',
+                displayField: 'nombre',
+                forceSelection:true,
+                typeAhead: false,
+                triggerAction: 'all',
+                lazyRender:true,
+                mode:'remote',
+                pageSize:20,
+                queryDelay:500,
+                width:210,
+                gwidth:220,
+                minChars:2
+            },{
+                xtype: 'textfield',
+                name: 'codigo_uni_cons',
+                fieldLabel: 'Código',
+                allowBlank: false,              
+            }]
+    });
+    
+    
+     var cmbUC =this.formUC.getForm().findField('id_uni_cons');
+     var codigo =this.formUC.getForm().findField('codigo_uni_cons');
+    
+      cmbUC.on('select',function(c,a,d){ console.log(c,a,d);codigo.setValue(a.data.codigo)})
+    
+    
+     this.wUC = new Ext.Window({
+        title: 'Compose message',
+        collapsible: true,
+        maximizable: true,
+         autoDestroy: true,
+        width: 350,
+        height: 200,
+        layout: 'fit',
+        plain: true,
+        bodyStyle: 'padding:5px;',
+        buttonAlign: 'center',
+        items: this.formUC,
+        modal:true,
+         closeAction: 'hide',
+        buttons: [{
+            text: 'Guardar',
+             handler:this.onAddUniCons,
+            scope:this
+            
+        },{
+            text: 'Cancelar',
+            handler:function(){this.wUC.hide()},
+            scope:this
+        }]
+    });
+        
+        
+   //quita la opcion de dmover marcador al cerrar la ventana
+    this.window.on('hide',function(){Phx.CP.getPagina(this.idContenedor+'-east').marker.setDraggable(false)},this);
+            
+        
+		
+		
+		
+		
 	},
 			
 	Atributos:[
@@ -548,7 +644,6 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 	    this.cmpIdUo = this.getComponente('id_uo');
 	    this.cmpIdFuncionarioAprobador = this.getComponente('id_funcionario_aprobador');
 	    
-	    console.log( 'fun ',this.cmpIdFuncionarioAprobador,this.getComponente('id_funcionario_aprobador'), this.cmpIdUo,this.cmpIdGestion)
 	    //inicio de eventos 
 	    this.cmpFechaSoli.on('change',function(f){
 	         this.obtenerGestion(f);
@@ -611,7 +706,10 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
             Phx.CP.loadingHide();
             var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
             if(!reg.ROOT.error){
-                alert(reg.ROOT.detalle.mensaje)
+                
+                
+                
+               console.log(reg.ROOT)
                 
             }else{
                 
