@@ -55,7 +55,6 @@ $body$
 						cuenta_flujo_sigma,
 						cuenta_sigma,
 						desc_cuenta,
-						descripcion,
 						estado_reg,
 						fecha_mod,
 						fecha_reg,
@@ -74,23 +73,18 @@ $body$
 						nivel_cuenta,
 						nombre_cuenta,
 						nro_cuenta,
-						obs,
-						plantilla,
 						sw_auxiliar,
 						sw_oec,
 						sw_sigma,
 						sw_sistema_actualizacion,
 						sw_transaccional,
 						tipo_cuenta,
-						tipo_cuenta_pat,
-						tipo_plantilla,
-						vigente)
+						tipo_cuenta_pat)
 				VALUES (
 						p_id_cuenta,
 						p_cuenta_flujo_sigma,
 						p_cuenta_sigma,
 						p_desc_cuenta,
-						p_descripcion,
 						p_estado_reg,
 						p_fecha_mod,
 						p_fecha_reg,
@@ -109,17 +103,13 @@ $body$
 						p_nivel_cuenta,
 						p_nombre_cuenta,
 						p_nro_cuenta,
-						p_obs,
-						p_plantilla,
 						p_sw_auxiliar,
 						p_sw_oec,
 						p_sw_sigma,
 						p_sw_sistema_actualizacion,
 						p_sw_transaccional,
 						p_tipo_cuenta,
-						p_tipo_cuenta_pat,
-						p_tipo_plantilla,
-						p_vigente);
+						p_tipo_cuenta_pat);
 
 						       
 							    ELSEIF  v_operacion = 'UPDATE' THEN
@@ -128,7 +118,6 @@ $body$
 						                SET						 cuenta_flujo_sigma=p_cuenta_flujo_sigma
 						 ,cuenta_sigma=p_cuenta_sigma
 						 ,desc_cuenta=p_desc_cuenta
-						 ,descripcion=p_descripcion
 						 ,estado_reg=p_estado_reg
 						 ,fecha_mod=p_fecha_mod
 						 ,fecha_reg=p_fecha_reg
@@ -147,8 +136,6 @@ $body$
 						 ,nivel_cuenta=p_nivel_cuenta
 						 ,nombre_cuenta=p_nombre_cuenta
 						 ,nro_cuenta=p_nro_cuenta
-						 ,obs=p_obs
-						 ,plantilla=p_plantilla
 						 ,sw_auxiliar=p_sw_auxiliar
 						 ,sw_oec=p_sw_oec
 						 ,sw_sigma=p_sw_sigma
@@ -156,8 +143,6 @@ $body$
 						 ,sw_transaccional=p_sw_transaccional
 						 ,tipo_cuenta=p_tipo_cuenta
 						 ,tipo_cuenta_pat=p_tipo_cuenta_pat
-						 ,tipo_plantilla=p_tipo_plantilla
-						 ,vigente=p_vigente
 						 WHERE id_cuenta=p_id_cuenta;
 
 						       
