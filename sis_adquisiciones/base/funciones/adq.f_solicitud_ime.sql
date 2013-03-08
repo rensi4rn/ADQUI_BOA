@@ -12,7 +12,7 @@ $body$
  SISTEMA:		Adquisiciones
  FUNCION: 		adq.f_solicitud_ime
  DESCRIPCION:   Funcion que gestiona las operaciones basicas (inserciones, modificaciones, eliminaciones de la tabla 'adq.tsolicitud'
- AUTOR: 		 (admin)
+ AUTOR: 		 (RAC)
  FECHA:	        19-02-2013 12:12:51
  COMENTARIOS:	
 ***************************************************************************
@@ -49,7 +49,7 @@ BEGIN
 	/*********************************    
  	#TRANSACCION:  'ADQ_SOL_INS'
  	#DESCRIPCION:	Insercion de registros
- 	#AUTOR:		admin	
+ 	#AUTOR:		RAC	
  	#FECHA:		19-02-2013 12:12:51
 	***********************************/
 
@@ -99,9 +99,7 @@ BEGIN
         END IF;
         
         -- inciiar el tramite en el sistema de WF
-        
-      -- raise exception '%- % -% -% -%',p_id_usuario,v_parametros.id_gestion,v_codigo_tipo_proceso,v_parametros.id_funcionario, v_parametros.fecha_soli;
-        SELECT 
+       SELECT 
              ps_num_tramite ,
              ps_id_proceso_wf ,
              ps_id_estado_wf ,
@@ -119,6 +117,7 @@ BEGIN
              v_parametros.id_funcionario, 
              v_parametros.fecha_soli);
         
+        -- obtiene el funcionario aprobador
         
         
         	insert into adq.tsolicitud(
@@ -127,7 +126,7 @@ BEGIN
 			--presu_revertido,
 			--fecha_apro,
 			estado,
-		--	id_funcionario_aprobador,
+			id_funcionario_aprobador,
 			id_moneda,
 			id_gestion,
 			tipo,
@@ -156,7 +155,7 @@ BEGIN
 			--v_parametros.presu_revertido,
 			--v_parametros.fecha_apro,
 			v_nombre_estado,
-			--v_parametros.id_funcionario_aprobador,
+			v_parametros.id_funcionario_aprobador,
 			v_parametros.id_moneda,
 			v_parametros.id_gestion,
 			v_parametros.tipo,
@@ -194,7 +193,7 @@ BEGIN
 	/*********************************    
  	#TRANSACCION:  'ADQ_SOL_MOD'
  	#DESCRIPCION:	Modificacion de registros
- 	#AUTOR:		admin	
+ 	#AUTOR:		RAC	
  	#FECHA:		19-02-2013 12:12:51
 	***********************************/
 
@@ -207,7 +206,7 @@ BEGIN
 			--presu_revertido = v_parametros.presu_revertido,
 			--fecha_apro = v_parametros.fecha_apro,
 			--estado = v_parametros.estado,
-			--id_funcionario_aprobador = v_parametros.id_funcionario_aprobador,
+			id_funcionario_aprobador = v_parametros.id_funcionario_aprobador,
 			id_moneda = v_parametros.id_moneda,
 			id_gestion = v_parametros.id_gestion,
 			tipo = v_parametros.tipo,
@@ -242,7 +241,7 @@ BEGIN
 	/*********************************    
  	#TRANSACCION:  'ADQ_SOL_ELI'
  	#DESCRIPCION:	Eliminacion de registros
- 	#AUTOR:		admin	
+ 	#AUTOR:		RAC	
  	#FECHA:		19-02-2013 12:12:51
 	***********************************/
 
@@ -261,8 +260,37 @@ BEGIN
             return v_resp;
 
 		end;
-         
-	else
+        
+     /*********************************    
+ 	#TRANSACCION:  'ADQ_FINSOL_IME'
+ 	#DESCRIPCION:	Finalizar solicitud de Compras
+ 	#AUTOR:		RAC	
+ 	#FECHA:		19-02-2013 12:12:51
+	***********************************/
+
+	elseif(p_transaccion='ADQ_FINSOL_IME')then   
+        begin
+        
+          IF  v_parametros.operacion = 'verificar' THEN
+          
+              select sum(sd.precio_total) 
+              from adq.tsolicitud_det sd
+              where sd.id_solicitud = v_parametros.id_solicitud
+              and sd.estado_reg = 'activo';
+          
+          ELSE
+          
+          
+          
+          
+          END IF;
+        
+        
+        
+        
+        end;   
+    
+    else
      
     	raise exception 'Transaccion inexistente: %',p_transaccion;
 

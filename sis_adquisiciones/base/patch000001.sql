@@ -34,7 +34,7 @@ CREATE TABLE adq.tdocumento_sol(
 	  id_depto INTEGER NOT NULL, 
 	  id_estado_wf INTEGER,
 	  id_proceso_wf INTEGER,  
-	 
+	  numero varchar(100)
 	  extendida VARCHAR(2), 
 	  tipo VARCHAR(50), 
 	  estado VARCHAR(50), 
@@ -63,13 +63,13 @@ CREATE TABLE adq.tsolicitud_det(
     id_concepto_ingas int4 NOT NULL,
     id_partida_ejecucion int4,
     id_orden_trabajo int4,
-    numero varchar(30),
+   
     precio_unitario numeric(19, 2),
     cantidad int4,
     precio_total numeric(19, 2),
     precio_ga numeric(19, 2),
     precio_sg numeric(19, 2),
-    precio_presupuestado_mb numeric(19, 2),
+    precio_ga_mb numeric(19,2),
     descripcion text,
     PRIMARY KEY (id_solicitud_det))INHERITS (pxp.tbase);
     

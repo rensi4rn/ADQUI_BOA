@@ -36,6 +36,9 @@ DECLARE
     v_id_partida integer;
     v_id_cuenta integer;
     v_id_auxiliar integer;
+    v_id_moneda integer;
+    v_fecha_soli date;
+    v_monto_mb numeric;
     
     
 			    
@@ -54,6 +57,14 @@ BEGIN
 	if(p_transaccion='ADQ_SOLD_INS')then
 					
         begin
+        
+           -- obtener parametros de solicitud
+            
+            select s.id_moneda, s.fecha_soli  into v_id_moneda, v_fecha_soli
+            from adq.tsolicitud s
+            where  s.id_solicitud = v_parametros.id_solicitud;
+        
+        
             --obtener partida, cuenta auxiliar del concepto de gasto
             
           
@@ -68,9 +79,17 @@ BEGIN
             FROM pre.f_obtener_partida_cuenta_cig(v_parametros.id_concepto_ingas, v_parametros.id_centro_costo);
             
             
-            --obetener el precio en la moenda base del sistema
+            --obetener el precio en la moneda base del sistema
             
+         
             
+            v_monto_mb= param.f_convertir_moneda(
+                          v_id_moneda, 
+                          NULL,   --por defecto moenda base
+                          v_parametros.precio_ga, 
+                          v_fecha_soli, 
+                          'O',-- tipo oficial, venta, compra 
+                           NULL);--defecto dos decimales
             
             
         
@@ -84,7 +103,7 @@ BEGIN
 			id_solicitud,
 			id_partida,
 			id_orden_trabajo,
-			precio_sg,
+			
 			id_concepto_ingas,
 			id_cuenta,
 			precio_total,
@@ -95,11 +114,14 @@ BEGIN
 		
 		
 			precio_ga,
-            precio_gs,
+            precio_sg,
 			id_usuario_reg,
 			fecha_reg,
 			fecha_mod,
-			id_usuario_mod
+			id_usuario_mod,
+            precio_ga_mb
+            
+            
           	) values(
 			v_parametros.id_centro_costo,
 			v_parametros.descripcion,
@@ -107,8 +129,7 @@ BEGIN
 			v_parametros.id_solicitud,
 			v_id_partida,
 			v_parametros.id_orden_trabajo,
-			v_parametros.precio_ga,
-            v_parametros.precio_sg,
+			
 			v_parametros.id_concepto_ingas,
 			v_id_cuenta,
 			v_parametros.precio_total,
@@ -117,12 +138,13 @@ BEGIN
 			0,--v_parametros.precio_presupuestado_mb,
 			'activo',
 		
-		
-			0,--v_parametros.precio_ga,
+		    v_parametros.precio_ga,
+            v_parametros.precio_sg,
 			p_id_usuario,
 			now(),
 			null,
-			null
+			null,
+            v_monto_mb
 							
 			)RETURNING id_solicitud_det into v_id_solicitud_det;
 			
@@ -146,11 +168,15 @@ BEGIN
 
 		begin
         
+            -- obtener parametros de solicitud
+            
+            select s.id_moneda, s.fecha_soli  into v_id_moneda, v_fecha_soli
+            from adq.tsolicitud s
+            where  s.id_solicitud = v_parametros.id_solicitud;
+        
              --obtener partida, cuenta auxiliar del concepto de gasto
             
-          
-            
-            SELECT ps_id_partida, 
+           SELECT ps_id_partida, 
                    ps_id_cuenta, 
                    ps_id_auxiliar 
              into
@@ -159,7 +185,13 @@ BEGIN
                    v_id_auxiliar       
             FROM pre.f_obtener_partida_cuenta_cig(v_parametros.id_concepto_ingas, v_parametros.id_centro_costo);
             
-            
+             v_monto_mb= param.f_convertir_moneda(
+                          v_id_moneda, 
+                          NULL,   --por defecto moenda base
+                          v_parametros.precio_ga, 
+                          v_fecha_soli, 
+                          'O',-- tipo oficial, venta, compra 
+                           NULL);--defecto dos decimales
         
         
 			--Sentencia de la modificacion
@@ -172,6 +204,7 @@ BEGIN
 			id_orden_trabajo = v_parametros.id_orden_trabajo,
 			precio_sg = v_parametros.precio_sg,
             precio_ga = v_parametros.precio_ga,
+            precio_ga_mb=v_monto_mb,
 			id_concepto_ingas = v_parametros.id_concepto_ingas,
 			id_cuenta = v_id_cuenta,
 			precio_total = v_parametros.precio_total,

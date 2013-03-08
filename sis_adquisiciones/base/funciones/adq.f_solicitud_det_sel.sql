@@ -60,7 +60,7 @@ BEGIN
 						sold.precio_total,
 						sold.cantidad,
 						sold.id_auxiliar,
-						sold.precio_presupuestado_mb,
+						sold.precio_ga_mb,
 						sold.estado_reg,
 						sold.id_partida_ejecucion,
 						

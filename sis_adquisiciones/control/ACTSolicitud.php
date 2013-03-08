@@ -39,6 +39,12 @@ class ACTSolicitud extends ACTbase{
 		$this->res=$this->objFunc->eliminarSolicitud($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+	
+	function finalizarSolicitud(){
+            $this->objFunc=$this->create('MODSolicitud');   
+        $this->res=$this->objFunc->finalizarSolicitud($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
 			
 }
 

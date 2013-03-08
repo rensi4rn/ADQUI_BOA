@@ -33,7 +33,7 @@ class MODSolicitudDet extends MODbase{
 		$this->captura('precio_total','numeric');
 		$this->captura('cantidad','int4');
 		$this->captura('id_auxiliar','int4');
-		$this->captura('precio_presupuestado_mb','numeric');
+		$this->captura('precio_ga_mb','numeric');
 		$this->captura('estado_reg','varchar');
 		$this->captura('id_partida_ejecucion','int4');
 		$this->captura('precio_ga','numeric');

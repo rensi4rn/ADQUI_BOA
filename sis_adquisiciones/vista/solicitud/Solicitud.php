@@ -11,17 +11,17 @@ header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
 Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
-
+   
 	constructor:function(config){
 		this.maestro=config.maestro;
     	//llama al constructor de la clase padre
 		Phx.vista.Solicitud.superclass.constructor.call(this,config);
 		this.init();
-		this.load({params:{start:0, limit:50}});
+		this.load({params:{start:0, limit:this.tam_pag}});
 		
 		this.addButton('fin_requerimiento',{text:'Finalizar',iconCls: 'badelante',disabled:true,handler:this.fin_requerimiento,tooltip: '<b>Finalizar</b>'});
         
-		
+		this.iniciarEventos();
 		
 	},
 			
@@ -35,7 +35,17 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 			},
 			type:'Field',
 			form:true 
-		},{
+		},
+		{
+            //configuracion del componente
+            config:{
+                    labelSeparator:'',
+                    inputType:'hidden',
+                    name: 'id_gestion'
+            },
+            type:'Field',
+            form:true 
+        },{
 			config:{
 				name: 'estado',
 				fieldLabel: 'estado',
@@ -120,25 +130,22 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 			},
 			grid: true,
 			form: true
-		},		
-		   {
-			config:{
-				name: 'id_gestion',
-				origen:'GESTION',
-	   			tinit:false,
-				fieldLabel: 'Gestion',
-				gdisplayField:'desc_gestion',//mapea al store del grid
-				allowBlank:false,
-				
-				gwidth: 100,
-				renderer:function (value, p, record){return String.format('{0}', record.data['desc_gestion']);}
-			},
-			type:'ComboRec',
-			filters:{pfiltro:'ges.gestion',type:'string'},
-			id_grupo:1,
-			grid:true,
-			form:true
 		},
+        {
+            config:{
+                name: 'fecha_soli',
+                fieldLabel: 'Fecha Sol.',
+                allowBlank: false,
+                gwidth: 100,
+                        format: 'd/m/Y', 
+                        renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
+            },
+            type:'DateField',
+            filters:{pfiltro:'sol.fecha_soli',type:'date'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        },
 		{
    			config:{
    				name:'id_depto',
@@ -196,6 +203,7 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
           		origen:'UO',
    				fieldLabel:'UO',
    				gdisplayField:'desc_uo',//mapea al store del grid
+   				 disabled:true,
    			    gwidth:200,
    			     renderer:function (value, p, record){return String.format('{0}', record.data['desc_uo']);}
        	     },
@@ -207,11 +215,34 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 			},
    		     grid:true,
    			form:true
-   	      },		
+   	      },
+   	      
+         {
+            config:{
+                name:'id_funcionario_aprobador',
+                hiddenName: 'id_funcionario_aprobador',
+                origen:'FUNCIONARIOCAR',
+                fieldLabel:'Supervisor',
+                allowBlank:false,
+                disabled:true,
+                gwidth:200,
+                valueField: 'id_funcionario',
+                gdisplayField: 'desc_funcionario_apro',
+                renderer:function(value, p, record){return String.format('{0}', record.data['desc_funcionario_apro']);}
+             },
+            type:'ComboRec',//ComboRec
+            filters:{pfiltro:'funcioa.desc_funcionario1',type:'string'},
+            id_grupo:0,
+            grid:true,
+            form:true
+         },
+   	      
+   	    		
 		 {
    			config:{
        		    name:'id_moneda',
           		origen:'MONEDA',
+          		 allowBlank:false,
    				fieldLabel:'Moneda',
    				gdisplayField:'desc_moneda',//mapea al store del grid
    			    gwidth:200,
@@ -225,38 +256,9 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 			},
    		    grid:true,
    			form:true
-   	      },
-		{
-			config:{
-				name: 'fecha_soli',
-				fieldLabel: 'Fecha Sol.',
-				allowBlank: false,
-				gwidth: 100,
-						format: 'd/m/Y', 
-						renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
-			},
-			type:'DateField',
-			filters:{pfiltro:'sol.fecha_soli',type:'date'},
-			id_grupo:1,
-			grid:true,
-			form:true
-		}
+   	      }
 		,
-		{
-			config:{
-				name: 'id_funcionario_aprobador',
-				fieldLabel: 'id_funcionario_aprobador',
-				allowBlank: false,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:4
-			},
-			type:'NumberField',
-			filters:{pfiltro:'sol.id_funcionario_aprobador',type:'numeric'},
-			id_grupo:1,
-			grid:true,
-			form:false
-		},
+		
 		{
 			config:{
 				name: 'fecha_apro',
@@ -537,14 +539,67 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 		
 	],
 	
+	iniciarEventos:function(){
+	    
+	    this.cmpFechaSoli = this.getComponente('fecha_soli');
+	    this.cmpIdDepto = this.getComponente('id_depto');
+	    this.cmpIdProcesoMacro = this.getComponente('id_proceso_macro');
+	    this.cmpIdGestion = this.getComponente('id_gestion');
+	    this.cmpIdUo = this.getComponente('id_uo');
+	    this.cmpIdFuncionarioAprobador = this.getComponente('id_funcionario_aprobador');
+	    
+	    console.log( 'fun ',this.cmpIdFuncionarioAprobador,this.getComponente('id_funcionario_aprobador'), this.cmpIdUo,this.cmpIdGestion)
+	    //inicio de eventos 
+	    this.cmpFechaSoli.on('change',function(f){
+	         this.obtenerGestion(f);
+	         this.cmpIdUo.reset();
+	         this.cmpIdFuncionarioAprobador.reset();
+	         this.cmpIdUo.enable();
+	         
+	         },this);
+	    
+	    this.cmpIdUo.on('select',function(){   
+	        this.cmpIdFuncionarioAprobador.store.baseParams.id_uo=this.cmpIdUo.getValue();
+	        this.cmpIdFuncionarioAprobador.store.baseParams.fecha = this.cmpFechaSoli.getValue().dateFormat(this.cmpFechaSoli.format);
+	        this.cmpIdFuncionarioAprobador.modificado=true;
+	        this.cmpIdFuncionarioAprobador.reset();
+	        this.cmpIdFuncionarioAprobador.enable();
+	       },this);
+	  
+	},
+	
+	onButtonNew:function(){
+	    
+	   this.cmpFechaSoli.enable();
+	   this.cmpIdDepto.enable(); 
+	    this.cmpIdProcesoMacro.enable(); 
+       
+       this.cmpIdFuncionarioAprobador.disable();
+       this.cmpIdUo.disable();
+       Phx.vista.Solicitud.superclass.onButtonNew.call(this);
+           
+    },
+    onButtonEdit:function(){
+       this.cmpFechaSoli.disable();
+       this.cmpIdDepto.disable(); 
+       this.cmpIdProcesoMacro.disable(); 
+       
+       this.cmpIdFuncionarioAprobador.disable();
+       this.cmpIdUo.disable();
+       Phx.vista.Solicitud.superclass.onButtonEdit.call(this);
+           
+    },
+    
+	
+	
 	fin_requerimiento:function()
         {                   
             var v_id_solicitud = this.sm.getSelected().data.id_solicitud;
             Phx.CP.loadingShow();
             Ext.Ajax.request({
                 // form:this.form.getForm().getEl(),
-                url:'../../sis_adquisiciones/control/Solicitud/insertarFinalizarSolicitud',
-                params:{id_solicitud:v_id_solicitud,operacion:'siguiente',tipo_operacion:'cambiar_estado'},
+                url:'../../sis_adquisiciones/control/Solicitud/finalizarSolicitud',
+                params:{id_solicitud:v_id_solicitud,operacion:'verificar'},
                 success:this.successSinc,
                 failure: this.conexionFailure,
                 timeout:this.timeout,
@@ -565,6 +620,36 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
             this.reload();
             
         },
+     
+     obtenerGestion:function(x){
+         
+         var fecha = x.getValue().dateFormat(x.format);
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                    // form:this.form.getForm().getEl(),
+                    url:'../../sis_parametros/control/Gestion/obtenerGestionByFecha',
+                    params:{fecha:fecha},
+                    success:this.successGestion,
+                    failure: this.conexionFailure,
+                    timeout:this.timeout,
+                    scope:this
+             });
+        }, 
+    successGestion:function(resp){
+       Phx.CP.loadingHide();
+            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+            if(!reg.ROOT.error){
+                
+                this.cmpIdGestion.setValue(reg.ROOT.datos.id_gestion);
+                
+               
+            }else{
+                
+                alert('ocurrio al obtener la gestion')
+            } 
+    },
+           
+        
     preparaMenu:function(n){
       var data = this.getSelectedData();
       var tb =this.tbar;

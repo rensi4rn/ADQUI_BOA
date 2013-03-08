@@ -85,7 +85,8 @@ BEGIN
 						dep.codigo as desc_depto,
                         pm.nombre as desc_proceso_macro,
                         cat.nombre as desc_categoria_compra,
-                        sol.id_proceso_macro
+                        sol.id_proceso_macro,
+                        sol.numero
                         	
 						from adq.tsolicitud sol
 						inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg

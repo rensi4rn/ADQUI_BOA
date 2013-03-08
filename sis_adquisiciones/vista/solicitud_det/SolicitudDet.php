@@ -460,7 +460,7 @@ Phx.vista.SolicitudDet=Ext.extend(Phx.gridInterfaz,{
 		{name:'precio_total', type: 'numeric'},
 		{name:'cantidad', type: 'numeric'},
 		{name:'id_auxiliar', type: 'numeric'},
-		{name:'precio_presupuestado_mb', type: 'numeric'},
+		{name:'precio_ga_mb', type: 'numeric'},
 		{name:'estado_reg', type: 'string'},
 		{name:'id_partida_ejecucion', type: 'numeric'},
 		{name:'numero', type: 'string'},
