@@ -63,7 +63,7 @@ FROM
 						        
 						        -- inserta en el destino
 						      
-						            v_cadena_resp = migracion.f_trans_tpr_presupuesto_tcentro_costo(
+						            v_cadena_resp = migracion.f_trans_tpr_presupuesto_tcentro_costo_tpresupuesto(
 						            'INSERT',g_registros.id_presupuesto
 					,g_registros.id_concepto_colectivo
 					,g_registros.id_fina_regi_prog_proy_acti

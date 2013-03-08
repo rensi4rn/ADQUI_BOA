@@ -34,7 +34,7 @@ CREATE TABLE adq.tdocumento_sol(
 	  id_depto INTEGER NOT NULL, 
 	  id_estado_wf INTEGER,
 	  id_proceso_wf INTEGER,  
-	  numero varchar(100)
+	  numero varchar(100),
 	  extendida VARCHAR(2), 
 	  tipo VARCHAR(50), 
 	  estado VARCHAR(50), 
