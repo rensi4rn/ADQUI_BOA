@@ -15,14 +15,22 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 	constructor:function(config){
 		this.maestro=config.maestro;
     	//llama al constructor de la clase padre
-		Phx.vista.Solicitud.superclass.constructor.call(this,config);
+		Phx.vista.Solicitud.superclass.constructor.call(this,config);		
 		this.init();
 		this.load({params:{start:0, limit:this.tam_pag}});
 		
 		this.addButton('fin_requerimiento',{text:'Finalizar',iconCls: 'badelante',disabled:true,handler:this.fin_requerimiento,tooltip: '<b>Finalizar</b>'});
         
+		this.addButton('btnReporte',{
+            text :'Reporte Solicitud de Compra',
+            iconCls : 'bpdf32',
+            disabled: true,
+            handler : this.onButtonSolicitud,
+            tooltip : '<b>Reporte Solicitud de Compra</b><br/><b>Reporte Solicitud de Compra</b>'
+  });
+  
 		this.iniciarEventos();
-		
+
 		//agrega ventana para selecion de RPC
 		
 	        
@@ -759,18 +767,36 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
                this.getBoton('fin_requerimiento').disable();
           }
           
-        Phx.vista.Solicitud.superclass.preparaMenu.call(this,n);  
+        Phx.vista.Solicitud.superclass.preparaMenu.call(this,n);
+        this.getBoton('btnReporte').setDisabled(false);  
          return tb 
      }, 
      liberaMenu:function(){
         var tb = Phx.vista.Solicitud.superclass.liberaMenu.call(this);
         if(tb){
             this.getBoton('fin_requerimiento').disable();
-           
+            this.getBoton('btnReporte').setDisabled(true);           
         }
         return tb
     },    
-        
+       
+	onButtonSolicitud:function(){
+	    var rec=this.sm.getSelected();
+                console.debug(rec);
+                Ext.Ajax.request({
+                    url:'../../sis_adquisiciones/control/Solicitud/reporteSolicitud',
+                    params:{'id_solicitud':rec.data.id_solicitud},
+                    success: this.successExport,
+                    failure: function() {
+                        console.log("fail");
+                    },
+                    timeout: function() {
+                        console.log("timeout");
+                    },
+                    scope:this
+                });  
+	},
+	
 	south:
           { 
           url:'../../../sis_adquisiciones/vista/solicitud_det/SolicitudDet.php',
@@ -778,6 +804,7 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
           height:'50%',
           cls:'SolicitudDet'
          },
+ 
 	sortInfo:{
 		field: 'id_solicitud',
 		direction: 'ASC'
