@@ -17,106 +17,10 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
     	//llama al constructor de la clase padre
 		Phx.vista.Solicitud.superclass.constructor.call(this,config);
 		this.init();
-		this.load({params:{start:0, limit:this.tam_pag}});
-		
-		this.addButton('fin_requerimiento',{text:'Finalizar',iconCls: 'badelante',disabled:true,handler:this.fin_requerimiento,tooltip: '<b>Finalizar</b>'});
-        
-		this.iniciarEventos();
-		
-		//agrega ventana para selecion de RPC
-		
-	        
-        this.formUC = new Ext.form.FormPanel({
-        baseCls: 'x-plain',
-        autoDestroy: true,
-        labelWidth: 55,
-        layout: {
-            type: 'vbox',
-            align: 'stretch'  // Child items are stretched to full width
-        },
-       
-
-        items: [{
-                xtype: 'combo',
-                name: 'id_funcionario_rpc',
-                fieldLabel: 'RPC',
-                allowBlank: false,
-                emptyText:'Elija un funcionario',
-                store:new Ext.data.JsonStore(
-                {
-                    url: '../../sis_adquisiciones/control/SOlicitud/listarRPC',
-                    id: 'id_funcionario',
-                    root:'datos',
-                    sortInfo:{
-                        field:'prioridad',
-                        direction:'ASC'
-                    },
-                    totalProperty:'total',
-                    fields: ['id_funcionario','desc_funcionario','prioridad'],
-                    // turn on remote sorting
-                    remoteSort: true,
-                    baseParams:{par_filtro:'desc_funcionario'}
-                }),
-                valueField: 'id_uni_cons',
-                displayField: 'nombre',
-                forceSelection:true,
-                typeAhead: false,
-                triggerAction: 'all',
-                lazyRender:true,
-                mode:'remote',
-                pageSize:20,
-                queryDelay:500,
-                width:210,
-                gwidth:220,
-                minChars:2
-            },{
-                xtype: 'textfield',
-                name: 'codigo_uni_cons',
-                fieldLabel: 'Código',
-                allowBlank: false,              
-            }]
-    });
-    
-    
-     var cmbUC =this.formUC.getForm().findField('id_uni_cons');
-     var codigo =this.formUC.getForm().findField('codigo_uni_cons');
-    
-      cmbUC.on('select',function(c,a,d){ console.log(c,a,d);codigo.setValue(a.data.codigo)})
-    
-    
-     this.wUC = new Ext.Window({
-        title: 'Compose message',
-        collapsible: true,
-        maximizable: true,
-         autoDestroy: true,
-        width: 350,
-        height: 200,
-        layout: 'fit',
-        plain: true,
-        bodyStyle: 'padding:5px;',
-        buttonAlign: 'center',
-        items: this.formUC,
-        modal:true,
-         closeAction: 'hide',
-        buttons: [{
-            text: 'Guardar',
-             handler:this.onAddUniCons,
-            scope:this
-            
-        },{
-            text: 'Cancelar',
-            handler:function(){this.wUC.hide()},
-            scope:this
-        }]
-    });
-        
-        
-   //quita la opcion de dmover marcador al cerrar la ventana
-    this.window.on('hide',function(){Phx.CP.getPagina(this.idContenedor+'-east').marker.setDraggable(false)},this);
-            
-        
 		
 		
+		
+   	
 		
 		
 	},
@@ -179,6 +83,27 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 	       		grid:true,
 	       		form:true
 	       	},
+          
+                
+         {
+            config:{
+                name:'id_moneda',
+                origen:'MONEDA',
+                 allowBlank:false,
+                fieldLabel:'Moneda',
+                gdisplayField:'desc_moneda',//mapea al store del grid
+                gwidth:50,
+                 renderer:function (value, p, record){return String.format('{0}', record.data['desc_moneda']);}
+             },
+            type:'ComboRec',
+            id_grupo:1,
+            filters:{   
+                pfiltro:'mon.codigo',
+                type:'string'
+            },
+            grid:true,
+            form:true
+          },
 	     
 		{
 			config: {
@@ -186,6 +111,7 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 				fieldLabel: 'Proceso',
 				typeAhead: false,
 				forceSelection: false,
+				 hiddenName: 'id_proceso_macro',
 				allowBlank: false,
 				emptyText: 'Lista de Procesos...',
 				store: new Ext.data.JsonStore({
@@ -245,6 +171,7 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 		{
    			config:{
    				name:'id_depto',
+   				 hiddenName: 'id_depto',
 	   				origen:'DEPTO',
 	   				allowBlank:false,
 	   				fieldLabel: 'Depto',
@@ -279,6 +206,7 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 		 {
    			config:{
        		    name:'id_funcionario',
+       		     hiddenName: 'id_funcionario',
    				origen:'FUNCIONARIO',
    				fieldLabel:'Funcionario',
    				allowBlank:false,
@@ -289,13 +217,14 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
        	     },
    			type:'ComboRec',//ComboRec
    			id_grupo:0,
-   			filters:{pfiltro:'funcio.desc_funcionario1',type:'string'},
+   			filters:{pfiltro:'fun.desc_funcionario1',type:'string'},
    		    grid:true,
    			form:true
 		 },
       	   {
    			config:{
        		    name:'id_uo',
+       		    hiddenName: 'id_uo',
           		origen:'UO',
    				fieldLabel:'UO',
    				gdisplayField:'desc_uo',//mapea al store del grid
@@ -306,7 +235,7 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
    			type:'ComboRec',
    			id_grupo:1,
    			filters:{	
-		        pfiltro:'desc_uo',
+		        pfiltro:'uo.codigo#uo.nombre_unidad',
 				type:'string'
 			},
    		     grid:true,
@@ -327,32 +256,24 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
                 renderer:function(value, p, record){return String.format('{0}', record.data['desc_funcionario_apro']);}
              },
             type:'ComboRec',//ComboRec
-            filters:{pfiltro:'funcioa.desc_funcionario1',type:'string'},
+            filters:{pfiltro:'funa.desc_funcionario1',type:'string'},
             id_grupo:0,
             grid:true,
             form:true
          },
-   	      
-   	    		
-		 {
-   			config:{
-       		    name:'id_moneda',
-          		origen:'MONEDA',
-          		 allowBlank:false,
-   				fieldLabel:'Moneda',
-   				gdisplayField:'desc_moneda',//mapea al store del grid
-   			    gwidth:200,
-   			     renderer:function (value, p, record){return String.format('{0}', record.data['desc_moneda']);}
-       	     },
-   			type:'ComboRec',
-   			id_grupo:1,
-   			filters:{	
-		        pfiltro:'desc_moneda',
-				type:'string'
-			},
-   		    grid:true,
-   			form:true
-   	      }
+        {
+            config:{
+                name: 'desc_funcionario_rpc',
+                fieldLabel: 'RPC',
+                gwidth: 200,
+                maxLength:4
+            },
+            type:'Field',
+            filters:{pfiltro:'funrpc.desc_funcionario1',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:false
+        }
 		,
 		
 		{
@@ -434,6 +355,7 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 		{
 			config: {
 				name: 'id_categoria_compra',
+				hiddenName: 'id_categoria_compra',
 				fieldLabel: 'Categoria de Compra',
 				typeAhead: false,
 				forceSelection: false,
@@ -548,7 +470,7 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 				gwidth: 100,
 				maxLength:4
 			},
-			type:'NumberField',
+			type:'Field',
 			filters:{pfiltro:'usu1.cuenta',type:'string'},
 			id_grupo:1,
 			grid:true,
@@ -625,6 +547,7 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_uo', type: 'string'},
 		'desc_funcionario',
 		'desc_funcionario_apro',
+		'desc_funcionario_rpc',
 		'desc_uo',
 		'desc_gestion',
 		'desc_moneda',
@@ -634,150 +557,7 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 		'id_proceso_macro'
 		
 	],
-	
-	iniciarEventos:function(){
-	    
-	    this.cmpFechaSoli = this.getComponente('fecha_soli');
-	    this.cmpIdDepto = this.getComponente('id_depto');
-	    this.cmpIdProcesoMacro = this.getComponente('id_proceso_macro');
-	    this.cmpIdGestion = this.getComponente('id_gestion');
-	    this.cmpIdUo = this.getComponente('id_uo');
-	    this.cmpIdFuncionarioAprobador = this.getComponente('id_funcionario_aprobador');
-	    
-	    //inicio de eventos 
-	    this.cmpFechaSoli.on('change',function(f){
-	         this.obtenerGestion(f);
-	         this.cmpIdUo.reset();
-	         this.cmpIdFuncionarioAprobador.reset();
-	         this.cmpIdUo.enable();
-	         
-	         },this);
-	    
-	    this.cmpIdUo.on('select',function(){   
-	        this.cmpIdFuncionarioAprobador.store.baseParams.id_uo=this.cmpIdUo.getValue();
-	        this.cmpIdFuncionarioAprobador.store.baseParams.fecha = this.cmpFechaSoli.getValue().dateFormat(this.cmpFechaSoli.format);
-	        this.cmpIdFuncionarioAprobador.modificado=true;
-	        this.cmpIdFuncionarioAprobador.reset();
-	        this.cmpIdFuncionarioAprobador.enable();
-	       },this);
-	  
-	},
-	
-	onButtonNew:function(){
-	    
-	   this.cmpFechaSoli.enable();
-	   this.cmpIdDepto.enable(); 
-	    this.cmpIdProcesoMacro.enable(); 
-       
-       this.cmpIdFuncionarioAprobador.disable();
-       this.cmpIdUo.disable();
-       Phx.vista.Solicitud.superclass.onButtonNew.call(this);
-           
-    },
-    onButtonEdit:function(){
-       this.cmpFechaSoli.disable();
-       this.cmpIdDepto.disable(); 
-       this.cmpIdProcesoMacro.disable(); 
-       
-       this.cmpIdFuncionarioAprobador.disable();
-       this.cmpIdUo.disable();
-       Phx.vista.Solicitud.superclass.onButtonEdit.call(this);
-           
-    },
-    
-	
-	
-	fin_requerimiento:function()
-        {                   
-            var v_id_solicitud = this.sm.getSelected().data.id_solicitud;
-            Phx.CP.loadingShow();
-            Ext.Ajax.request({
-                // form:this.form.getForm().getEl(),
-                url:'../../sis_adquisiciones/control/Solicitud/finalizarSolicitud',
-                params:{id_solicitud:v_id_solicitud,operacion:'verificar'},
-                success:this.successSinc,
-                failure: this.conexionFailure,
-                timeout:this.timeout,
-                scope:this
-            });     
-        },
-	   successSinc:function(resp){
-            
-            Phx.CP.loadingHide();
-            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-            if(!reg.ROOT.error){
-                
-                
-                
-               console.log(reg.ROOT)
-                
-            }else{
-                
-                alert('ocurrio un error durante el proceso')
-            }
-            this.reload();
-            
-        },
-     
-     obtenerGestion:function(x){
-         
-         var fecha = x.getValue().dateFormat(x.format);
-            Phx.CP.loadingShow();
-            Ext.Ajax.request({
-                    // form:this.form.getForm().getEl(),
-                    url:'../../sis_parametros/control/Gestion/obtenerGestionByFecha',
-                    params:{fecha:fecha},
-                    success:this.successGestion,
-                    failure: this.conexionFailure,
-                    timeout:this.timeout,
-                    scope:this
-             });
-        }, 
-    successGestion:function(resp){
-       Phx.CP.loadingHide();
-            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-            if(!reg.ROOT.error){
-                
-                this.cmpIdGestion.setValue(reg.ROOT.datos.id_gestion);
-                
-               
-            }else{
-                
-                alert('ocurrio al obtener la gestion')
-            } 
-    },
-           
-        
-    preparaMenu:function(n){
-      var data = this.getSelectedData();
-      var tb =this.tbar;
-          if(data['estado']=='Borrador'){
-                this.getBoton('fin_requerimiento').enable();
-               
-          }
-          else{
-               this.getBoton('fin_requerimiento').disable();
-          }
-          
-        Phx.vista.Solicitud.superclass.preparaMenu.call(this,n);  
-         return tb 
-     }, 
-     liberaMenu:function(){
-        var tb = Phx.vista.Solicitud.superclass.liberaMenu.call(this);
-        if(tb){
-            this.getBoton('fin_requerimiento').disable();
-           
-        }
-        return tb
-    },    
-        
-	south:
-          { 
-          url:'../../../sis_adquisiciones/vista/solicitud_det/SolicitudDet.php',
-          title:'Detalle', 
-          height:'50%',
-          cls:'SolicitudDet'
-         },
+
 	sortInfo:{
 		field: 'id_solicitud',
 		direction: 'ASC'

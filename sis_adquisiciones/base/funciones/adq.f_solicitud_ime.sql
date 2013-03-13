@@ -38,8 +38,21 @@ DECLARE
     v_num_tramite varchar;
     v_id_proceso_wf integer;
     v_id_estado_wf integer;
-    v_nombre_estado varchar;
+    v_codigo_estado varchar;
+     v_codigo_estado_siguiente varchar;
     v_codigo_tipo_proceso varchar;
+    v_total_soli numeric;
+    
+    va_id_tipo_estado integer [];
+    va_codigo_estado varchar [];
+    va_disparador varchar [];
+    va_regla varchar [];
+    va_prioridad integer [];
+    
+    
+    v_id_estado_actual  integer;
+    
+    v_id_funcionario_aprobador integer;
 			    
 BEGIN
 
@@ -103,12 +116,12 @@ BEGIN
              ps_num_tramite ,
              ps_id_proceso_wf ,
              ps_id_estado_wf ,
-             ps_nombre_estado 
+             ps_codigo_estado 
           into
              v_num_tramite,
              v_id_proceso_wf,
              v_id_estado_wf,
-             v_nombre_estado   
+             v_codigo_estado   
               
         FROM wf.f_inicia_tramite(
              p_id_usuario, 
@@ -154,7 +167,7 @@ BEGIN
 			--v_parametros.id_solicitud_ext,
 			--v_parametros.presu_revertido,
 			--v_parametros.fecha_apro,
-			v_nombre_estado,
+			v_codigo_estado,
 			v_parametros.id_funcionario_aprobador,
 			v_parametros.id_moneda,
 			v_parametros.id_gestion,
@@ -273,22 +286,198 @@ BEGIN
         
           IF  v_parametros.operacion = 'verificar' THEN
           
-              select sum(sd.precio_total) 
+              select sum( COALESCE( sd.precio_ga_mb,0)  + COALESCE(sd.precio_sg_mb,0)) into  v_total_soli
               from adq.tsolicitud_det sd
               where sd.id_solicitud = v_parametros.id_solicitud
               and sd.estado_reg = 'activo';
+              
+              IF  v_total_soli=0  THEN
+              	raise exception ' La Solicitud  tiene que ser por un valor mayor a 0';
+              END IF;
+              
+               --Definicion de la respuesta
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Verificacionde finalizacion)'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'total',v_total_soli::varchar);
+              
           
-          ELSE
+          ELSEIF  v_parametros.operacion = 'finalizar' THEN
+          
+          --obtenermos datos basicos
+          
+          select
+            s.id_proceso_wf,
+            s.id_estado_wf,
+            s.estado,
+            s.id_funcionario_aprobador
+          into 
+          
+            v_id_proceso_wf,
+            v_id_estado_wf,
+            v_codigo_estado,
+            v_id_funcionario_aprobador
+            
+          from adq.tsolicitud s
+          where s.id_solicitud=v_parametros.id_solicitud;
+          
+                 
           
           
+          --buscamos siguiente estado correpondiente al proceso del WF
           
+        SELECT 
+             ps_id_tipo_estado,
+             ps_codigo_estado,
+             ps_disparador,
+             ps_regla,
+             ps_prioridad
+          into
+            va_id_tipo_estado,
+            va_codigo_estado,
+            va_disparador,
+            va_regla,
+            va_prioridad
+        
+        FROM wf.f_obtener_estado_wf(v_id_proceso_wf, v_id_estado_wf,'siguiente');
+          
+          --cambiamos estado de la solicitud
+          
+          
+        --     raise exception '% /% /%  /% /%',va_id_tipo_estado[1],va_codigo_estado[1], va_disparador[1], va_regla[1],va_prioridad[1];
+          
+          
+          IF  va_id_tipo_estado[2] is not null  THEN
+           
+            raise exception 'El proceso se encuentra mal parametrizado dentro de Work Flow,  la finalizacion de solicitud solo admite un estado siguiente';
+          
+          END IF;
+          
+          IF  va_id_tipo_estado[1] is  null  THEN
+           
+            raise exception ' El proceso de Work Flow esta mal parametrizado, no tiene un estado siguiente para la finalizacion';
+          
+          END IF;
+          
+            
+          IF  va_disparador[1]='si'  THEN
+           
+            raise exception ' El proceso de Work Flow esta mal parametrizado, antes de iniciar el proceso de compra necesita comprometer el presupuesto';
+          
+          END IF;
+          
+          
+          --registra estado eactual en el WF
+          
+          -- hay que recuperar el supervidor que seria el estado inmediato,...
+           v_id_estado_actual =  wf.f_registra_estado_wf(va_id_tipo_estado[1], 
+                                                         v_id_funcionario_aprobador, 
+                                                         v_id_estado_wf, 
+                                                         v_id_proceso_wf);
+                                                         
+         
+        
+           -- actualiza estado en la solicitud
+          
+           update adq.tsolicitud  s set 
+             id_estado_wf =  v_id_estado_actual,
+             estado = va_codigo_estado[1]
+           where id_solicitud = v_parametros.id_solicitud;
+        
+        
+        
+        
+         ELSE
+          
+            raise exception 'operacion no identificada %',COALESCE( v_parametros.operacion,'--');
           
           END IF;
         
         
-        
+        --Devuelve la respuesta
+            return v_resp;
         
         end;   
+    
+      /*********************************    
+ 	#TRANSACCION:  'ADQ_SIGESOL_IME'
+ 	#DESCRIPCION:	funcion que controla el cambio al Siguiente esado de la solicitud, integrado con el WF
+ 	#AUTOR:		RAC	
+ 	#FECHA:		19-02-2013 12:12:51
+	***********************************/
+
+	elseif(p_transaccion='ADQ_SIGESOL_IME')then   
+        begin
+        
+        --obtenermos datos basicos
+          
+          select
+            s.id_proceso_wf,
+            s.id_estado_wf,
+            s.estado
+          into 
+          
+            v_id_proceso_wf,
+            v_id_estado_wf,
+            v_codigo_estado
+            
+          from adq.tsolicitud s
+          where s.id_solicitud=v_parametros.id_solicitud;
+          
+         
+         
+          IF  v_parametros.operacion = 'verificar' THEN
+          
+              --buscamos siguiente estado correpondiente al proceso del WF
+               SELECT 
+                 ps_id_tipo_estado,
+                 ps_codigo_estado,
+                 ps_disparador,
+                 ps_regla,
+                 ps_prioridad
+              into
+                va_id_tipo_estado,
+                va_codigo_estado,
+                va_disparador,
+                va_regla,
+                va_prioridad
+            
+            FROM wf.f_obtener_estado_wf(v_id_proceso_wf, v_id_estado_wf,'siguiente');
+          
+          
+            --raise exception '% /% /%  /% /%',va_id_tipo_estado[1],va_codigo_estado[1], va_disparador[1], va_regla[1],va_prioridad[1];
+          
+            
+            -- si hay mas de un estado disponible  preguntamos al usuario
+            
+            
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Verificacion para el siguiente estado)'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'estados', array_to_string(va_id_tipo_estado, ','));
+            v_resp = pxp.f_agrega_clave(v_resp,'operacion','preguntar_todo');
+            
+            
+            
+            
+            --TO DO  si hay un solo estado disponible pero mas de un usario  preguntamos al usuario
+            
+            
+            -- TO DO si hay solo un estado disponible y solo un funcionario para ese estado podemos saltar directamente al  estado
+          
+             
+            
+          
+          
+          END IF;
+         
+         
+         
+          
+       
+        
+        
+        
+          --Devuelve la respuesta
+            return v_resp;
+        
+        end;
     
     else
      

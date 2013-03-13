@@ -13,6 +13,11 @@ class ACTSolicitud extends ACTbase{
 		$this->objParam->defecto('ordenacion','id_solicitud');
 
 		$this->objParam->defecto('dir_ordenacion','asc');
+		
+		//var_dump($_SESSION["ss_id_funcionario"]);
+		
+		 $this->objParam->addParametro('id_funcionario_usu',$_SESSION["ss_id_funcionario"]); 
+		
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);
 			$this->res = $this->objReporte->generarReporteListado('MODSolicitud','listarSolicitud');
@@ -23,6 +28,10 @@ class ACTSolicitud extends ACTbase{
 		}
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+	
+	
+	
+	
 				
 	function insertarSolicitud(){
 		$this->objFunc=$this->create('MODSolicitud');	
@@ -45,6 +54,17 @@ class ACTSolicitud extends ACTbase{
         $this->res=$this->objFunc->finalizarSolicitud($this->objParam);
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
+    
+    function siguienteEstadoSolicitud(){
+        $this->objFunc=$this->create('MODSolicitud');  
+        $this->objParam->addParametro('id_funcionario_usu',$_SESSION["ss_id_funcionario"]); 
+        $this->res=$this->objFunc->siguienteEstadoSolicitud($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+    
+    
+    
+    
 			
 }
 

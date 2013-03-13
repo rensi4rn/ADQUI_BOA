@@ -18,6 +18,11 @@ class MODSolicitud extends MODbase{
 		$this->procedimiento='adq.f_solicitud_sel';
 		$this->transaccion='ADQ_SOL_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		
+		
+		
+		$this->setParametro('id_funcionario_usu','id_funcionario_usu','int4');
+		$this->setParametro('tipo_interfaz','tipo_interfaz','varchar');
 				
 		//Definicion de la lista del resultado del query
 		$this->captura('id_solicitud','int4');
@@ -62,6 +67,7 @@ class MODSolicitud extends MODbase{
 		$this->captura('desc_categoria_compra','varchar');
 		$this->captura('id_proceso_macro','integer');
 		$this->captura('numero','varchar');
+		$this->captura('desc_funcionario_rpc','text');
 		
 		
 		
@@ -74,7 +80,11 @@ class MODSolicitud extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+	
+	
+	
+        
+        		
 	function insertarSolicitud(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='adq.f_solicitud_ime';
@@ -185,6 +195,7 @@ class MODSolicitud extends MODbase{
                 
         //Define los parametros para la funcion
         $this->setParametro('id_solicitud','id_solicitud','int4');
+        $this->setParametro('id_funcionario_rpc','id_funcionario_rpc','int4');
         $this->setParametro('operacion','operacion','varchar');
 
         //Ejecuta la instruccion
@@ -194,6 +205,27 @@ class MODSolicitud extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
+    
+    function siguienteEstadoSolicitud(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='adq.f_solicitud_ime';
+        $this->transaccion='ADQ_SIGESOL_IME';
+        $this->tipo_procedimiento='IME';
+                
+        //Define los parametros para la funcion
+        $this->setParametro('id_solicitud','id_solicitud','int4');
+        $this->setParametro('id_funcionario_usu','id_funcionario_usu','int4');
+        $this->setParametro('operacion','operacion','varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    
+    
 	
 	
 			

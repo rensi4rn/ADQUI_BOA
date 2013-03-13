@@ -29,11 +29,14 @@ DECLARE
 	v_parametros  		record;
 	v_nombre_funcion   	text;
 	v_resp				varchar;
+    v_filtro varchar;
 			    
 BEGIN
 
 	v_nombre_funcion = 'adq.f_solicitud_sel';
     v_parametros = pxp.f_get_record(p_tabla);
+    
+  
 
 	/*********************************    
  	#TRANSACCION:  'ADQ_SOL_SEL'
@@ -45,6 +48,36 @@ BEGIN
 	if(p_transaccion='ADQ_SOL_SEL')then
      				
     	begin
+            --si es administrador
+            
+            v_filtro='';
+            
+            IF /*p_administrador !=1  and */lower(v_parametros.tipo_interfaz) = 'solicitudrq' THEN
+            
+                          
+              v_filtro = '(ew.id_funcionario='||v_parametros.id_funcionario_usu::varchar||'  or sol.id_usuario_reg='||p_id_usuario||' ) and ';
+            
+               
+            END IF;
+            
+            IF  lower(v_parametros.tipo_interfaz) = 'solicitudvb' THEN
+            
+                       
+                IF p_administrador !=1 THEN
+                
+                              
+                      v_filtro = '(ew.id_funcionario='||v_parametros.id_funcionario_usu::varchar||' ) and  (lower(sol.estado)!=''borrador'') and ';
+                  
+                 ELSE
+                    v_filtro = ' (lower(sol.estado)!=''borrador'') and ';
+                  
+                END IF;
+                
+                
+            END IF; 
+        
+        
+        
     		--Sentencia de la consulta
 			v_consulta:='select
 						sol.id_solicitud,
@@ -86,7 +119,8 @@ BEGIN
                         pm.nombre as desc_proceso_macro,
                         cat.nombre as desc_categoria_compra,
                         sol.id_proceso_macro,
-                        sol.numero
+                        sol.numero,
+                        funrpc.desc_funcionario1 as desc_funcionario_rpc
                         	
 						from adq.tsolicitud sol
 						inner join segu.tusuario usu1 on usu1.id_usuario = sol.id_usuario_reg
@@ -99,10 +133,14 @@ BEGIN
                         inner join wf.tproceso_macro pm on pm.id_proceso_macro = sol.id_proceso_macro
                         inner join adq.tcategoria_compra cat on cat.id_categoria_compra = sol.id_categoria_compra
                         
-                        left join orga.vfuncionario funa on funa.id_funcionario = sol.id_funcionario_aprobador
+                        left join orga.vfuncionario funrpc on funrpc.id_funcionario = sol.id_funcionario_rpc
+                        inner join orga.vfuncionario funa on funa.id_funcionario = sol.id_funcionario_aprobador
                         
 						left join segu.tusuario usu2 on usu2.id_usuario = sol.id_usuario_mod
-				        where  ';
+                        
+                        inner join wf.testado_wf ew on ew.id_estado_wf = sol.id_estado_wf
+                        
+				        where  '||v_filtro;
 			
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -123,6 +161,18 @@ BEGIN
 	elsif(p_transaccion='ADQ_SOL_CONT')then
 
 		begin
+            v_filtro='';
+            
+         
+            
+            IF p_administrador !=1 THEN
+            
+              v_filtro = '(ew.id_funcionario='||v_parametros.id_funcionario_usu::varchar||' or sol.id_usuario_reg='||p_id_usuario||') and';
+            
+            
+            END IF;
+        
+        
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_solicitud)
 			            from adq.tsolicitud sol
@@ -136,10 +186,13 @@ BEGIN
                         inner join wf.tproceso_macro pm on pm.id_proceso_macro = sol.id_proceso_macro
                         inner join adq.tcategoria_compra cat on cat.id_categoria_compra = sol.id_categoria_compra
                         
-                        left join orga.vfuncionario funa on funa.id_funcionario = sol.id_funcionario_aprobador
+                        left join orga.vfuncionario funrpc on funrpc.id_funcionario = sol.id_funcionario_rpc
+                        inner join orga.vfuncionario funa on funa.id_funcionario = sol.id_funcionario_aprobador
                         
 						left join segu.tusuario usu2 on usu2.id_usuario = sol.id_usuario_mod
-				        where ';
+				        inner join wf.testado_wf ew on ew.id_estado_wf = sol.id_estado_wf
+                        
+				        where  '||v_filtro;
 			
 			--Definicion de la respuesta		    
 			v_consulta:=v_consulta||v_parametros.filtro;
