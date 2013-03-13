@@ -15,13 +15,21 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 	constructor:function(config){
 		this.maestro=config.maestro;
     	//llama al constructor de la clase padre
-		Phx.vista.Solicitud.superclass.constructor.call(this,config);
+		Phx.vista.Solicitud.superclass.constructor.call(this,config);		
 		this.init();
 		
+
+
+		this.addButton('btnReporte',{
+            text :'Reporte Solicitud de Compra',
+            iconCls : 'bpdf32',
+            disabled: true,
+            handler : this.onButtonSolicitud,
+            tooltip : '<b>Reporte Solicitud de Compra</b><br/><b>Reporte Solicitud de Compra</b>'
+  });
+  
 		
-		
-   	
-		
+
 		
 	},
 			
@@ -558,6 +566,40 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 		
 	],
 
+    preparaMenu:function(n){
+      var data = this.getSelectedData();
+      var tb =this.tbar;
+      
+        Phx.vista.Solicitud.superclass.preparaMenu.call(this,n);
+        this.getBoton('btnReporte').setDisabled(false);  
+         return tb 
+     }, 
+     liberaMenu:function(){
+        var tb = Phx.vista.Solicitud.superclass.liberaMenu.call(this);
+        if(tb){
+           
+            this.getBoton('btnReporte').setDisabled(true);           
+        }
+        return tb
+    },    
+       
+	onButtonSolicitud:function(){
+	    var rec=this.sm.getSelected();
+                console.debug(rec);
+                Ext.Ajax.request({
+                    url:'../../sis_adquisiciones/control/Solicitud/reporteSolicitud',
+                    params:{'id_solicitud':rec.data.id_solicitud},
+                    success: this.successExport,
+                    failure: function() {
+                        console.log("fail");
+                    },
+                    timeout: function() {
+                        console.log("timeout");
+                    },
+                    scope:this
+                });  
+	},
+
 	sortInfo:{
 		field: 'id_solicitud',
 		direction: 'ASC'
@@ -566,6 +608,5 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 	bsave:false
 	}
 )
-</script>
-		
+</script>	
 		
