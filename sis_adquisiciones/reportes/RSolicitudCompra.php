@@ -139,8 +139,7 @@ Class RSolicitudCompra extends Report {
         $pdf->Ln();
         
 								$this->writeDetalles($this->getDataSource()->getParameter('detalleDataSource'), $pdf);
-        
-								$pdf->SetFontSize(8);
+        $pdf->SetFontSize(8);
         $pdf->SetFont('', 'B');
         $pdf->Cell($width3, $height, 'Justificación', 0, 0, 'L', false, '', 1, false, 'T', 'C');
 								$pdf->SetFont('', '');
@@ -200,8 +199,8 @@ Class RSolicitudCompra extends Report {
 												$pdf->setFont('','');
 												$pdf->Cell($width2, $height, $row['codigo_partida'], 0, 0, 'L', false, '', 0, false, 'T', 'C');
          			$pdf->Cell($width2*4+10, $height, $row['groupeddata'][0]['nombre_partida'], 0, 0, 'L', false, '', 0, false, 'T', 'C');
-        				$pdf->Cell($width2, $height, $row['groupeddata'][0]['precio_ga'], 0, 0, 'R', false, '', 0, false, 'T', 'C');
-        				$pdf->Cell($width2, $height, 'DISPONIBLE', 0, 0, 'R', false, '', 0, false, 'T', 'C');
+        				$pdf->Cell($width2, $height, $row['totalRef'], 0, 0, 'R', false, '', 0, false, 'T', 'C');
+        				$pdf->Cell($width2, $height, ($row['disponible']==true)?'DISPONIBLE':'NO DISPONIBLE', 0, 0, 'R', false, '', 0, false, 'T', 'C');
         				$pdf->Ln();
 												$pdf->setFont('','B');
         				$pdf->Cell($width2+$width1, $height, 'Centro de Costo', $blackAll, 0, 'L', false, '', 0, false, 'T', 'C');
