@@ -216,6 +216,8 @@ class MODSolicitud extends MODbase{
         $this->setParametro('id_solicitud','id_solicitud','int4');
         $this->setParametro('id_funcionario_usu','id_funcionario_usu','int4');
         $this->setParametro('operacion','operacion','varchar');
+        $this->setParametro('id_funcionario','id_funcionario','int4');
+        $this->setParametro('id_tipo_estado','id_tipo_estado','int4');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

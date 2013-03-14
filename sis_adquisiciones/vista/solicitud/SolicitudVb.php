@@ -99,7 +99,7 @@ Phx.vista.SolicitudVb = {
                     listWidth:280,
                     store:new Ext.data.JsonStore(
                     {
-                        url: '../../sis_work_flow/control/TipoEstado/listarFuncionarioWf',
+                        url: '../../sis_workflow/control/TipoEstado/listarFuncionarioWf',
                         id: 'id_funcionario',
                         root:'datos',
                         sortInfo:{
@@ -110,7 +110,7 @@ Phx.vista.SolicitudVb = {
                         fields: ['id_funcionario','desc_funcionario','prioridad'],
                         // turn on remote sorting
                         remoteSort: true,
-                        baseParams:{par_filtro:'desc_funcionario'}
+                        baseParams:{par_filtro:'fun.desc_funcionario1'}
                     }),
                     valueField: 'id_funcionario',
                     displayField: 'desc_funcionario',
@@ -150,7 +150,7 @@ Phx.vista.SolicitudVb = {
              closeAction: 'hide',
             buttons: [{
                 text: 'Guardar',
-                 handler:this.onFinalizarSol,
+                 handler:this.confSigEstado,
                 scope:this
                 
             },{
@@ -174,13 +174,37 @@ Phx.vista.SolicitudVb = {
         this.cmbTipoEstado.on('select',function(){
             
             this.cmbFuncionarioWf.enable();
-             this.cmbFuncionarioWf.store.baseParams.id_tipo_estado = this.cmbTipoEstado.getValue();
+            this.cmbFuncionarioWf.store.baseParams.id_tipo_estado = this.cmbTipoEstado.getValue();
+            this.cmbFuncionarioWf.modificado=true;
         },this);
         
         
 		
 	},
-    
+	confSigEstado :function() {                   
+            var d= this.sm.getSelected().data;
+           
+           
+            
+            if ( this.formEstado .getForm().isValid()){
+                 Phx.CP.loadingShow();
+                    Ext.Ajax.request({
+                        // form:this.form.getForm().getEl(),
+                        url:'../../sis_adquisiciones/control/Solicitud/siguienteEstadoSolicitud',
+                        params:{id_solicitud:d.id_solicitud,
+                            operacion:'cambiar',
+                            id_tipo_estado:this.cmbTipoEstado.getValue(),
+                            id_funcionario:this.cmbFuncionarioWf.getValue(),
+                            id_solicitud:d.id_solicitud
+                            
+                            },
+                        success:this.successSinc,
+                        failure: this.conexionFailure,
+                        timeout:this.timeout,
+                        scope:this
+                    }); 
+              }    
+        },   
     
     sigEstado:function()
         {                   
@@ -189,10 +213,9 @@ Phx.vista.SolicitudVb = {
             Phx.CP.loadingShow();
             this.cmbTipoEstado.reset();
             this.cmbFuncionarioWf.reset();
-            
-            //this.cmbTipoEstado.store.baseParams.id_uo=d.id_uo;
-            //this.cmbTipoEstado.store.baseParams.fecha=d.fecha_soli;
-            
+            this.cmbFuncionarioWf.store.baseParams.id_estado_wf=d.id_estado_wf;
+            this.cmbFuncionarioWf.store.baseParams.fecha=d.fecha_soli;
+         
             Ext.Ajax.request({
                 // form:this.form.getForm().getEl(),
                 url:'../../sis_adquisiciones/control/Solicitud/siguienteEstadoSolicitud',
@@ -216,6 +239,14 @@ Phx.vista.SolicitudVb = {
                    this.cmbFuncionarioWf.disable()
                    this.wEstado.show();
                }
+               
+                if (reg.ROOT.datos.operacion=='cambio_exitoso'){
+                
+                  this.reload();
+                  this.wEstado.hide();
+                
+                }
+               
                 
             }else{
                 

@@ -53,6 +53,7 @@ DECLARE
     v_id_estado_actual  integer;
     
     v_id_funcionario_aprobador integer;
+    v_id_tipo_estado integer;
 			    
 BEGIN
 
@@ -323,6 +324,8 @@ BEGIN
           
           
           --buscamos siguiente estado correpondiente al proceso del WF
+         
+          
           
         SELECT 
              ps_id_tipo_estado,
@@ -337,7 +340,7 @@ BEGIN
             va_regla,
             va_prioridad
         
-        FROM wf.f_obtener_estado_wf(v_id_proceso_wf, v_id_estado_wf,'siguiente');
+        FROM wf.f_obtener_estado_wf(v_id_proceso_wf, v_id_estado_wf,NULL,'siguiente');
           
           --cambiamos estado de la solicitud
           
@@ -371,7 +374,8 @@ BEGIN
            v_id_estado_actual =  wf.f_registra_estado_wf(va_id_tipo_estado[1], 
                                                          v_id_funcionario_aprobador, 
                                                          v_id_estado_wf, 
-                                                         v_id_proceso_wf);
+                                                         v_id_proceso_wf,
+                                                         p_id_usuario);
                                                          
          
         
@@ -379,7 +383,9 @@ BEGIN
           
            update adq.tsolicitud  s set 
              id_estado_wf =  v_id_estado_actual,
-             estado = va_codigo_estado[1]
+             estado = va_codigo_estado[1],
+             id_usuario_mod=p_id_usuario,
+             fecha_mod=now()
            where id_solicitud = v_parametros.id_solicitud;
         
         
@@ -422,12 +428,24 @@ BEGIN
           from adq.tsolicitud s
           where s.id_solicitud=v_parametros.id_solicitud;
           
-         
-         
+           select 
+            ew.id_tipo_estado 
+           into 
+            v_id_tipo_estado
+          from wf.testado_wf ew
+          where ew.id_estado_wf = v_id_estado_wf;
+          
+          
+        
+         --------------------------------------------- 
+         -- Verifica  los posibles estados sigueintes para que desde la interfza se tome la decision si es necesario
+         --------------------------------------------------
           IF  v_parametros.operacion = 'verificar' THEN
           
               --buscamos siguiente estado correpondiente al proceso del WF
-               SELECT 
+              
+               
+             SELECT  
                  ps_id_tipo_estado,
                  ps_codigo_estado,
                  ps_disparador,
@@ -438,41 +456,79 @@ BEGIN
                 va_codigo_estado,
                 va_disparador,
                 va_regla,
-                va_prioridad
+                va_prioridad 
+              FROM adq.f_obtener_sig_estado_sol_rec(v_parametros.id_solicitud, v_id_proceso_wf, v_id_tipo_estado); 
+          
             
-            FROM wf.f_obtener_estado_wf(v_id_proceso_wf, v_id_estado_wf,'siguiente');
-          
-          
-            --raise exception '% /% /%  /% /%',va_id_tipo_estado[1],va_codigo_estado[1], va_disparador[1], va_regla[1],va_prioridad[1];
-          
+            -- TO DO  si el siguiente estado es el visto bueno de la uti (vbuti)  pregutamos si existe alguan partida
+            --        de computadoras  en observaciones del tipo estado
+            
             
             -- si hay mas de un estado disponible  preguntamos al usuario
-            
-            
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Verificacion para el siguiente estado)'); 
             v_resp = pxp.f_agrega_clave(v_resp,'estados', array_to_string(va_id_tipo_estado, ','));
             v_resp = pxp.f_agrega_clave(v_resp,'operacion','preguntar_todo');
-            
-            
-            
-            
             --TO DO  si hay un solo estado disponible pero mas de un usario  preguntamos al usuario
             
             
             -- TO DO si hay solo un estado disponible y solo un funcionario para ese estado podemos saltar directamente al  estado
+           
+           
+           
+           ELSEIF  v_parametros.operacion = 'cambiar' THEN
           
-             
+          
+            --TO DO  verificar cuando el proceso anterior sea disparado
+            --       y crear el proceso de compra 
             
+            
+            
+            -- obtener datos tipo estado
+            
+            select
+             te.codigo
+            into
+             v_codigo_estado
+            from wf.ttipo_estado te
+            where te.id_tipo_estado = v_parametros.id_tipo_estado;
+            
+            
+            -- hay que recuperar el supervidor que seria el estado inmediato,...
+             v_id_estado_actual =  wf.f_registra_estado_wf(v_parametros.id_tipo_estado, 
+                                                           v_parametros.id_funcionario, 
+                                                           v_id_estado_wf, 
+                                                           v_id_proceso_wf,
+                                                           p_id_usuario);
+            
+            
+             -- actualiza estado en la solicitud
+            
+             update adq.tsolicitud  s set 
+               id_estado_wf =  v_id_estado_actual,
+               estado = v_codigo_estado,
+               id_usuario_mod=p_id_usuario,
+               fecha_mod=now()
+             where id_solicitud = v_parametros.id_solicitud;
+             
+             
+             
+             -- TO DO comprometer presupuesto cuando el estado anterior es el pendiente)
+            
+            IF v_codigo_estado =  'pendiente' THEN 
+              -- Comprometer Presupuesto
+            
+            
+            END IF;  
+          
+          
+          
+           -- si hay mas de un estado disponible  preguntamos al usuario
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Se realizo el cambio de estado)'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'operacion','cambio_exitoso');
           
           
           END IF;
-         
-         
-         
-          
-       
-        
-        
+
         
           --Devuelve la respuesta
             return v_resp;
