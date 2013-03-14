@@ -36,6 +36,7 @@ class MODSolicitudDet extends MODbase{
 		$this->captura('precio_ga_mb','numeric');
 		$this->captura('estado_reg','varchar');
 		$this->captura('id_partida_ejecucion','int4');
+		$this->captura('disponible','varchar');
 		$this->captura('precio_ga','numeric');
 		$this->captura('id_usuario_reg','int4');
 		$this->captura('fecha_reg','timestamp');

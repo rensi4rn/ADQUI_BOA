@@ -225,9 +225,65 @@ class MODSolicitud extends MODbase{
         return $this->respuesta;
     }
     
-    
-	
-	
+    function reporteSolicitud(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='adq.f_solicitud_sel';
+		$this->transaccion='ADQ_SOLREP_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		
+		$this->setParametro('id_solicitud','id_solicitud','int4');
+				
+		//Definicion de la lista del resultado del query
+		$this->captura('id_solicitud','int4');
+		$this->captura('estado_reg','varchar');
+		$this->captura('id_solicitud_ext','int4');
+		$this->captura('presu_revertido','varchar');
+		$this->captura('fecha_apro','date');
+		$this->captura('estado','varchar');
+		$this->captura('id_funcionario_aprobador','int4');
+		$this->captura('id_moneda','int4');
+		$this->captura('id_gestion','int4');
+		$this->captura('tipo','varchar');
+		$this->captura('num_tramite','varchar');
+		$this->captura('justificacion','text');
+		$this->captura('id_depto','int4');
+		$this->captura('lugar_entrega','varchar');
+		$this->captura('extendida','varchar');
+		
+		$this->captura('posibles_proveedores','text');
+		$this->captura('id_proceso_wf','int4');
+		$this->captura('comite_calificacion','text');
+		$this->captura('id_categoria_compra','int4');
+		$this->captura('id_funcionario','int4');
+		$this->captura('id_estado_wf','int4');
+		$this->captura('fecha_soli','date');
+		$this->captura('fecha_reg','timestamp');
+		$this->captura('id_usuario_reg','int4');
+		$this->captura('fecha_mod','timestamp');
+		$this->captura('id_usuario_mod','int4');
+		$this->captura('usr_reg','varchar');
+		$this->captura('usr_mod','varchar');		
+		$this->captura('id_uo','integer');		
+		$this->captura('desc_funcionario','text');
+		
+		$this->captura('desc_funcionario_apro','text');
+		$this->captura('desc_uo','text');
+		$this->captura('desc_gestion','integer');
+		$this->captura('desc_moneda','varchar');
+		$this->captura('desc_depto','varchar');
+		$this->captura('desc_proceso_macro','varchar');
+		$this->captura('desc_categoria_compra','varchar');
+		$this->captura('id_proceso_macro','integer');
+		$this->captura('numero','varchar');
+		$this->captura('desc_funcionario_rpc','text');
+		
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+		
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 			
 }
 ?>

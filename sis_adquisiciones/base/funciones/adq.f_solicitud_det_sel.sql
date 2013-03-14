@@ -29,6 +29,7 @@ DECLARE
 	v_parametros  		record;
 	v_nombre_funcion   	text;
 	v_resp				varchar;
+    v_registro			record;
 			    
 BEGIN
 
@@ -44,7 +45,7 @@ BEGIN
 
 	if(p_transaccion='ADQ_SOLD_SEL')then
      				
-    	begin
+    	begin    	       	
     		--Sentencia de la consulta
 			v_consulta:='select
 						sold.id_solicitud_det,
@@ -63,7 +64,7 @@ BEGIN
 						sold.precio_ga_mb,
 						sold.estado_reg,
 						sold.id_partida_ejecucion,
-						
+						adq.verificar_presupuesto_partida(sold.id_centro_costo,sold.id_partida,1,adq.calcular_monto_total(sold.id_centro_costo,sold.id_partida,1)) as disponible,
 						sold.precio_ga,
 						sold.id_usuario_reg,
 						sold.fecha_reg,

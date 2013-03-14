@@ -68,7 +68,7 @@ class ACTSolicitud extends ACTbase{
     $this->objParam->addParametroConsulta('cantidad',1000);
     $this->objParam->addParametroConsulta('puntero',0);
     $this->objFunc = $this->create('MODSolicitud');
-    $resultSolicitud = $this->objFunc->listarSolicitud();
+    $resultSolicitud = $this->objFunc->reporteSolicitud();
     $datosSolicitud = $resultSolicitud->getDatos();
  			
     //armamos el array parametros y metemos ahi los data sets de las otras tablas
