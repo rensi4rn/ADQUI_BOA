@@ -75,7 +75,12 @@ INSERT INTO adq.tcategoria_compra ("id_usuario_reg", "id_usuario_mod", "fecha_re
 VALUES (1, NULL, E'2013-02-25 09:23:51.125', NULL, E'activo', E'CMIM', E'Compra Minima', '1', '20000', E'Prueba con rangode compras');
 
 
-/***********************************F-DAT-RAC-ADQ-0-25/02/2013*****************************************/
+/***********************************F-DAT-RAC-ADQ-0-07/03/2013*****************************************/
 
+/***********************************I-DAT-FRH-ADQ-0-06/02/2013*****************************************/
+
+ SELECT  param.f_inserta_documento('ADQ', 'SOLB', 'Solicitud de bien', 'gestion', NULL, 'depto', NULL);
+
+/***********************************F-DAT-FRH-ADQ-0-07/03/2013*****************************************/
 
 
