@@ -2,6 +2,14 @@ CREATE OR REPLACE FUNCTION migra.f_obtener_cadena_conexion (
 )
 RETURNS varchar AS
 $body$
+/**************************************************************************
+ SISTEMA:		Sistema de Presupuestos
+ FUNCION: 		migra.f_obtener_cadena_conexion
+ DESCRIPCION:   Funcion que recupera los datos de conexion al servidor remoto
+ AUTOR: 		Gonzalo Sarmiento Sejas
+ FECHA:	        13-03-2013
+ COMENTARIOS:	
+***************************************************************************/
 DECLARE
 
 v_host varchar;

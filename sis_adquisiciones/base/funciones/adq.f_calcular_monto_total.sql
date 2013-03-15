@@ -1,10 +1,19 @@
-CREATE OR REPLACE FUNCTION adq.calcular_monto_total (
+CREATE OR REPLACE FUNCTION adq.f_calcular_monto_total (
   p_id_presupuesto integer,
   p_id_partida integer,
   p_id_moneda integer
 )
 RETURNS numeric AS
 $body$
+/**************************************************************************
+ SISTEMA:		Sistema de Adquisiciones
+ FUNCION: 		adq.f_calcular_monto_total
+ DESCRIPCION:   Funcion que calcula el monto total de una partida dentro de un centro de costo
+ AUTOR: 		Gonzalo Sarmiento Sejas
+ FECHA:	        13-03-2013
+ COMENTARIOS:	
+***************************************************************************/
+
 DECLARE
   registro record;
 BEGIN
