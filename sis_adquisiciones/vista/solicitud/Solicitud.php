@@ -19,7 +19,6 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 		this.init();
 		
 
-
 		this.addButton('btnReporte',{
             text :'Reporte Solicitud de Compra',
             iconCls : 'bpdf32',
@@ -28,9 +27,18 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
             tooltip : '<b>Reporte Solicitud de Compra</b><br/><b>Reporte Solicitud de Compra</b>'
   });
   
-		
 
-		
+		this.addButton('fin_requerimiento',{text:'Finalizar',iconCls: 'badelante',disabled:true,handler:this.fin_requerimiento,tooltip: '<b>Finalizar</b>'});
+        this.addButton('btnChequeoDocumentos',
+            {
+                text: 'Chequear Documentos',
+                iconCls: 'bchecklist',
+                disabled: true,
+                handler: this.loadCheckDocumentosSol,
+                tooltip: '<b>Documentos de la Solicitud</b><br/>Subir los documetos requeridos en la solicitud seleccionada.'
+            }
+        );
+				
 	},
 			
 	Atributos:[
@@ -565,13 +573,65 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
 		'id_proceso_macro'
 		
 	],
-
+	
+	fin_requerimiento:function()
+        {                   
+            var v_id_solicitud = this.sm.getSelected().data.id_solicitud;
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                // form:this.form.getForm().getEl(),
+                url:'../../sis_adquisiciones/control/Solicitud/insertarFinalizarSolicitud',
+                params:{id_solicitud:v_id_solicitud,operacion:'siguiente',tipo_operacion:'cambiar_estado'},
+                success:this.successSinc,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });     
+        },
+       loadCheckDocumentosSol:function() {
+            var rec=this.sm.getSelected();
+            rec.data.nombreVista = this.nombreVista;
+            Phx.CP.loadWindows('../../../sis_adquisiciones/vista/documento_sol/ChequeoDocumentoSol.php',
+                    'Chequeo de documentos de la solicitud',
+                    {
+                        width:900,
+                        height:600
+                    },
+                    rec.data.id_solicitud,
+                    this.idContenedor,
+                    'ChequeoDocumentoSol'
+        )
+        },
+	   successSinc:function(resp){
+            
+            Phx.CP.loadingHide();
+            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+            if(!reg.ROOT.error){
+                alert(reg.ROOT.detalle.mensaje)
+                
+            }else{
+                
+                alert('ocurrio un error durante el proceso')
+            }
+            this.reload();
+            
+        },
     preparaMenu:function(n){
       var data = this.getSelectedData();
       var tb =this.tbar;
-      
+          if(data['estado']=='Borrador'){
+                this.getBoton('fin_requerimiento').enable();
+               
+          }
+          else{
+               this.getBoton('fin_requerimiento').disable();
+          }
+        
+        this.getBoton('btnChequeoDocumentos').setDisabled(false);
+
         Phx.vista.Solicitud.superclass.preparaMenu.call(this,n);
-        this.getBoton('btnReporte').setDisabled(false);  
+        this.getBoton('btnReporte').setDisabled(false); 
+        
          return tb 
      }, 
      liberaMenu:function(){
@@ -580,6 +640,9 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
            
             this.getBoton('btnReporte').setDisabled(true);           
         }
+        
+        this.getBoton('btnChequeoDocumentos').setDisabled(true);
+        
         return tb
     },    
        

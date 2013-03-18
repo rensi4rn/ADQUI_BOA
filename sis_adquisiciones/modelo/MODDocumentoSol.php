@@ -35,6 +35,9 @@ class MODDocumentoSol extends MODbase{
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
 		$this->captura('desc_categoria_compra','varchar');
+        $this->captura('desc_gestion','varchar');
+        $this->captura('desc_depto','varchar');
+        $this->captura('desc_proceso_macro','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();		

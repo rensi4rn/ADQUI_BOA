@@ -69,7 +69,7 @@ Phx.vista.DocumentoSol=Ext.extend(Phx.gridInterfaz,{
                                                 record.data['desc_gestion']+'-'+
                                                 record.data['desc_depto']);
                 },
-                tpl: '<tpl for="."><div class="x-combo-list-item"><p>{desc_proceso_macro}-{desc_gestion}-{desc_depto}/p>Funcionario: <strong>{desc_funcionario}</strong> </div></tpl>'
+                tpl: '<tpl for="."><div class="x-combo-list-item"><p>{desc_proceso_macro}-{desc_gestion}-{desc_depto}</p>Funcionario: <strong>{desc_funcionario}</strong> </div></tpl>'
             },
             type: 'ComboBox',
             id_grupo: 0,
@@ -284,7 +284,10 @@ Phx.vista.DocumentoSol=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},
-		{name:'desc_categoria_compra', type: 'string'}
+		{name:'desc_categoria_compra', type: 'string'},
+		{name:'desc_gestion', type: 'string'},
+		{name:'desc_depto', type: 'string'},
+		{name:'desc_proceso_macro', type: 'string'}
 		
 	],
 	sortInfo:{

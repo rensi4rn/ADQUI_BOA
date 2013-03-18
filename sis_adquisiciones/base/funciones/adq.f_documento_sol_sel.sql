@@ -44,27 +44,36 @@ BEGIN
      				
     	begin
     		--Sentencia de la consulta
-			v_consulta:='select
-						docsol.id_documento_sol,
-						docsol.id_solicitud,
-						docsol.id_categoria_compra,
-						docsol.nombre_doc,
-						docsol.nombre_arch_doc,
-						docsol.nombre_tipo_doc,
-						docsol.chequeado,
-						docsol.estado_reg,
-						docsol.id_usuario_reg,
-						docsol.fecha_reg,
-						docsol.id_usuario_mod,
-						docsol.fecha_mod,
-						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod,
-                        catcomp.nombre AS desc_categoria_compra
-						from adq.tdocumento_sol docsol
-						inner join segu.tusuario usu1 on usu1.id_usuario = docsol.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = docsol.id_usuario_mod
-                        INNER JOIN adq.tcategoria_compra catcomp on catcomp.id_categoria_compra = docsol.id_categoria_compra
-				        where  ';
+              v_consulta:='with doc_sol AS(
+                                          SELECT docsol.id_documento_sol,
+                                          docsol.id_solicitud,
+                                          docsol.id_categoria_compra,
+                                          docsol.nombre_doc,
+                                          docsol.nombre_arch_doc,
+                                          docsol.nombre_tipo_doc,
+                                          docsol.chequeado,
+                                          docsol.estado_reg,
+                                          docsol.id_usuario_reg,
+                                          docsol.fecha_reg,
+                                          docsol.id_usuario_mod,
+                                          docsol.fecha_mod,
+                                          usu1.cuenta as usr_reg,
+                                          usu2.cuenta as usr_mod,
+                                          catcomp.nombre AS desc_categoria_compra,
+                                          ges.gestion::varchar as desc_gestion,                        
+                                          depto.codigo as desc_depto,
+                                          promac.nombre as desc_proceso_macro
+                                          from adq.tdocumento_sol docsol
+                                          inner join segu.tusuario usu1 on usu1.id_usuario = docsol.id_usuario_reg
+                                          left join segu.tusuario usu2 on usu2.id_usuario = docsol.id_usuario_mod
+                                          INNER JOIN adq.tcategoria_compra catcomp on catcomp.id_categoria_compra = docsol.id_categoria_compra
+                                          INNER JOIN adq.tsolicitud sol ON sol.id_solicitud = docsol.id_solicitud
+                                          INNER JOIN wf.tproceso_macro promac ON promac.id_proceso_macro = sol.id_proceso_macro
+                                          INNER JOIN param.tgestion ges ON ges.id_gestion = sol.id_gestion
+                                          INNER JOIN param.tdepto depto ON depto.id_depto = sol.id_depto
+                      					  )
+                    select * from doc_sol
+				    where  ';
 			
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -86,11 +95,18 @@ BEGIN
 
 		begin
 			--Sentencia de la consulta de conteo de registros
-			v_consulta:='select count(id_documento_sol)
-					    from adq.tdocumento_sol docsol
-					    inner join segu.tusuario usu1 on usu1.id_usuario = docsol.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = docsol.id_usuario_mod
-                        INNER JOIN adq.tcategoria_compra catcomp on catcomp.id_categoria_compra = docsol.id_categoria_compra
+			v_consulta:='with doc_sol AS(
+                                select count(id_documento_sol)
+                                from adq.tdocumento_sol docsol
+                                inner join segu.tusuario usu1 on usu1.id_usuario = docsol.id_usuario_reg
+                                left join segu.tusuario usu2 on usu2.id_usuario = docsol.id_usuario_mod
+                                INNER JOIN adq.tcategoria_compra catcomp on catcomp.id_categoria_compra = docsol.id_categoria_compra
+                                INNER JOIN adq.tsolicitud sol ON sol.id_solicitud = docsol.id_solicitud
+                                INNER JOIN wf.tproceso_macro promac ON promac.id_proceso_macro = sol.id_proceso_macro
+                                INNER JOIN param.tgestion ges ON ges.id_gestion = sol.id_gestion
+                                INNER JOIN param.tdepto depto ON depto.id_depto = sol.id_depto
+                                )
+                    	select * from doc_sol
 					    where ';
 			
 			--Definicion de la respuesta		    
