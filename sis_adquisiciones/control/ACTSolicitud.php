@@ -61,7 +61,7 @@ class ACTSolicitud extends ACTbase{
 
  function reporteSolicitud(){
     $dataSource = new DataSource();
-    //$idSolicitud = $this->objParam->getParametro('id_solicitud');
+    $idSolicitud = $this->objParam->getParametro('id_solicitud');
     //$this->objParam->addParametroConsulta('id_plan_mant',$idPlanMant);
     $this->objParam->addParametroConsulta('ordenacion','id_solicitud');
     $this->objParam->addParametroConsulta('dir_ordenacion','ASC');
@@ -73,13 +73,12 @@ class ACTSolicitud extends ACTbase{
  			
     //armamos el array parametros y metemos ahi los data sets de las otras tablas
     $dataSource->putParameter('id_solicitud', $datosSolicitud[0]['id_solicitud']);
-				$dataSource->putParameter('num_tramite', $datosSolicitud[0]['num_tramite']);
+				$dataSource->putParameter('numero', $datosSolicitud[0]['numero']);
     $dataSource->putParameter('fecha_apro', $datosSolicitud[0]['fecha_apro']);
     $dataSource->putParameter('desc_moneda', $datosSolicitud[0]['desc_moneda']);
     $dataSource->putParameter('tipo', $datosSolicitud[0]['tipo']);
 				$dataSource->putParameter('desc_gestion', $datosSolicitud[0]['desc_gestion']);
     $dataSource->putParameter('fecha_soli', $datosSolicitud[0]['fecha_soli']);
-				$dataSource->putParameter('extendida', $datosSolicitud[0]['extendida']);
 				$dataSource->putParameter('desc_categoria_compra', $datosSolicitud[0]['desc_categoria_compra']);
     
     $dataSource->putParameter('desc_proceso_macro', $datosSolicitud[0]['desc_proceso_macro']);
@@ -102,8 +101,7 @@ class ACTSolicitud extends ACTbase{
     
     $modSolicitudDet = $this->create('MODSolicitudDet');
     $resultSolicitudDet = $modSolicitudDet->listarSolicitudDet();
-				$solicitudDetAgrupado = $this->groupArray($resultSolicitudDet->getDatos(), 'codigo_partida');
-    //var_dump($solicitudDetAgrupado);
+				$solicitudDetAgrupado = $this->groupArray($resultSolicitudDet->getDatos(), 'codigo_partida','desc_centro_costo');
     $solicitudDetDataSource = new DataSource();
 				$solicitudDetDataSource->setDataSet($solicitudDetAgrupado);
     $dataSource->putParameter('detalleDataSource', $solicitudDetDataSource);
@@ -139,16 +137,17 @@ class ACTSolicitud extends ACTbase{
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
     
-   function groupArray($array,$groupkey)
+   function groupArray($array,$groupkey,$groupkeyTwo)
 	{
 	 if (count($array)>0)
 	 {
 	 	$keys = array_keys($array[0]);
 	 	$removekey = array_search($groupkey, $keys);
+	 	$removekeyTwo = array_search($groupkeyTwo, $keys);
 			if ($removekey===false)
 	 		return array("Clave \"$groupkey\" no existe");
-	 	else
-	 		unset($keys[$removekey]);
+			if($removekeyTwo===false)
+	 		return array("Clave \"$groupkeyTwo\" no existe");
 	 	$groupcriteria = array();
 	 	$arrayResp=array();
 	 	foreach($array as $value)
@@ -158,11 +157,11 @@ class ACTSolicitud extends ACTbase{
 	 		{
 	 			$item[$key] = $value[$key];
 	 		}
-	 	 	$busca = array_search($value[$groupkey], $groupcriteria);
+	 	 	$busca = array_search($value[$groupkey].$value[$groupkeyTwo], $groupcriteria);
 	 		if ($busca === false)
 	 		{
-	 			$groupcriteria[]=$value[$groupkey];
-	 			$arrayResp[]=array($groupkey=>$value[$groupkey],'groupeddata'=>array());
+	 			$groupcriteria[]=$value[$groupkey].$value[$groupkeyTwo];
+	 			$arrayResp[]=array($groupkey.$groupkeyTwo=>$value[$groupkey].$value[$groupkeyTwo],'groupeddata'=>array());
 	 			$busca=count($arrayResp)-1;
 	 		}
 	 		$arrayResp[$busca]['groupeddata'][]=$item;

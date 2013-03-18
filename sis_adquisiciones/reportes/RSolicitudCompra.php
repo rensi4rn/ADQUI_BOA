@@ -87,19 +87,17 @@ Class RSolicitudCompra extends Report {
         $pdf->Cell($width3, $height, 'Número de Solicitud', 0, 0, 'L', false, '', 0, false, 'T', 'C');
         $pdf->Cell($width3, $height, 'Fecha de Solicitud', 0, 0, 'C', false, '', 0, false, 'T', 'C');
         $pdf->Cell($width3, $height, 'Fecha de Aprobacion', 0, 0, 'C', false, '', 0, false, 'T', 'C');
-        $pdf->Cell($width2, $height, 'Tipo', 0, 0, 'C', false, '', 0, false, 'T', 'C');
-								$pdf->Cell($width2, $height, 'Moneda', 0, 0, 'C', false, '', 0, false, 'T', 'C');
-        $pdf->Cell($width2, $height, 'Extendida', 0, 0, 'C', false, '', 0, false, 'T', 'C');
-        $pdf->Cell($width2, $height, 'Gestion', 0, 0, 'C', false, '', 0, false, 'T', 'C');
+        $pdf->Cell($width2+5, $height, 'Tipo', 0, 0, 'C', false, '', 0, false, 'T', 'C');
+								$pdf->Cell($width2+5, $height, 'Moneda', 0, 0, 'C', false, '', 0, false, 'T', 'C');
+        $pdf->Cell($width2+5, $height, 'Gestion', 0, 0, 'C', false, '', 0, false, 'T', 'C');
         $pdf->Ln();
         $pdf->SetFont('', '');        
-        $pdf->Cell($width3, $height, $this->getDataSource()->getParameter('id_solicitud'), 0, 0, 'C', false, '', 0, false, 'T', 'C');        
+        $pdf->Cell($width3, $height, $this->getDataSource()->getParameter('numero'), 0, 0, 'C', false, '', 0, false, 'T', 'C');        
         $pdf->Cell($width3, $height, $this->getDataSource()->getParameter('fecha_soli'), 0, 0, 'C', false, '', 0, false, 'T', 'C');
         $pdf->Cell($width3, $height, $this->getDataSource()->getParameter('fecha_apro'), 0, 0, 'C', false, '', 0, false, 'T', 'C');        
-        $pdf->Cell($width2, $height, $this->getDataSource()->getParameter('tipo'), 0, 0, 'C', false, '', 0, false, 'T', 'C');
-								$pdf->Cell($width2, $height, $this->getDataSource()->getParameter('desc_moneda'), 0, 0, 'C', false, '', 0, false, 'T', 'C');
-        $pdf->Cell($width2, $height, $this->getDataSource()->getParameter('extendida'), 0, 0, 'C', false, '', 0, false, 'T', 'C');
-        $pdf->Cell($width2, $height, $this->getDataSource()->getParameter('desc_gestion'), 0, 0, 'C', false, '', 0, false, 'T', 'C');
+        $pdf->Cell($width2+5, $height, $this->getDataSource()->getParameter('tipo'), 0, 0, 'C', false, '', 0, false, 'T', 'C');
+								$pdf->Cell($width2+5, $height, $this->getDataSource()->getParameter('desc_moneda'), 0, 0, 'C', false, '', 0, false, 'T', 'C');
+        $pdf->Cell($width2+5, $height, $this->getDataSource()->getParameter('desc_gestion'), 0, 0, 'C', false, '', 0, false, 'T', 'C');
         $pdf->Ln();
 								$pdf->Ln();
         
@@ -125,12 +123,6 @@ Class RSolicitudCompra extends Report {
         $pdf->SetFillColor(192,192,192, true);
         $pdf->Cell($width3+$width2, $height, $this->getDataSource()->getParameter('desc_uo'), $white, 0, 'L', true, '', 0, false, 'T', 'C');        
         $pdf->Cell(5, $height, '', 0, 0, 'L', false, '', 0, false, 'T', 'C');
-        $pdf->SetFont('', 'B');
-        $pdf->Cell($width3, $height, 'Departamento:', 0, 0, 'L', false, '', 0, false, 'T', 'C');        
-        $pdf->SetFont('', '');
-        $pdf->SetFillColor(192,192,192, true);
-								$pdf->Cell($width3+$width2, $height, $this->getDataSource()->getParameter('desc_depto'), $white, 0, 'L', true, '', 0, false, 'T', 'C');
-								$pdf->Ln();
         $pdf->SetFont('', 'B');
         $pdf->Cell($width3, $height, 'Funcionario:', 0, 0, 'L', false, '', 0, false, 'T', 'C');
         $pdf->SetFont('', '');
@@ -183,43 +175,59 @@ Class RSolicitudCompra extends Report {
         $widthMarginLeft = 1;
         $width1 = 15;
 								$width2 = 25;
+								$width3 = 20;
         $pdf->SetFontSize(7.5);
         $pdf->SetFont('', 'B');
         $height = 5;
         $pdf->Ln();
 								
         foreach($dataSource->getDataset() as $row) {
-        	//var_dump($row);
         	   $pdf->setFont('','B');
             $pdf->Cell($width2, $height, 'Código Partida', 0, 0, 'L', false, '', 0, false, 'T', 'C');
-         			$pdf->Cell($width2*4+10, $height, 'Nombre Partida', 0, 0, 'L', false, '', 0, false, 'T', 'C');
+         			$pdf->Cell($width2, $height, 'Nombre Partida', 0, 0, 'L', false, '', 0, false, 'T', 'C');
+        				$pdf->Cell($width2*3+10, $height, 'Centro de Costo', 0, 0, 'L', false, '', 0, false, 'T', 'C');
         				$pdf->Cell($width2, $height, 'Total Referencial', 0, 0, 'R', false, '', 0, false, 'T', 'C');
         				$pdf->Cell($width2, $height, 'Disponibilidad', 0, 0, 'R', false, '', 0, false, 'T', 'C');
         				$pdf->Ln();
 												$pdf->setFont('','');
-												$pdf->Cell($width2, $height, $row['codigo_partida'], 0, 0, 'L', false, '', 0, false, 'T', 'C');
-         			$pdf->Cell($width2*4+10, $height, $row['groupeddata'][0]['nombre_partida'], 0, 0, 'L', false, '', 0, false, 'T', 'C');
+												$pdf->Cell($width2, $height, $row['groupeddata'][0]['codigo_partida'], 0, 0, 'L', false, '', 0, false, 'T', 'C');
+         			$pdf->Cell($width2, $height, $row['groupeddata'][0]['nombre_partida'], 0, 0, 'L', false, '', 1, false, 'T', 'C');
+         			$pdf->Cell($width2*3+10, $height, $row['groupeddata'][0]['desc_centro_costo'], 0, 0, 'L', false, '', 1, false, 'T', 'C');
+        				$xRef=$pdf->getX();
+												$yRef=$pdf->getY();
         				$pdf->Cell($width2, $height, $row['totalRef'], 0, 0, 'R', false, '', 0, false, 'T', 'C');
         				$pdf->Cell($width2, $height, ($row['disponible']==true)?'DISPONIBLE':'NO DISPONIBLE', 0, 0, 'R', false, '', 0, false, 'T', 'C');
         				$pdf->Ln();
 												$pdf->setFont('','B');
-        				$pdf->Cell($width2+$width1, $height, 'Centro de Costo', $blackAll, 0, 'L', false, '', 0, false, 'T', 'C');
-												$pdf->Cell($width2*3+10, $height, 'Descripcion', $blackAll, 0, 'L', false, '', 0, false, 'T', 'C');
-												$pdf->Cell($width1, $height, 'Cantidad', $blackAll, 0, 'L', false, '', 0, false, 'T', 'C');
-												$pdf->Cell($width2, $height, 'Precio Unitario', $blackAll, 0, 'L', false, '', 0, false, 'T', 'C');
-												$pdf->Cell($width2, $height, 'Precio Total', $blackAll, 0, 'L', false, '', 0, false, 'T', 'C');
+        				$pdf->Cell($width2+$width1, $height, 'Concepto Gasto', $blackAll, 0, 'L', false, '', 1, false, 'T', 'C');
+												$pdf->Cell($width2+25, $height, 'Descripcion', $blackAll, 0, 'L', false, '', 1, false, 'T', 'C');
+												$pdf->Cell($width1, $height, 'Cantidad', $blackAll, 0, 'L', false, '', 1, false, 'T', 'C');
+												$pdf->Cell($width3, $height, 'Precio Unitario', $blackAll, 0, 'R', false, '', 1, false, 'T', 'C');
+												$pdf->Cell($width3, $height, 'Precio Total', $blackAll, 0, 'R', false, '', 1, false, 'T', 'C');
+												$pdf->Cell($width3, $height, 'Precio Ges. Act.', $blackAll, 0, 'R', false, '', 1, false, 'T', 'C');
+												$pdf->Cell($width3, $height, 'Precio Ges. Sig.', $blackAll, 0, 'R', false, '', 1, false, 'T', 'C');
 												$pdf->Ln();
+												$totalRef=0;
+												$xEnd=0;
+												$yEnd=0;
 												foreach ($row['groupeddata'] as $solicitudDetalle) {
-													  //var_dump($grupo);
 													  $pdf->setFont('','');
-															$pdf->Cell($width2+$width1, $height, $solicitudDetalle['desc_centro_costo'], $blackSide, 0, 'L', false, '', 1, false, 'T', 'C');
-															$pdf->Cell($width2*3+10, $height, $solicitudDetalle['descripcion'], $blackSide, 0, 'L', false, '', 1, false, 'T', 'C');
-															$pdf->Cell($width1, $height, $solicitudDetalle['cantidad'], $blackSide, 0, 'L', false, '', 0, false, 'T', 'C');
-															$pdf->Cell($width2, $height, $solicitudDetalle['precio_unitario'], $blackSide, 0, 'L', false, '', 0, false, 'T', 'C');
-															$pdf->Cell($width2, $height, $solicitudDetalle['precio_total'], $blackSide, 0, 'L', false, '', 0, false, 'T', 'C');
-															$pdf->Ln();																												  	
+															$pdf->Cell($width2+$width1, $height, $solicitudDetalle['desc_concepto_ingas'], $blackSide, 0, 'L', false, '', 1, false, 'T', 'C');
+															$pdf->Cell($width2+25, $height, $solicitudDetalle['descripcion'], $blackSide, 0, 'L', false, '', 1, false, 'T', 'C');
+															$pdf->Cell($width1, $height, $solicitudDetalle['cantidad'], $blackSide, 0, 'R', false, '', 1, false, 'T', 'C');
+															$pdf->Cell($width3, $height, $solicitudDetalle['precio_unitario'], $blackSide, 0, 'R', false, '', 1, false, 'T', 'C');
+															$pdf->Cell($width3, $height, $solicitudDetalle['precio_total'], $blackSide, 0, 'R', false, '', 1, false, 'T', 'C');
+															$pdf->Cell($width3, $height, $solicitudDetalle['precio_ga'], $blackSide, 0, 'R', false, '', 1, false, 'T', 'C');
+															$pdf->Cell($width3, $height, $solicitudDetalle['precio_sg'], $blackSide, 0, 'R', false, '', 1, false, 'T', 'C');
+															$totalRef=$totalRef+$solicitudDetalle['precio_total'];
+															$pdf->Ln();
+															$xEnd=$pdf->getX();
+															$yEnd=$pdf->getY();																												  	
 												}
-												$pdf->Cell(190, $height, '', $blackTop, 1, 'L', false, '', 0, false, 'T', 'C');
+												$pdf->setXY($xRef,$yRef);
+												$pdf->Cell($width2, $height, $totalRef, 0, 0, 'R', false, '', 0, false, 'T', 'C');
+												$pdf->setXY($xEnd,$yEnd);
+												$pdf->Cell(185, $height, '', $blackTop, 1, 'L', false, '', 0, false, 'T', 'C');
         }												
     }      
 }

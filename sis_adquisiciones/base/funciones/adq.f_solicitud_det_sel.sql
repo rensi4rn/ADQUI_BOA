@@ -45,7 +45,7 @@ BEGIN
 
 	if(p_transaccion='ADQ_SOLD_SEL')then
      				
-    	begin    	       	
+       begin
     		--Sentencia de la consulta
 			v_consulta:='select
 						sold.id_solicitud_det,
@@ -91,7 +91,7 @@ BEGIN
                         inner join conta.tauxiliar aux on aux.id_auxiliar = sold.id_auxiliar
 						left join segu.tusuario usu2 on usu2.id_usuario = sold.id_usuario_mod
                         left join conta.torden_trabajo ot on ot.id_orden_trabajo = sold.id_orden_trabajo
-                        where  ';
+                        where sold.id_solicitud='||v_parametros.id_solicitud||' and ';
 			
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -123,7 +123,7 @@ BEGIN
                         inner join conta.tauxiliar aux on aux.id_auxiliar = sold.id_auxiliar
 						left join segu.tusuario usu2 on usu2.id_usuario = sold.id_usuario_mod
                         left join conta.torden_trabajo ot on ot.id_orden_trabajo = sold.id_orden_trabajo
-                        where ';
+                        where sold.id_solicitud='||v_parametros.id_solicitud||' and ';
 			
 			--Definicion de la respuesta		    
 			v_consulta:=v_consulta||v_parametros.filtro;
