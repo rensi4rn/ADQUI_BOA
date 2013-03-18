@@ -34,8 +34,9 @@ Phx.vista.SolicitudVb = {
         
         
     	Phx.vista.SolicitudVb.superclass.constructor.call(this,config);
-    	
-    	this.addButton('sig_estado',{text:'Siguiente',iconCls: 'bgood',disabled:true,handler:this.sigEstado,tooltip: '<b>Pasar al Siguiente Estado</b>'});
+    	this.addButton('ini_estado',{  argument: {estado: 'inicio'},text:'Dev. a Borrador',iconCls: 'batras',disabled:true,handler:this.antEstado,tooltip: '<b>Retorna la Solcitud al estado borrador</b>'});
+        this.addButton('ant_estado',{argument: {estado: 'anterior'},text:'Anterior',iconCls: 'batras',disabled:true,handler:this.antEstado,tooltip: '<b>Pasar al Anterior Estado</b>'});
+        this.addButton('sig_estado',{text:'Siguiente',iconCls: 'badelante',disabled:true,handler:this.sigEstado,tooltip: '<b>Pasar al Siguiente Estado</b>'});
         
         //formulario para preguntar sobre siguiente estado
         //agrega ventana para selecion de RPC
@@ -226,6 +227,28 @@ Phx.vista.SolicitudVb = {
                 scope:this
             });     
         },
+       
+      antEstado:function(res,eve)
+        {                   
+            
+           
+            var d= this.sm.getSelected().data;
+           
+            Phx.CP.loadingShow();
+            var operacion = 'cambiar';
+            operacion=  res.argument.estado == 'inicio'?'inicio':operacion; 
+            
+            Ext.Ajax.request({
+                // form:this.form.getForm().getEl(),
+                url:'../../sis_adquisiciones/control/Solicitud/anteriorEstadoSolicitud',
+                params:{id_solicitud:d.id_solicitud, id_estado_wf:d.id_estado_wf, operacion: operacion},
+                success:this.successSinc,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });     
+        }, 
+       
        successSinc:function(resp){
             
             Phx.CP.loadingHide();
@@ -261,7 +284,24 @@ Phx.vista.SolicitudVb = {
       var tb =this.tbar;
       Phx.vista.SolicitudVb.superclass.preparaMenu.call(this,n);  
           
-        this.getBoton('sig_estado').enable();
+        if(data.estado =='aprobado' ){ 
+            this.getBoton('ant_estado').enable();
+            this.getBoton('sig_estado').disable();
+            this.getBoton('ini_estado').enable();
+        }
+        if(data.estado =='proceso'){
+            this.getBoton('ant_estado').disable();
+            this.getBoton('sig_estado').disable();
+            this.getBoton('ini_estado').disable();
+        }
+        
+        if(data.estado !='aprobado' && data.estado !='proceso' ){
+            this.getBoton('ant_estado').enable();
+            this.getBoton('sig_estado').enable();
+            this.getBoton('ini_estado').enable();
+        }
+       
+       
        
         return tb 
      }, 
@@ -269,6 +309,8 @@ Phx.vista.SolicitudVb = {
         var tb = Phx.vista.SolicitudVb.superclass.liberaMenu.call(this);
         if(tb){
             this.getBoton('sig_estado').disable();
+            this.getBoton('ini_estado').disable();
+            this.getBoton('ant_estado').disable();
            
         }
         return tb

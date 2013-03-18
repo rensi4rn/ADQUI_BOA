@@ -46,6 +46,7 @@ CREATE TABLE adq.tdocumento_sol(
 	  comite_calificacion TEXT, 
 	  presu_revertido VARCHAR(2), 
 	  num_tramite VARCHAR(200), 
+	  presu_comprometido VARCHAR(2) NOT NULL  DEFAULT 'no'::varchar,
 	  PRIMARY KEY (id_solicitud)
 	  
 	) INHERITS (pxp.tbase)

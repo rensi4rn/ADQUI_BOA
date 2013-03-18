@@ -163,19 +163,20 @@ Phx.vista.SolicitudReq = {
     },
     
     onFinalizarSol:function(){
-        
-            var d= this.sm.getSelected().data;
-            Phx.CP.loadingShow();
-            
-            Ext.Ajax.request({
-                // form:this.form.getForm().getEl(),
-                url:'../../sis_adquisiciones/control/Solicitud/finalizarSolicitud',
-                params:{id_solicitud:d.id_solicitud,operacion:'finalizar',id_funcionario_rpc:this.cmbRPC.getValue()},
-                success:this.successFinSol,
-                failure: this.conexionFailure,
-                timeout:this.timeout,
-                scope:this
-            });  
+           var d= this.sm.getSelected().data;
+         
+          if(this.formRPC.getForm().isValid()){ 
+                   Phx.CP.loadingShow(); 
+                   Ext.Ajax.request({
+                    // form:this.form.getForm().getEl(),
+                    url:'../../sis_adquisiciones/control/Solicitud/finalizarSolicitud',
+                    params:{id_solicitud:d.id_solicitud,operacion:'finalizar',id_funcionario_rpc:this.cmbRPC.getValue()},
+                    success:this.successFinSol,
+                    failure: this.conexionFailure,
+                    timeout:this.timeout,
+                    scope:this
+                }); 
+            } 
      },
         successFinSol:function(resp){
             

@@ -54,6 +54,15 @@ DECLARE
     
     v_id_funcionario_aprobador integer;
     v_id_tipo_estado integer;
+    
+   
+     v_id_funcionario integer;
+     v_id_usuario_reg integer;
+     v_id_depto integer;
+     v_id_estado_wf_ant integer;
+     
+     v_presu_comprometido varchar;
+     v_id_tipo_proceso integer;
 			    
 BEGIN
 
@@ -370,7 +379,6 @@ BEGIN
           
           --registra estado eactual en el WF
           
-          -- hay que recuperar el supervidor que seria el estado inmediato,...
            v_id_estado_actual =  wf.f_registra_estado_wf(va_id_tipo_estado[1], 
                                                          v_id_funcionario_aprobador, 
                                                          v_id_estado_wf, 
@@ -384,6 +392,7 @@ BEGIN
            update adq.tsolicitud  s set 
              id_estado_wf =  v_id_estado_actual,
              estado = va_codigo_estado[1],
+             id_funcionario_rpc=v_parametros.id_funcionario_rpc,
              id_usuario_mod=p_id_usuario,
              fecha_mod=now()
            where id_solicitud = v_parametros.id_solicitud;
@@ -516,6 +525,12 @@ BEGIN
             
             IF v_codigo_estado =  'pendiente' THEN 
               -- Comprometer Presupuesto
+              
+              --modifca bandera de comprometido  
+           
+                   update adq.tsolicitud  s set 
+                     presi_comprometido =  'si'
+                   where id_solicitud = v_parametros.id_solicitud;
             
             
             END IF;  
@@ -532,6 +547,208 @@ BEGIN
         
           --Devuelve la respuesta
             return v_resp;
+        
+        end;
+    
+    /*********************************    
+ 	#TRANSACCION:  'ADQ_ANTESOL_IME'
+ 	#DESCRIPCION:	Para pasar al estado anterior de la solicitud
+ 	#AUTOR:		RAC	
+ 	#FECHA:		19-02-2013 12:12:51
+	***********************************/
+
+	elseif(p_transaccion='ADQ_ANTESOL_IME')then   
+        begin
+        
+        
+         IF  v_parametros.operacion = 'cambiar' THEN
+               
+               raise notice 'es_estaado_wf %',v_parametros.id_estado_wf;
+              
+                      --recuperaq estado anterior segun Log del WF
+                        SELECT  
+                           ps_id_tipo_estado,
+                           ps_id_funcionario,
+                           ps_id_usuario_reg,
+                           ps_id_depto,
+                           ps_codigo_estado,
+                           ps_id_estado_wf_ant
+                        into
+                           v_id_tipo_estado,
+                           v_id_funcionario,
+                           v_id_usuario_reg,
+                           v_id_depto,
+                           v_codigo_estado,
+                           v_id_estado_wf_ant 
+                        FROM wf.f_obtener_estado_ant_log_wf(v_parametros.id_estado_wf);
+                        
+                        
+                        --
+                      select 
+                           ew.id_proceso_wf 
+                        into 
+                           v_id_proceso_wf
+                      from wf.testado_wf ew
+                      where ew.id_estado_wf= v_id_estado_wf_ant;
+                      
+                      -- registra nuevo estado
+                      
+                      v_id_estado_actual = wf.f_registra_estado_wf(
+                          v_id_tipo_estado, 
+                          v_id_funcionario, 
+                          v_parametros.id_estado_wf, 
+                          v_id_proceso_wf, 
+                          p_id_usuario,
+                          'anterior');
+                      
+                    
+                      
+                      -- actualiza estado en la solicitud
+                        update adq.tsolicitud  s set 
+                           id_estado_wf =  v_id_estado_actual,
+                           estado = v_codigo_estado,
+                           id_usuario_mod=p_id_usuario,
+                           fecha_mod=now()
+                         where id_solicitud = v_parametros.id_solicitud;
+                         
+                         
+                        --TO DO,  cuando revertir????
+                      
+                        -- cuando el estado al que regresa es pendiente revierte presusupesto comprometido
+                         IF v_codigo_estado = 'pendiente'  THEN
+                         
+                            -- actualiza estado en la solicitud
+                            update adq.tsolicitud  s set 
+                               id_estado_wf =  v_id_estado_actual,
+                               estado = v_codigo_estado,
+                               id_usuario_mod=p_id_usuario,
+                               fecha_mod=now()
+                             where id_solicitud = v_parametros.id_solicitud;
+                         
+                         
+                           --  llamar a funciond erevertir presupuesto
+                           
+                           
+                           --  modifica bandera de presupuesto comprometido
+                            
+                           --modifca bandera de comprometido  
+                             update adq.tsolicitud  s set 
+                               presi_comprometido =  'no'
+                             where id_solicitud = v_parametros.id_solicitud;
+                           
+                         
+                         END IF;
+                         
+                         
+                        -- si hay mas de un estado disponible  preguntamos al usuario
+                        v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Se realizo el cambio de estado)'); 
+                        v_resp = pxp.f_agrega_clave(v_resp,'operacion','cambio_exitoso');
+                        
+                              
+                      --Devuelve la respuesta
+                        return v_resp;
+                        
+           ----------------------------------------------------------------------
+           -- PAra retornar al estado borrador de la solicitud de manera directa
+           ---------------------------------------------------------------------
+           ELSEIF  v_parametros.operacion = 'inicio' THEN
+             
+           SELECT
+            sol.id_estado_wf,
+            sol.presu_comprometido,
+            pw.id_tipo_proceso,
+           	pw.id_proceso_wf
+           into
+            v_id_estado_wf,
+            v_presu_comprometido,
+            v_id_tipo_proceso,
+            v_id_proceso_wf
+             
+           FROM adq.tsolicitud sol
+           inner join wf.tproceso_wf pw on pw.id_proceso_wf = sol.id_proceso_wf
+           WHERE  sol.id_solicitud = v_parametros.id_solicitud;
+           
+           
+           
+             raise notice 'BUSCAMOS EL INICIO PARA %',v_id_tipo_proceso;
+             
+            -- recuperamos el estado inicial segun tipo_proceso
+             
+             SELECT  
+               ps_id_tipo_estado,
+               ps_codigo_estado
+             into
+               v_id_tipo_estado,
+               v_codigo_estado
+             FROM wf.f_obtener_tipo_estado_inicial_del_tipo_proceso(v_id_tipo_proceso);
+             
+             --recupera el funcionario segun ultimo log borrador
+             raise notice 'CODIGO ESTADO BUSCADO %',v_codigo_estado ;
+             
+             SELECT 
+               ps_id_funcionario,
+               ps_codigo_estado 
+             into
+              v_id_funcionario,
+              v_codigo_estado
+               
+                
+             FROM wf.f_obtener_estado_segun_log_wf(v_id_estado_wf, v_id_tipo_estado);
+            
+              raise notice 'CODIGO ESTADO ENCONTRADO %',v_codigo_estado ;
+             
+             --registra estado borrador
+              v_id_estado_actual = wf.f_registra_estado_wf(
+                  v_id_tipo_estado, 
+                  v_id_funcionario, 
+                  v_parametros.id_estado_wf, 
+                  v_id_proceso_wf, 
+                  p_id_usuario,
+                  'anterior');
+                      
+                    
+                      
+              -- actualiza estado en la solicitud
+                update adq.tsolicitud  s set 
+                   id_estado_wf =  v_id_estado_actual,
+                   estado = v_codigo_estado,
+                   id_usuario_mod=p_id_usuario,
+                   fecha_mod=now()
+                 where id_solicitud = v_parametros.id_solicitud;
+             
+                       
+             
+             
+             --si bandera de comprometido activa revertimos
+           
+              IF v_presu_comprometido ='si'  THEN
+              
+                --llamada a funcion de reversion de presupuesto
+                   
+                   
+                 --modifca bandera de comprometido  
+                   update adq.tsolicitud  s set 
+                     presi_comprometido =  'no'
+                   where id_solicitud = v_parametros.id_solicitud;
+              END IF;
+              
+               -- si hay mas de un estado disponible  preguntamos al usuario
+                v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Se regresoa borrador con exito)'); 
+                v_resp = pxp.f_agrega_clave(v_resp,'operacion','cambio_exitoso');
+                        
+                              
+              --Devuelve la respuesta
+                return v_resp;
+              
+           
+           
+           ELSE
+           
+           		raise exception 'Operacion no reconocida %',v_parametros.operacion;
+           
+           END IF;
+        
+        
         
         end;
     

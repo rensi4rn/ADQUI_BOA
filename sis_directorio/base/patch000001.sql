@@ -36,5 +36,26 @@ ALTER TABLE dir.tpersona_comunicacion
   OWNER TO postgres;  
   
   
+CREATE TABLE dir.tempresa(
+    id_empresa SERIAL NOT NULL,
+    matricula int8,
+    nombre varchar(500),
+    renovado int4,
+    estado_matricula varchar(255),
+    telefono varchar(500),
+    mail varchar(255),
+    nit varchar(200),
+    domicilio text,
+    tipo_sociedad varchar(50),
+    objeto text,
+    seccion varchar(100),
+    divission varchar(100),
+    clase varchar(255),
+    domicilio_legal varchar(255),
+    dir_comercial varchar(255),
+    PRIMARY KEY (id_empresa)
+    )  INHERITS (pxp.tbase);  
+  
+  
 /***********************************F-SCP-RAC-DIR-2-08/01/2013****************************************/
   

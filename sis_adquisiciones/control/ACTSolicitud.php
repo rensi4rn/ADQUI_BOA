@@ -132,6 +132,13 @@ class ACTSolicitud extends ACTbase{
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
     
+    function anteriorEstadoSolicitud(){
+        $this->objFunc=$this->create('MODSolicitud');  
+        $this->objParam->addParametro('id_funcionario_usu',$_SESSION["ss_id_funcionario"]); 
+        $this->res=$this->objFunc->anteriorEstadoSolicitud($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+    
    function groupArray($array,$groupkey)
 	{
 	 if (count($array)>0)

@@ -227,6 +227,28 @@ class MODSolicitud extends MODbase{
         return $this->respuesta;
     }
     
+    function anteriorEstadoSolicitud(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='adq.f_solicitud_ime';
+        $this->transaccion='ADQ_ANTESOL_IME';
+        $this->tipo_procedimiento='IME';
+                
+        //Define los parametros para la funcion
+        $this->setParametro('id_solicitud','id_solicitud','int4');
+        $this->setParametro('id_funcionario_usu','id_funcionario_usu','int4');
+        $this->setParametro('operacion','operacion','varchar');
+        $this->setParametro('id_funcionario','id_funcionario','int4');
+        $this->setParametro('id_tipo_estado','id_tipo_estado','int4');
+        $this->setParametro('id_estado_wf','id_estado_wf','int4');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    
     function reporteSolicitud(){
 		//Definicion de variables para ejecucion del procedimientp
 		$this->procedimiento='adq.f_solicitud_sel';
