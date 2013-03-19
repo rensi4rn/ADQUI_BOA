@@ -18,6 +18,14 @@ class ACTSolicitud extends ACTbase{
 
 		$this->objParam->defecto('dir_ordenacion','asc');
 		
+		if($this->objParam->getParametro('id_depto')!=''){
+            $this->objParam->addFiltro("sol.id_depto = ".$this->objParam->getParametro('id_depto'));    
+        }
+        
+        if($this->objParam->getParametro('estado')!=''){
+            $this->objParam->addFiltro("sol.estado = ''".$this->objParam->getParametro('estado')."''");    
+        }
+		
 		//var_dump($_SESSION["ss_id_funcionario"]);
 		
 		 $this->objParam->addParametro('id_funcionario_usu',$_SESSION["ss_id_funcionario"]); 
@@ -33,10 +41,7 @@ class ACTSolicitud extends ACTbase{
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 	
-	
-	
-	
-				
+		
 	function insertarSolicitud(){
 		$this->objFunc=$this->create('MODSolicitud');	
 		if($this->objParam->insertar('id_solicitud')){

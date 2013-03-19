@@ -257,10 +257,34 @@ Phx.vista.SolicitudVb = {
                 
                 console.log('respuesta',reg)
                if (reg.ROOT.datos.operacion=='preguntar_todo'){
-                   this.cmbTipoEstado.store.baseParams.estados= reg.ROOT.datos.estados;
-                   this.cmbTipoEstado.modificado=true;
-                   this.cmbFuncionarioWf.disable()
-                   this.wEstado.show();
+                   if(reg.ROOT.datos.num_estados==1 && reg.ROOT.datos.num_funcionarios==1){
+                       //directamente mandamos los datos
+                       Phx.CP.loadingShow();
+                       var d= this.sm.getSelected().data;
+                       Ext.Ajax.request({
+                        // form:this.form.getForm().getEl(),
+                        url:'../../sis_adquisiciones/control/Solicitud/siguienteEstadoSolicitud',
+                        params:{id_solicitud:d.id_solicitud,
+                            operacion:'cambiar',
+                            id_tipo_estado:reg.ROOT.datos.id_tipo_estado,
+                            id_funcionario:reg.ROOT.datos.id_funcionario_estado,
+                            id_depto:reg.ROOT.datos.id_depto_estado
+                            id_solicitud:d.id_solicitud
+                            
+                            },
+                        success:this.successSinc,
+                        failure: this.conexionFailure,
+                        timeout:this.timeout,
+                        scope:this
+                    }); 
+                 }
+                   else{
+                     this.cmbTipoEstado.store.baseParams.estados= reg.ROOT.datos.estados;
+                     this.cmbTipoEstado.modificado=true;
+                     this.cmbFuncionarioWf.disable()
+                     this.wEstado.show();  
+                  }
+                   
                }
                
                 if (reg.ROOT.datos.operacion=='cambio_exitoso'){

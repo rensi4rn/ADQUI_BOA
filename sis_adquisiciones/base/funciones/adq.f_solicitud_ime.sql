@@ -63,6 +63,16 @@ DECLARE
      
      v_presu_comprometido varchar;
      v_id_tipo_proceso integer;
+     
+     
+      v_num_estados integer;
+      v_num_funcionarios bigint;
+      v_num_deptos integer;
+      v_fecha_soli date;
+      
+      v_id_funcionario_estado integer;
+      
+      v_id_depto_estado integer;
 			    
 BEGIN
 
@@ -94,8 +104,8 @@ BEGIN
                   'SOLC', 
                    v_id_periodo,-- par_id, 
                    NULL, --id_uo 
-                   1,    -- id_depto
-                   1, 
+                   v_parametros.id_depto,    -- id_depto
+                   p_id_usuario, 
                    'ADQ', 
                    NULL);
       
@@ -137,8 +147,7 @@ BEGIN
              p_id_usuario, 
              v_parametros.id_gestion, 
              v_codigo_tipo_proceso, 
-             v_parametros.id_funcionario, 
-             v_parametros.fecha_soli);
+             v_parametros.id_funcionario);
         
         -- obtiene el funcionario aprobador
         
@@ -427,12 +436,14 @@ BEGIN
           select
             s.id_proceso_wf,
             s.id_estado_wf,
-            s.estado
+            s.estado,
+            s.fecha_soli
           into 
           
             v_id_proceso_wf,
             v_id_estado_wf,
-            v_codigo_estado
+            v_codigo_estado,
+            v_fecha_soli
             
           from adq.tsolicitud s
           where s.id_solicitud=v_parametros.id_solicitud;
@@ -452,8 +463,15 @@ BEGIN
           IF  v_parametros.operacion = 'verificar' THEN
           
               --buscamos siguiente estado correpondiente al proceso del WF
+             
+              ----- variables de retorno------
               
-               
+              v_num_estados=0;
+              v_num_funcionarios=0;
+              v_num_deptos=0;
+              
+              --------------------------------- 
+              
              SELECT  
                  ps_id_tipo_estado,
                  ps_codigo_estado,
@@ -469,28 +487,98 @@ BEGIN
               FROM adq.f_obtener_sig_estado_sol_rec(v_parametros.id_solicitud, v_id_proceso_wf, v_id_tipo_estado); 
           
             
-            -- TO DO  si el siguiente estado es el visto bueno de la uti (vbuti)  pregutamos si existe alguan partida
-            --        de computadoras  en observaciones del tipo estado
+            v_num_estados= array_length(va_id_tipo_estado, 1);
             
+            
+            IF v_num_estados = 1 then
+                  -- si solo hay un estado,  verificamos si tiene mas de un funcionario por este estado
+                 SELECT 
+                 *
+                  into
+                 v_num_funcionarios 
+                 FROM wf.f_funcionario_wf_sel(
+                     p_id_usuario, 
+                     va_id_tipo_estado[1], 
+                     v_fecha_soli,
+                     v_id_estado_wf,
+                     TRUE) AS (total bigint);
+                     
+                IF v_num_funcionarios = 1 THEN
+                -- si solo es un funcionario, recuperamos el funcionario correspondiente
+                     SELECT 
+                         id_funcionario
+                           into
+                         v_id_funcionario_estado
+                     FROM wf.f_funcionario_wf_sel(
+                         p_id_usuario, 
+                         va_id_tipo_estado[1], 
+                         v_fecha_soli,
+                         v_id_estado_wf,
+                         FALSE) 
+                         AS (id_funcionario integer,
+                           desc_funcionario text,
+                           desc_funcionario_cargo text,
+                           prioridad integer);
+                END IF;    
+                     
+              
+              --verificamos el numero de deptos
+              
+                SELECT 
+                *
+                into
+                  v_num_deptos 
+               FROM wf.f_depto_wf_sel(
+                   p_id_usuario, 
+                   va_id_tipo_estado[1], 
+                   v_fecha_soli,
+                   v_id_estado_wf,
+                   TRUE) AS (total bigint);
+                   
+              IF v_num_deptos = 1 THEN
+                  -- si solo es un funcionario, recuperamos el funcionario correspondiente
+                       SELECT 
+                           id_depto
+                             into
+                           v_id_depto_estado
+                      FROM wf.f_depto_wf_sel(
+                           p_id_usuario, 
+                           va_id_tipo_estado[1], 
+                           v_fecha_soli,
+                           v_id_estado_wf,
+                           FALSE) 
+                           AS (id_depto integer,
+                             codigo_depto varchar,
+                             nombre_corto_depto varchar,
+                             nombre_depto varchar,
+                             prioridad integer);
+                END IF;
+              
+              
+              
+              
+             
+             END IF;
+           
             
             -- si hay mas de un estado disponible  preguntamos al usuario
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Verificacion para el siguiente estado)'); 
             v_resp = pxp.f_agrega_clave(v_resp,'estados', array_to_string(va_id_tipo_estado, ','));
             v_resp = pxp.f_agrega_clave(v_resp,'operacion','preguntar_todo');
-            --TO DO  si hay un solo estado disponible pero mas de un usario  preguntamos al usuario
+            v_resp = pxp.f_agrega_clave(v_resp,'num_estados',v_num_estados::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'num_funcionarios',v_num_funcionarios::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'num_deptos',v_num_deptos::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'id_funcionario_estado',v_id_funcionario_estado::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'id_depto_estado',v_id_depto_estado::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'id_tipo_estado', va_id_tipo_estado[1]::varchar);
             
             
-            -- TO DO si hay solo un estado disponible y solo un funcionario para ese estado podemos saltar directamente al  estado
-           
-           
-           
+           ----------------------------------------
+           --Se se solicita cambiar de estado a la solicitud
+           ------------------------------------------
            ELSEIF  v_parametros.operacion = 'cambiar' THEN
           
           
-            --TO DO  verificar cuando el proceso anterior sea disparado
-            --       y crear el proceso de compra 
-            
-            
             
             -- obtener datos tipo estado
             
@@ -501,13 +589,21 @@ BEGIN
             from wf.ttipo_estado te
             where te.id_tipo_estado = v_parametros.id_tipo_estado;
             
+            IF  pxp.f_existe_parametro('p_tabla','id_depto') THEN
+             
+             v_id_depto = v_parametros.if_depto;
+            
+            END IF;
+            
+           
             
             -- hay que recuperar el supervidor que seria el estado inmediato,...
              v_id_estado_actual =  wf.f_registra_estado_wf(v_parametros.id_tipo_estado, 
                                                            v_parametros.id_funcionario, 
                                                            v_id_estado_wf, 
                                                            v_id_proceso_wf,
-                                                           p_id_usuario);
+                                                           p_id_usuario,
+                                                           v_id_depto);
             
             
              -- actualiza estado en la solicitud
@@ -529,7 +625,7 @@ BEGIN
               --modifca bandera de comprometido  
            
                    update adq.tsolicitud  s set 
-                     presi_comprometido =  'si'
+                     presu_comprometido =  'si'
                    where id_solicitud = v_parametros.id_solicitud;
             
             
@@ -552,7 +648,8 @@ BEGIN
     
     /*********************************    
  	#TRANSACCION:  'ADQ_ANTESOL_IME'
- 	#DESCRIPCION:	Para pasar al estado anterior de la solicitud
+ 	#DESCRIPCION:	Trasaacion utilizada  pasar a  estados anterior es de la solicitud
+                    segun la operacion definida
  	#AUTOR:		RAC	
  	#FECHA:		19-02-2013 12:12:51
 	***********************************/
@@ -560,7 +657,9 @@ BEGIN
 	elseif(p_transaccion='ADQ_ANTESOL_IME')then   
         begin
         
-        
+        --------------------------------------------------
+        --REtrocede al estado inmediatamente anterior
+        -------------------------------------------------
          IF  v_parametros.operacion = 'cambiar' THEN
                
                raise notice 'es_estaado_wf %',v_parametros.id_estado_wf;
@@ -599,7 +698,7 @@ BEGIN
                           v_parametros.id_estado_wf, 
                           v_id_proceso_wf, 
                           p_id_usuario,
-                          'anterior');
+                          v_id_depto);
                       
                     
                       
@@ -633,7 +732,7 @@ BEGIN
                             
                            --modifca bandera de comprometido  
                              update adq.tsolicitud  s set 
-                               presi_comprometido =  'no'
+                               presu_comprometido =  'no'
                              where id_solicitud = v_parametros.id_solicitud;
                            
                          
@@ -703,8 +802,7 @@ BEGIN
                   v_id_funcionario, 
                   v_parametros.id_estado_wf, 
                   v_id_proceso_wf, 
-                  p_id_usuario,
-                  'anterior');
+                  p_id_usuario);
                       
                     
                       
@@ -723,12 +821,12 @@ BEGIN
            
               IF v_presu_comprometido ='si'  THEN
               
-                --llamada a funcion de reversion de presupuesto
+                --TO DO llamada a funcion de reversion de presupuesto
                    
                    
                  --modifca bandera de comprometido  
                    update adq.tsolicitud  s set 
-                     presi_comprometido =  'no'
+                     presu_comprometido =  'no'
                    where id_solicitud = v_parametros.id_solicitud;
               END IF;
               

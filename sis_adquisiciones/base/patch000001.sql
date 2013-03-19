@@ -84,7 +84,7 @@ CREATE TABLE adq.tsolicitud_det(
     codigo_proceso varchar(50),
     obs_proceso varchar(500),
     estado varchar(30),
-    fache_ini_proc date,
+    fecha_ini_proc date,
     num_cotizacion varchar(30),
     num_convocatoria varchar(30),
     num_tramite varchar(200),

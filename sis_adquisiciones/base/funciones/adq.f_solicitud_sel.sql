@@ -41,7 +41,7 @@ BEGIN
 	/*********************************    
  	#TRANSACCION:  'ADQ_SOL_SEL'
  	#DESCRIPCION:	Consulta de datos
- 	#AUTOR:		admin	
+ 	#AUTOR:		Rensi Arteaga Copari	
  	#FECHA:		19-02-2013 12:12:51
 	***********************************/
 
@@ -52,7 +52,7 @@ BEGIN
             
             v_filtro='';
             
-            IF /*p_administrador !=1  and */lower(v_parametros.tipo_interfaz) = 'solicitudrq' THEN
+            IF p_administrador !=1  and lower(v_parametros.tipo_interfaz) = 'solicitudrq' THEN
             
                           
               v_filtro = '(ew.id_funcionario='||v_parametros.id_funcionario_usu::varchar||'  or sol.id_usuario_reg='||p_id_usuario||' ) and ';
@@ -74,7 +74,9 @@ BEGIN
                 END IF;
                 
                 
-            END IF; 
+            END IF;
+            
+       
         
         
         
@@ -237,7 +239,7 @@ BEGIN
 	/*********************************    
  	#TRANSACCION:  'ADQ_SOL_CONT'
  	#DESCRIPCION:	Conteo de registros
- 	#AUTOR:		admin	
+ 	#AUTOR:		Rensi Arteaga Copari	
  	#FECHA:		19-02-2013 12:12:51
 	***********************************/
 
