@@ -32,7 +32,7 @@ select pxp.f_insert_tgui ('Configuración', 'Configuración varios', 'ADQ.1', 's
 select pxp.f_insert_tgui ('Categorías de Compra', 'Categorías de Compra', 'ADQ.1.1', 'si', 1, 'sis_adquisiciones/vista/categoria_compra/CategoriaCompra.php', 3, '', 'CategoriaCompra', 'ADQ');
 select pxp.f_insert_tgui ('Documento de Solicitud', 'Documento de Solicitud', 'ADQ.2', 'si', 1, 'sis_adquisiciones/vista/documento_sol/DocumentoSol.php', 2, '', 'DocumentoSol', 'ADQ');
 select pxp.f_insert_tgui ('Solicitud de Compra', 'Solicitud de Compra', 'ADQ.3', 'si', 1, 'sis_adquisiciones/vista/solicitud/SolicitudReq.php', 2, '', 'SolicitudReq', 'ADQ');
-select pxp.f_insert_tgui ('Visto Bueno', 'Solicitud de Compra', 'VBSOL', 'si', 1, 'sis_adquisiciones/vista/solicitud/SolicitudVb.php', 2, '', 'SolicitudReq', 'ADQ');
+select pxp.f_insert_tgui ('Visto Bueno', 'Solicitud de Compra', 'VBSOL', 'si', 1, 'sis_adquisiciones/vista/solicitud/SolicitudVb.php', 2, '', 'SolicitudVb', 'ADQ');
 select pxp.f_insert_tgui ('Proveedores', 'Proveedores de compra', 'ADQ.4', 'si', 1, 'sis_adquisiciones/vista/proveedor/Proveedor.php', 2, '', 'Proveedor', 'ADQ');
 select pxp.f_insert_tgui ('Proceso Compra', 'Proceso de Compra', 'PROC', 'si', 4, 'sis_adquisiciones/vista/proceso_compra/ProcesoCompra.php', 2, '', 'ProcesoCompra', 'ADQ');
 
@@ -102,12 +102,12 @@ select wf.f_insert_testructura_estado ('Elaboracion_Informe_Comision', 'Elaborac
 select wf.f_insert_testructura_estado ('Aprobación Supervisor', 'Visto Bueno Activos Fijos', '3', '', 'activo');
 select wf.f_insert_testructura_estado ('Elaboracion_Contrato', 'Firma_GG', '1', '', 'activo');
 select wf.f_insert_testructura_estado ('Borrador', 'Aprobación Supervisor', '0', '', 'activo');
-select wf.f_insert_testructura_estado ('Visto Bueno Activos Fijos', 'Visto Bueno RPC', '', '', 'activo');
+select wf.f_insert_testructura_estado ('Visto Bueno Activos Fijos', 'Visto Bueno RPC', '1', '', 'activo');
 select wf.f_insert_testructura_estado ('Visto Bueno RPC', 'Solicitud de Aprobada', '1', '', 'activo');
-select wf.f_insert_testructura_estado ('Solicitud de Aprobada', 'En_Proceso', '', '', 'activo');
-select wf.f_insert_testructura_estado ('Proceso pendiente', 'Inicio de Proceso de COmpra', '', '', 'activo');
-select wf.f_insert_testructura_estado ('Inicio de Proceso de COmpra', 'Inicio de Proceso de COmpra', '', '', 'activo');
-select wf.f_insert_testructura_estado ('Inicio de Proceso de COmpra', 'Proceso Desierto', '', '', 'activo');
+select wf.f_insert_testructura_estado ('Solicitud de Aprobada', 'En_Proceso', '1', '', 'activo');
+select wf.f_insert_testructura_estado ('Proceso pendiente', 'Inicio de Proceso de COmpra', '1', '', 'activo');
+select wf.f_insert_testructura_estado ('Inicio de Proceso de COmpra', 'Inicio de Proceso de COmpra', '1', '', 'activo');
+select wf.f_insert_testructura_estado ('Inicio de Proceso de COmpra', 'Proceso Desierto', '1', '', 'activo');
 
 
 
