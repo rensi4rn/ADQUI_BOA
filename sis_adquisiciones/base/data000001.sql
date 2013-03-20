@@ -62,9 +62,6 @@ select pxp.f_insert_tfuncion ('adq.f_documento_sol_sel', 'Funcion para tabla    
 
 
 /***********************************I-DAT-RAC-ADQ-0-25/02/2013*****************************************/
---inserta documentos de adquisiciones
-
-SELECT * FROM param.f_inserta_documento('ADQ', 'SOLC', 'Solicitud de Compra', 'periodo', NULL, 'depto', NULL);
 
 --INSERTAR CATEGORIAS DE COMPRA
 
@@ -109,6 +106,18 @@ select wf.f_insert_testructura_estado ('Proceso pendiente', 'Inicio de Proceso d
 select wf.f_insert_testructura_estado ('Inicio de Proceso de COmpra', 'Inicio de Proceso de COmpra', '1', '', 'activo');
 select wf.f_insert_testructura_estado ('Inicio de Proceso de COmpra', 'Proceso Desierto', '1', '', 'activo');
 
+
+
+-----------------------------------
+-- DOCUMENTOS
+---------------------------------
+
+
+--inserta documentos de adquisiciones
+
+SELECT * FROM param.f_inserta_documento('ADQ', 'SOLC', 'Solicitud de Compra', 'periodo', NULL, 'depto', NULL);
+
+SELECT * FROM param.f_inserta_documento('ADQ', 'COT', 'Cotizacion de Compra', 'periodo', NULL, 'depto', NULL);
 
 
 

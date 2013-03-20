@@ -19,11 +19,7 @@ Phx.vista.ProcesoCompra=Ext.extend(Phx.gridInterfaz,{
 		this.init();
 		this.load({params:{start:0, limit:this.tam_pag}});
 		this.iniciarEventos();
-		
-		
-		
-		
-		
+	
 	},
 	tam_pag:50,
 			
@@ -367,6 +363,13 @@ Phx.vista.ProcesoCompra=Ext.extend(Phx.gridInterfaz,{
 		field: 'id_proceso_compra',
 		direction: 'ASC'
 	},
+	south:
+          { 
+          url:'../../../sis_adquisiciones/vista/solicitud_det/SolicitudVbDet.php',
+          title:'Detalle', 
+          height:'50%',
+          cls:'SolicitudVbDet'
+         },
 	bdel:true,
 	bsave:false
 	}
