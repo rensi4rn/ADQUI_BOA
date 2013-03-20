@@ -38,17 +38,7 @@ CREATE TABLE conta.tcuenta (
   cuenta_flujo_sigma VARCHAR(50), 
   CONSTRAINT pk_tcuenta__id_cuenta PRIMARY KEY(id_cuenta), 
   CONSTRAINT chk_tcuenta__tipo_cuenta CHECK ((tipo_cuenta)::text = ANY (ARRAY[('activo'::character varying)::text, ('pasivo'::character varying)::text, ('patrimonio'::character varying)::text, ('ingreso'::character varying)::text, ('gasto'::character varying)::text])), 
-  CONSTRAINT chk_tcuenta__tipo_cuenta_pat CHECK ((tipo_cuenta_pat)::text = ANY (ARRAY[('capital'::character varying)::text, ('reserva'::character varying)::text])), 
-  CONSTRAINT fk_tcuenta__id_cuenta_padre FOREIGN KEY (id_cuenta_padre)
-    REFERENCES conta.tcuenta(id_cuenta)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE, 
-  CONSTRAINT fk_tcuenta__id_empresa FOREIGN KEY (id_empresa)
-    REFERENCES param.tempresa(id_empresa)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE
+  CONSTRAINT chk_tcuenta__tipo_cuenta_pat CHECK ((tipo_cuenta_pat)::text = ANY (ARRAY[('capital'::character varying)::text, ('reserva'::character varying)::text]))
 ) INHERITS (pxp.tbase)
 WITHOUT OIDS;
 
