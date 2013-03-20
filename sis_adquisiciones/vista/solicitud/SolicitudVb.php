@@ -185,19 +185,16 @@ Phx.vista.SolicitudVb = {
 	confSigEstado :function() {                   
             var d= this.sm.getSelected().data;
            
-           
-            
             if ( this.formEstado .getForm().isValid()){
                  Phx.CP.loadingShow();
                     Ext.Ajax.request({
                         // form:this.form.getForm().getEl(),
                         url:'../../sis_adquisiciones/control/Solicitud/siguienteEstadoSolicitud',
-                        params:{id_solicitud:d.id_solicitud,
+                        params:{
+                            id_solicitud:d.id_solicitud,
                             operacion:'cambiar',
                             id_tipo_estado:this.cmbTipoEstado.getValue(),
-                            id_funcionario:this.cmbFuncionarioWf.getValue(),
-                            id_solicitud:d.id_solicitud
-                            
+                            id_funcionario:this.cmbFuncionarioWf.getValue()
                             },
                         success:this.successSinc,
                         failure: this.conexionFailure,
@@ -241,7 +238,9 @@ Phx.vista.SolicitudVb = {
             Ext.Ajax.request({
                 // form:this.form.getForm().getEl(),
                 url:'../../sis_adquisiciones/control/Solicitud/anteriorEstadoSolicitud',
-                params:{id_solicitud:d.id_solicitud, id_estado_wf:d.id_estado_wf, operacion: operacion},
+                params:{id_solicitud:d.id_solicitud, 
+                        id_estado_wf:d.id_estado_wf, 
+                        operacion: operacion},
                 success:this.successSinc,
                 failure: this.conexionFailure,
                 timeout:this.timeout,
@@ -268,7 +267,7 @@ Phx.vista.SolicitudVb = {
                             operacion:'cambiar',
                             id_tipo_estado:reg.ROOT.datos.id_tipo_estado,
                             id_funcionario:reg.ROOT.datos.id_funcionario_estado,
-                            id_depto:reg.ROOT.datos.id_depto_estado
+                            id_depto:reg.ROOT.datos.id_depto_estado,
                             id_solicitud:d.id_solicitud
                             
                             },

@@ -7,7 +7,7 @@ VALUES ( E'DIR', E'Directorio', E'2013-03-15', E'DIR', E'activo', E'directorio',
 --COPY LINES TO data.sql FILE  
 ---------------------------------
 
-select pxp.f_insert_tgui ('DIRECTORIO', '', 'DIR', 'si', , '', 1, '', '', 'DIR');
+select pxp.f_insert_tgui ('DIRECTORIO', '', 'DIR', 'si',1 , '', 1, '', '', 'DIR');
 select pxp.f_insert_tgui ('empresa', 'empresa', 'emp', 'si', 1, 'sis_directorio/vista/Empresa.php', 2, '', 'Empresa', 'DIR');
 ----------------------------------
 --COPY LINES TO dependencies.sql FILE 

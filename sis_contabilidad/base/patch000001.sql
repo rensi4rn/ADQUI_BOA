@@ -11,39 +11,47 @@ CREATE TABLE conta.tconfig_tipo_cuenta(
 
 /***********************************I-SCP-GSS-CONTA-48-20/02/2013****************************************/
 
---tabla conta.tcuenta
 CREATE TABLE conta.tcuenta (
   id_cuenta SERIAL, 
   id_empresa INTEGER, 
   id_parametro INTEGER, 
-  id_cuenta_padre INTEGER,
-  id_gestion INTEGER NOT NULL, 
-  id_moneda INTEGER, 
-  tipo_cuenta VARCHAR(30), 
+  id_cuenta_padre INTEGER, 
   nro_cuenta VARCHAR(20), 
+  id_gestion INTEGER, 
+  id_moneda INTEGER, 
   nombre_cuenta VARCHAR(100), 
   desc_cuenta VARCHAR(500), 
   nivel_cuenta INTEGER, 
-  sw_transaccional VARCHAR(2), 
+  tipo_cuenta VARCHAR(30), 
+  sw_transaccional VARCHAR(10), 
   sw_oec INTEGER, 
-  sw_auxiliar INTEGER, 
-  tipo_cuenta_pat VARCHAR(20),
-  sw_sistema_actualizacion VARCHAR(12), 
+  sw_auxiliar VARCHAR(2), 
+  tipo_cuenta_pat VARCHAR(20), 
+  cuenta_sigma VARCHAR(100), 
+  sw_sigma VARCHAR(2), 
   id_cuenta_actualizacion INTEGER, 
   id_auxliar_actualizacion INTEGER, 
+  sw_sistema_actualizacion VARCHAR(12), 
   id_cuenta_dif INTEGER, 
   id_auxiliar_dif INTEGER, 
-  sw_sigma VARCHAR(2),  
-  cuenta_sigma VARCHAR(100),
-  id_cuenta_sigma INTEGER,
+  id_cuenta_sigma INTEGER, 
   cuenta_flujo_sigma VARCHAR(50), 
-  
-  
   CONSTRAINT pk_tcuenta__id_cuenta PRIMARY KEY(id_cuenta), 
   CONSTRAINT chk_tcuenta__tipo_cuenta CHECK ((tipo_cuenta)::text = ANY (ARRAY[('activo'::character varying)::text, ('pasivo'::character varying)::text, ('patrimonio'::character varying)::text, ('ingreso'::character varying)::text, ('gasto'::character varying)::text])), 
-  CONSTRAINT chk_tcuenta__tipo_cuenta_pat CHECK ((tipo_cuenta_pat)::text = ANY (ARRAY[('capital'::character varying)::text, ('reserva'::character varying)::text]))
+  CONSTRAINT chk_tcuenta__tipo_cuenta_pat CHECK ((tipo_cuenta_pat)::text = ANY (ARRAY[('capital'::character varying)::text, ('reserva'::character varying)::text])), 
+  CONSTRAINT fk_tcuenta__id_cuenta_padre FOREIGN KEY (id_cuenta_padre)
+    REFERENCES conta.tcuenta(id_cuenta)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE, 
+  CONSTRAINT fk_tcuenta__id_empresa FOREIGN KEY (id_empresa)
+    REFERENCES param.tempresa(id_empresa)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE
 ) INHERITS (pxp.tbase)
 WITHOUT OIDS;
+
     
 ALTER TABLE conta.tcuenta OWNER TO postgres;  
 
