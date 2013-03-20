@@ -1,7 +1,8 @@
-CREATE OR REPLACE FUNCTION migracion.f_mig_ini_tpm_gestion_tgestion (
-)
-RETURNS boolean AS
-$body$
+CREATE OR REPLACE FUNCTION migracion.f_mig_ini_tpm_periodo_tperiodo()
+						RETURNS boolean AS
+						$BODY$
+
+
 						DECLARE
 						 
 						g_registros record;
@@ -26,7 +27,7 @@ $body$
 						         raise exception 'FALLA CONEXION A LA BASE DE DATOS CON DBLINK';
 									                 
 						     ELSE
-						       v_consulta = 'select pxp.f_add_remove_foraneas(''tgestion'',''PARAM'',''eliminar'')';                   
+						       v_consulta = 'select pxp.f_add_remove_foraneas(''tperiodo'',''PARAM'',''eliminar'')';                   
 						       raise notice '%',v_consulta;
 						       PERFORM * FROM dblink(v_consulta,true) AS ( xx varchar);
 						        v_res_cone=(select dblink_disconnect());
@@ -36,22 +37,24 @@ $body$
 						   --consulta los registro de la tabla origen
 						    FOR g_registros in (
 						        SELECT 
+						id_periodo,
 						id_gestion,
-						id_empresa,
-						id_moneda_base,
-						estado_ges_gral,
-						gestion
+						estado_peri_gral,
+						fecha_final,
+						fecha_inicio,
+						periodo
 FROM 
-						          PARAM.tpm_gestion) LOOP
+						          PARAM.tpm_periodo) LOOP
 						        
 						        -- inserta en el destino
 						      
-						            v_cadena_resp = migracion.f_trans_tpm_gestion_tgestion(
-						            'INSERT',g_registros.id_gestion
-					,g_registros.id_empresa
-					,g_registros.id_moneda_base
-					,g_registros.estado_ges_gral
-					,g_registros.gestion
+						            v_cadena_resp = migracion.f_trans_tpm_periodo_tperiodo(
+						            'INSERT',g_registros.id_periodo
+					,g_registros.id_gestion
+					,g_registros.estado_peri_gral
+					,g_registros.fecha_final
+					,g_registros.fecha_inicio
+					,g_registros.periodo
 					);	
 					            IF v_cadena_resp[1] = 'FALSE' THEN
 					              RAISE NOTICE 'ERROR ->>>  (%),(%) - %   ', v_cadena_resp[3], v_cadena_resp[2], v_cadena_resp[4];
@@ -67,7 +70,7 @@ FROM
 						         raise exception 'FALLA CONEXION A LA BASE DE DATOS CON DBLINK';
 									                 
 						     ELSE
-						       v_consulta = 'select pxp.f_add_remove_foraneas(''tgestion'',''PARAM'',''insertar'')';                   
+						       v_consulta = 'select pxp.f_add_remove_foraneas(''tperiodo'',''PARAM'',''insertar'')';                   
 						       raise notice '%',v_consulta;
 						       PERFORM * FROM dblink(v_consulta,true) AS ( xx varchar);
 						        v_res_cone=(select dblink_disconnect());
@@ -75,8 +78,10 @@ FROM
 						
 						RETURN TRUE;
 						END;
-$body$
-LANGUAGE 'plpgsql'
-VOLATILE
-CALLED ON NULL INPUT
-SECURITY INVOKER;
+						$BODY$
+
+
+						LANGUAGE 'plpgsql'
+						VOLATILE
+						CALLED ON NULL INPUT
+						SECURITY INVOKER;

@@ -1,7 +1,8 @@
-CREATE OR REPLACE FUNCTION migracion.f_tri_tpm_gestion_tgestion (
-)
-RETURNS trigger AS
-$body$
+
+		CREATE OR REPLACE FUNCTION migracion.f_tri_tpm_periodo_tperiodo ()
+		RETURNS trigger AS
+		$BODY$
+
 DECLARE
 		 
 		g_registros record;
@@ -14,11 +15,11 @@ DECLARE
 		BEGIN
 		   IF(TG_OP = 'INSERT' or  TG_OP ='UPDATE' ) THEN
 		   
-			 v_consulta =  'SELECT migracion.f_trans_tpm_gestion_tgestion (
-                  '''||TG_OP::varchar||''','||COALESCE(NEW.id_gestion::varchar,'NULL')||','||COALESCE(NEW.id_empresa::varchar,'NULL')||','||COALESCE(NEW.id_moneda_base::varchar,'NULL')||','||COALESCE(''''||NEW.estado_ges_gral::varchar||'''','NULL')||','||COALESCE(NEW.gestion::varchar,'NULL')||') as res';				  
+			 v_consulta =  'SELECT migracion.f_trans_tpm_periodo_tperiodo (
+                  '''||TG_OP::varchar||''','||COALESCE(NEW.id_periodo::varchar,'NULL')||','||COALESCE(NEW.id_gestion::varchar,'NULL')||','||COALESCE(''''||NEW.estado_peri_gral::varchar||'''','NULL')||','||COALESCE(''''||NEW.fecha_final::varchar||'''','NULL')||','||COALESCE(''''||NEW.fecha_inicio::varchar||'''','NULL')||','||COALESCE(NEW.periodo::varchar,'NULL')||') as res';				  
 		  ELSE 
-		      v_consulta =  ' SELECT migracion.f_trans_tpm_gestion_tgestion (
-		              '''||TG_OP::varchar||''','||OLD.id_gestion||',NULL,NULL,NULL,NULL,NULL) as res';
+		      v_consulta =  ' SELECT migracion.f_trans_tpm_periodo_tperiodo (
+		              '''||TG_OP::varchar||''','||OLD.id_periodo||',NULL,NULL,NULL,NULL,NULL) as res';
 		       
 		   END IF;
 		   --------------------------------------
@@ -44,8 +45,7 @@ DECLARE
 		  RETURN NULL;
 		
 		END;
-$body$
-LANGUAGE 'plpgsql'
-VOLATILE
-CALLED ON NULL INPUT
-SECURITY INVOKER;
+		$BODY$LANGUAGE 'plpgsql'
+		VOLATILE
+		CALLED ON NULL INPUT
+		SECURITY INVOKER;
