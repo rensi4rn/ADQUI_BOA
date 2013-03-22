@@ -44,7 +44,14 @@ class ACTSolicitudDet extends ACTbase{
 		$this->res=$this->objFunc->eliminarSolicitudDet($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
-			
+	
+	function listarSolicitudDetCotizacion(){
+			$this->objParam->defecto('ordenacion','id_solicitud_det');
+		 $this->objParam->defecto('dir_ordenacion','asc');
+			$this->objFunc=$this->create('MODSolicitudDet');
+			$this->res=$this->objFunc->listarSolicitudDetCotizacion($this->objParam);
+			$this->res->imprimirRespuesta($this->res->generarJson());	
+	}
 }
 
 ?>

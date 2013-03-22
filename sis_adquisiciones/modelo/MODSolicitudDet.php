@@ -138,6 +138,26 @@ class MODSolicitudDet extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+	function listarSolicitudDetCotizacion(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='adq.f_solicitud_det_sel';
+		$this->transaccion='ADQ_SOLDETCOT_SEL';
+		$this->tipo_procedimiento='SEL';
+		$this->setCount(false);
+		
+		//Define los parametros para la funcion
+		$this->setParametro('id_cotizacion','id_cotizacion','int4');
+		$this->captura('id_solicitud_det','int4');
+		$this->captura('desc_centro_costo','text');
+		$this->captura('desc_concepto_ingas','varchar');
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+		
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 			
 }
 ?>
