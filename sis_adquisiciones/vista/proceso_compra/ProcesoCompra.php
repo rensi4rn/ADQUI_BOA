@@ -17,6 +17,13 @@ Phx.vista.ProcesoCompra=Ext.extend(Phx.gridInterfaz,{
     	//llama al constructor de la clase padre
 		Phx.vista.ProcesoCompra.superclass.constructor.call(this,config);
 		this.init();
+		this.addButton('btnCotizacion',{
+            text :'Cotizacion',
+            iconCls : 'bdocuments',
+            disabled: true,
+            handler : this.onButtonCotizacion,
+            tooltip : '<b>Cotizacion de solicitud de Compra</b><br/><b>Cotizacion de solicitud de Compra</b>'
+  });
 		this.load({params:{start:0, limit:this.tam_pag}});
 		this.iniciarEventos();
 	
@@ -29,7 +36,8 @@ Phx.vista.ProcesoCompra=Ext.extend(Phx.gridInterfaz,{
 			config:{
 					labelSeparator:'',
 					inputType:'hidden',
-					name: 'id_proceso_compra'
+					name: 'id_proceso_compra',
+					
 			},
 			type:'Field',
 			form:true 
@@ -358,7 +366,37 @@ Phx.vista.ProcesoCompra=Ext.extend(Phx.gridInterfaz,{
 	  
 	},
 	
-	
+	 onButtonCotizacion:function() {
+            var rec=this.sm.getSelected();
+            Phx.CP.loadWindows('../../../sis_adquisiciones/vista/cotizacion/Cotizacion.php',
+                    'Cotizacion de solicitud de compra',
+                    {
+                        width:900,
+                        height:600
+                    },
+                    rec.data,
+                    this.idContenedor,
+                    'Cotizacion'
+        )
+    },
+    preparaMenu:function(n){
+      var data = this.getSelectedData();
+      var tb =this.tbar;
+       
+        this.getBoton('btnCotizacion').setDisabled(false);
+
+        Phx.vista.ProcesoCompra.superclass.preparaMenu.call(this,n);
+         return tb 
+     },
+     
+     liberaMenu:function(){
+        var tb = Phx.vista.ProcesoCompra.superclass.liberaMenu.call(this);
+        if(tb){           
+            this.getBoton('btnCotizacion').setDisabled(true);           
+        }
+       return tb
+    },
+    
 	sortInfo:{
 		field: 'id_proceso_compra',
 		direction: 'ASC'

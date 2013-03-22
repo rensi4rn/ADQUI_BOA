@@ -75,6 +75,10 @@ INSERT INTO adq.tcategoria_compra ("id_usuario_reg", "id_usuario_mod", "fecha_re
 VALUES (1, NULL, E'2013-02-25 09:23:51.125', NULL, E'activo', E'CMIM', E'Compra Minima', '1', '20000', E'Prueba con rangode compras');
 
 
+---------------------------------
+--   (WF)  PROCESO MACRO, TIPOS DE PROCESO
+-----------------------------------------
+
 select wf.f_insert_tproceso_macro ('COMINT', 'Compra internacional', 'SI', 'activo', 'Adquisiciones');
 select wf.f_insert_ttipo_proceso ('Solicitud de compra', 'SOLCO', 'adq.tsolicitud', 'id_solicitud', 'activo', 'si', 'COMINT');
 select wf.f_insert_ttipo_proceso ('Adjudicacion de compra', 'ADJCO', '', '', 'activo', 'no', 'COMINT');
@@ -105,9 +109,6 @@ select wf.f_insert_testructura_estado ('Solicitud de Aprobada', 'En_Proceso', '1
 select wf.f_insert_testructura_estado ('Proceso pendiente', 'Inicio de Proceso de COmpra', '1', '', 'activo');
 select wf.f_insert_testructura_estado ('Inicio de Proceso de COmpra', 'Inicio de Proceso de COmpra', '1', '', 'activo');
 select wf.f_insert_testructura_estado ('Inicio de Proceso de COmpra', 'Proceso Desierto', '1', '', 'activo');
-
-
-
 -----------------------------------
 -- DOCUMENTOS
 ---------------------------------

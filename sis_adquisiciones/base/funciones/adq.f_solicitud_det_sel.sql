@@ -101,6 +101,32 @@ BEGIN
 			return v_consulta;
 						
 		end;
+		
+	/*********************************    
+ 	#TRANSACCION:  'ADQ_SOLDETCOT_SEL'
+ 	#DESCRIPCION:	Consulta de datos en base al id_cotizacion
+ 	#AUTOR:		Gonzalo Sarmiento Sejas
+ 	#FECHA:		05-03-2013 01:28:10
+	***********************************/
+        
+    elsif(p_transaccion='ADQ_SOLDETCOT_SEL')then
+    	begin
+          v_consulta:='select
+						sold.id_solicitud_det,
+                        cc.codigo_cc as desc_centro_costo,
+                        cig.desc_ingas as desc_concepto_ingas
+						from adq.tsolicitud_det sold
+                        inner join param.tconcepto_ingas cig on cig.id_concepto_ingas = sold.id_concepto_ingas
+						inner join param.vcentro_costo cc on cc.id_centro_costo = sold.id_centro_costo
+                        inner join adq.tproceso_compra pc on pc.id_solicitud = sold.id_solicitud
+                        inner join adq.tcotizacion cot on cot.id_proceso_compra = pc.id_proceso_compra
+                        where cot.id_cotizacion='||v_parametros.id_cotizacion||' and ';
+			--Definicion de la repuesta
+            v_consulta:=v_consulta||v_parametros.filtro;
+			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+
+            return v_consulta;        	
+        end;
 
 	/*********************************    
  	#TRANSACCION:  'ADQ_SOLD_CONT'
