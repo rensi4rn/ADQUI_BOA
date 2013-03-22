@@ -583,7 +583,7 @@ Phx.vista.Solicitud=Ext.extend(Phx.gridInterfaz,{
                         width:900,
                         height:600
                     },
-                    rec.data.id_solicitud,
+                    rec.data,
                     this.idContenedor,
                     'ChequeoDocumentoSol'
         )
