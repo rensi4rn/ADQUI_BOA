@@ -80,10 +80,10 @@ VALUES (1, NULL, E'2013-02-25 09:23:51.125', NULL, E'activo', E'CMIM', E'Compra 
 -----------------------------------------
 
 select wf.f_insert_tproceso_macro ('COMINT', 'Compra internacional', 'SI', 'activo', 'Adquisiciones');
-select wf.f_insert_ttipo_proceso ('Solicitud de compra', 'SOLCO', 'adq.tsolicitud', 'id_solicitud', 'activo', 'si', 'COMINT');
-select wf.f_insert_ttipo_proceso ('Adjudicacion de compra', 'ADJCO', '', '', 'activo', 'no', 'COMINT');
-select wf.f_insert_ttipo_proceso ('aa', 'aa', 'xx', 'xx', 'activo', 'no', 'COMINT');
-select wf.f_insert_ttipo_proceso ('Proceso de Compra', 'PROC', 'adq.tproceso_compra', 'id_proceso_compra', 'activo', 'no', 'COMINT');
+select wf.f_insert_ttipo_proceso ('','Solicitud de compra', 'SOLCO', 'adq.tsolicitud', 'id_solicitud', 'activo', 'si', 'COMINT');
+select wf.f_insert_ttipo_proceso ('','Adjudicacion de compra', 'ADJCO', '', '', 'activo', 'no', 'COMINT');
+select wf.f_insert_ttipo_proceso ('','aa', 'aa', 'xx', 'xx', 'activo', 'no', 'COMINT');
+select wf.f_insert_ttipo_proceso ('','Proceso de Compra', 'PROC', 'adq.tproceso_compra', 'id_proceso_compra', 'activo', 'no', 'COMINT');
 select wf.f_insert_ttipo_estado ('borrador', 'Borrador', 'si', 'no', '', 'listado', '', 'ninguno', '', '', 'activo', 'SOLCO');
 select wf.f_insert_ttipo_estado ('proceso', 'En_Proceso', 'no', 'si', '', 'todos', '', 'ninguno', '', '', 'activo', 'SOLCO');
 select wf.f_insert_ttipo_estado ('finalizado', 'Finalizado', 'no', 'no', '', '', '', 'ninguno', '', '', 'activo', 'SOLCO');
