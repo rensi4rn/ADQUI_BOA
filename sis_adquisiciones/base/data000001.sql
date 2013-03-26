@@ -79,18 +79,18 @@ VALUES (1, NULL, E'2013-02-25 09:23:51.125', NULL, E'activo', E'CMIM', E'Compra 
 --   (WF)  PROCESO MACRO, TIPOS DE PROCESO
 -----------------------------------------
 
+----------------------------------
+--COPY LINES TO data.sql FILE  
+---------------------------------
+
 select wf.f_insert_tproceso_macro ('COMINT', 'Compra internacional', 'SI', 'activo', 'Adquisiciones');
-select wf.f_insert_ttipo_proceso ('','Solicitud de compra', 'SOLCO', 'adq.tsolicitud', 'id_solicitud', 'activo', 'si', 'COMINT');
-select wf.f_insert_ttipo_proceso ('','Adjudicacion de compra', 'ADJCO', '', '', 'activo', 'no', 'COMINT');
-select wf.f_insert_ttipo_proceso ('','aa', 'aa', 'xx', 'xx', 'activo', 'no', 'COMINT');
-select wf.f_insert_ttipo_proceso ('','Proceso de Compra', 'PROC', 'adq.tproceso_compra', 'id_proceso_compra', 'activo', 'no', 'COMINT');
+select wf.f_insert_ttipo_proceso ('', 'Solicitud de compra', 'SOLCO', 'adq.tsolicitud', 'id_solicitud', 'activo', 'si', 'COMINT');
+select wf.f_insert_ttipo_proceso ('En_Proceso', 'Proceso de Compra', 'PROC', 'adq.tproceso_compra', 'id_proceso_compra', 'activo', 'no', 'COMINT');
+select wf.f_insert_ttipo_proceso ('Inicio de Proceso de COmpra', 'Cotizacion', 'COT', 'adq.tcotizacion', 'id_cotizacion', 'activo', '', 'COMINT');
 select wf.f_insert_ttipo_estado ('borrador', 'Borrador', 'si', 'no', '', 'listado', '', 'ninguno', '', '', 'activo', 'SOLCO');
 select wf.f_insert_ttipo_estado ('proceso', 'En_Proceso', 'no', 'si', '', 'todos', '', 'ninguno', '', '', 'activo', 'SOLCO');
 select wf.f_insert_ttipo_estado ('finalizado', 'Finalizado', 'no', 'no', '', '', '', 'ninguno', '', '', 'activo', 'SOLCO');
-select wf.f_insert_ttipo_estado ('', 'Elaboracion_Informe_Comision', 'si', 'no', '', '', 'f5', 'ninguno', '', '', 'activo', 'ADJCO');
-select wf.f_insert_ttipo_estado ('', 'Elaboracion_Contrato', 'no', 'no', '', '', 'f4', 'ninguno', '', '', 'activo', 'ADJCO');
 select wf.f_insert_ttipo_estado ('pendiente', 'Aprobación Supervisor', 'no', 'no', 'no', 'funcion_listado', 'ADQ_APR_SOL_COMPRA', 'ninguno', '', '', 'activo', 'SOLCO');
-select wf.f_insert_ttipo_estado ('', 'Firma_GG', 'no', 'no', '', 'listado', '', 'ninguno', '', '', 'activo', 'ADJCO');
 select wf.f_insert_ttipo_estado ('vbrpc', 'Visto Bueno RPC', 'no', 'no', 'no', 'funcion_listado', 'ADQ_RPC_SOL_COMPRA', 'ninguno', '', '', 'activo', 'SOLCO');
 select wf.f_insert_ttipo_estado ('vbactif', 'Visto Bueno Activos Fijos', 'no', 'no', 'no', 'listado', '', 'ninguno', '', '43120,43100,aaa,bb,1', 'activo', 'SOLCO');
 select wf.f_insert_ttipo_estado ('aprobado', 'Solicitud de Aprobada', 'no', 'no', 'no', 'anterior', '', 'depto_func_list', 'ADQ_DEPTO_SOL', '', 'activo', 'SOLCO');
@@ -98,10 +98,14 @@ select wf.f_insert_ttipo_estado ('pendiente', 'Proceso pendiente', 'si', 'no', '
 select wf.f_insert_ttipo_estado ('proceso', 'Inicio de Proceso de COmpra', 'no', 'si', 'no', 'ninguno', '', 'anterior', '', 'cuando el proceso se inicia', 'activo', 'PROC');
 select wf.f_insert_ttipo_estado ('finalizado', 'Proceso Finalizado', 'no', 'no', 'si', 'ninguno', '', 'anterior', '', 'El proceso esta finalizado  cuando, se declara decierto o cuando se finalizaron todas las solcitudes', 'activo', 'PROC');
 select wf.f_insert_ttipo_estado ('desierto', 'Proceso Desierto', 'no', 'no', 'si', 'ninguno', '', 'anterior', '', '', 'activo', 'PROC');
+select wf.f_insert_ttipo_estado ('borrador', 'Borrador de Cotizacion', 'si', 'no', 'no', 'ninguno', '', 'depto_func_list', 'PROCDEP', '', 'activo', 'COT');
+select wf.f_insert_ttipo_estado ('cotizado', 'Cotizado', 'no', 'no', 'no', 'ninguno', '', 'anterior', '', '', 'activo', 'COT');
+select wf.f_insert_ttipo_estado ('adjudicado', 'Adjudicado', 'no', 'no', 'no', 'ninguno', '', 'anterior', '', '', 'activo', 'COT');
+select wf.f_insert_ttipo_estado ('pago_habilitado', 'Habilitado para pagar', 'no', 'si', 'no', 'ninguno', '', 'anterior', '', '', 'activo', 'COT');
+select wf.f_insert_ttipo_estado ('en_pago', 'En pago', 'no', 'no', 'no', 'ninguno', '', 'anterior', '', '', 'activo', 'COT');
+select wf.f_insert_ttipo_estado ('finalizada', 'Finalizada', 'no', 'no', 'si', 'ninguno', '', 'anterior', '', '', 'activo', 'COT');
 select wf.f_insert_testructura_estado ('En_Proceso', 'Finalizado', '2', 'ff2', 'activo');
-select wf.f_insert_testructura_estado ('Elaboracion_Informe_Comision', 'Elaboracion_Contrato', '5', 'ff3', 'activo');
 select wf.f_insert_testructura_estado ('Aprobación Supervisor', 'Visto Bueno Activos Fijos', '3', '', 'activo');
-select wf.f_insert_testructura_estado ('Elaboracion_Contrato', 'Firma_GG', '1', '', 'activo');
 select wf.f_insert_testructura_estado ('Borrador', 'Aprobación Supervisor', '0', '', 'activo');
 select wf.f_insert_testructura_estado ('Visto Bueno Activos Fijos', 'Visto Bueno RPC', '1', '', 'activo');
 select wf.f_insert_testructura_estado ('Visto Bueno RPC', 'Solicitud de Aprobada', '1', '', 'activo');
@@ -109,6 +113,11 @@ select wf.f_insert_testructura_estado ('Solicitud de Aprobada', 'En_Proceso', '1
 select wf.f_insert_testructura_estado ('Proceso pendiente', 'Inicio de Proceso de COmpra', '1', '', 'activo');
 select wf.f_insert_testructura_estado ('Inicio de Proceso de COmpra', 'Inicio de Proceso de COmpra', '1', '', 'activo');
 select wf.f_insert_testructura_estado ('Inicio de Proceso de COmpra', 'Proceso Desierto', '1', '', 'activo');
+select wf.f_insert_testructura_estado ('Borrador de Cotizacion', 'Cotizado', '1', '', 'activo');
+select wf.f_insert_testructura_estado ('Cotizado', 'Adjudicado', '1', '', 'activo');
+select wf.f_insert_testructura_estado ('Adjudicado', 'Habilitado para pagar', '1', '', 'activo');
+select wf.f_insert_testructura_estado ('Habilitado para pagar', 'En pago', '1', '', 'activo');
+select wf.f_insert_testructura_estado ('En pago', 'Finalizada', '1', '', 'activo');
 -----------------------------------
 -- DOCUMENTOS
 ---------------------------------

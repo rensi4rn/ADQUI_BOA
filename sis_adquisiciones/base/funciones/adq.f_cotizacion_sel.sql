@@ -1,3 +1,5 @@
+--------------- SQL ---------------
+
 CREATE OR REPLACE FUNCTION adq.f_cotizacion_sel (
   p_administrador integer,
   p_id_usuario integer,
@@ -54,8 +56,8 @@ BEGIN
 						cot.numero_oc,
 						cot.id_proveedor,
                         pro.desc_proveedor,
-						cot.porc_anticipo,
-						cot.precio_total,
+						
+						
 						cot.fecha_entrega,
 						cot.id_moneda,
                         mon.moneda,
@@ -64,13 +66,17 @@ BEGIN
 						cot.obs,
 						cot.fecha_adju,
 						cot.nro_contrato,
-						cot.porc_retgar,
+						
 						cot.fecha_reg,
 						cot.id_usuario_reg,
 						cot.fecha_mod,
 						cot.id_usuario_mod,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod	
+						usu2.cuenta as usr_mod,
+                        cot.id_estado_wf,
+                        cot.id_proceso_wf,
+                        mon.codigo as desc_moneda,
+                        cot.tipo_cambio_conv
 						from adq.tcotizacion cot
 						inner join segu.tusuario usu1 on usu1.id_usuario = cot.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = cot.id_usuario_mod

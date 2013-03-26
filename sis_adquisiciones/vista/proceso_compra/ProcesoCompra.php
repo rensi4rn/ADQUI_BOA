@@ -158,6 +158,21 @@ Phx.vista.ProcesoCompra=Ext.extend(Phx.gridInterfaz,{
         },
         {
             config:{
+                name: 'desc_moneda',
+                fieldLabel: 'Moneda',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 50,
+                maxLength:50
+            },
+            type:'TextField',
+            filters:{pfiltro:'mon.codigo',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:false
+        },
+        {
+            config:{
                 name: 'codigo_proceso',
                 fieldLabel: 'Código Proceso',
                 allowBlank: true,
@@ -337,7 +352,7 @@ Phx.vista.ProcesoCompra=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},'desc_funcionario','desc_uo','desc_depto','desc_solicitud'
+		{name:'usr_mod', type: 'string'},'desc_moneda','desc_funcionario','desc_uo','desc_depto','desc_solicitud'
 		
 	],
 	

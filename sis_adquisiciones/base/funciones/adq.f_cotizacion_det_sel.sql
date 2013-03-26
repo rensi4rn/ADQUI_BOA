@@ -1,3 +1,5 @@
+--------------- SQL ---------------
+
 CREATE OR REPLACE FUNCTION adq.f_cotizacion_det_sel (
   p_administrador integer,
   p_id_usuario integer,
@@ -53,19 +55,21 @@ BEGIN
 						ctd.cantidad_coti,
 						ctd.obs,
 						ctd.id_solicitud_det,
-                        cig.desc_ingas||''-''|| cc.codigo_cc as desc_solicitud_det,
+                        cig.desc_ingas, 
 						ctd.fecha_reg,
 						ctd.id_usuario_reg,
 						ctd.fecha_mod,
 						ctd.id_usuario_mod,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod	
+						usu2.cuenta as usr_mod,
+                        cc.codigo_cc as desc_centro_costo,
+                        sold.cantidad as cantidad_sol,
+                        sold.precio_unitario as precio_unitario_sol,
+                        sold.descripcion as descripcion_sol	
 						from adq.tcotizacion_det ctd
 						inner join segu.tusuario usu1 on usu1.id_usuario = ctd.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = ctd.id_usuario_mod
-				        inner join adq.tcotizacion cot on cot.id_cotizacion=ctd.id_cotizacion
-                        inner join adq.tproceso_compra pc on pc.id_proceso_compra=cot.id_proceso_compra
-                        inner join adq.tsolicitud_det sold on sold.id_solicitud=pc.id_solicitud
+				        inner join adq.tsolicitud_det sold on sold.id_solicitud_det=  ctd.id_solicitud_det
 				        inner join param.tconcepto_ingas cig on cig.id_concepto_ingas = sold.id_concepto_ingas
 						inner join param.vcentro_costo cc on cc.id_centro_costo = sold.id_centro_costo
                         where ctd.id_cotizacion='||v_parametros.id_cotizacion||' and ';
@@ -92,9 +96,12 @@ BEGIN
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_cotizacion_det)
 					    from adq.tcotizacion_det ctd
-					    inner join segu.tusuario usu1 on usu1.id_usuario = ctd.id_usuario_reg
+						inner join segu.tusuario usu1 on usu1.id_usuario = ctd.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = ctd.id_usuario_mod
-					    where ';
+				        inner join adq.tsolicitud_det sold on sold.id_solicitud_det=  ctd.id_solicitud_det
+				        inner join param.tconcepto_ingas cig on cig.id_concepto_ingas = sold.id_concepto_ingas
+						inner join param.vcentro_costo cc on cc.id_centro_costo = sold.id_centro_costo
+                        where ';
 			
 			--Definicion de la respuesta		    
 			v_consulta:=v_consulta||v_parametros.filtro;

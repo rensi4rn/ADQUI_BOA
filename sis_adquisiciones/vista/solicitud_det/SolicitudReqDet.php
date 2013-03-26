@@ -34,12 +34,7 @@ Phx.vista.SolicitudReqDet = {
        this.getComponente('id_centro_costo').modificado=true;
        this.load({params:{start:0, limit:50}});
               
-       this.cmpPrecioUnitario.currencyChar = this.maestro.desc_moneda+' ';   
-       this.cmpPrecioTotal.currencyChar = this.maestro.desc_moneda+' ';
-       this.cmpCantidad.currencyChar = this.maestro.desc_moneda+' ';
-       this.cmpPrecioSg.currencyChar = this.maestro.desc_moneda+' ';
-       this.cmpPrecioGa.currencyChar = this.maestro.desc_moneda+' ';
-         
+       
        this.setColumnHeader('precio_unitario', this.cmpPrecioUnitario.fieldLabel +' '+this.maestro.desc_moneda)
        this.setColumnHeader('precio_total', this.cmpPrecioTotal.fieldLabel +' '+this.maestro.desc_moneda)
        this.setColumnHeader('precio_sg', this.cmpPrecioSg.fieldLabel +' '+this.maestro.desc_moneda)
@@ -73,7 +68,7 @@ Phx.vista.SolicitudReqDet = {
                this.getBoton('del').disable();
          }
           
-          console.log('maestro en prepara ',this.maestro.estado) 
+        
           
      },
      

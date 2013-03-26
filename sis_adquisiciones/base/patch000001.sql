@@ -68,6 +68,7 @@ CREATE TABLE adq.tsolicitud_det(
     id_orden_trabajo int4,
    
     precio_unitario numeric(19, 2),
+    precio_unitario_mb numeric(19,2),
     cantidad int4,
     precio_total numeric(19, 2),
     precio_ga numeric(19, 2),
@@ -100,6 +101,8 @@ CREATE TABLE adq.tsolicitud_det(
     id_proceso_compra int4 NOT NULL,
     id_proveedor int4 NOT NULL,
     id_moneda int4 NOT NULL,
+    id_estado_wf int4,
+    id_proceso_wf int4 ,
     numero_oc int4,
     estado varchar(30),
     fecha_coti date,
@@ -109,10 +112,8 @@ CREATE TABLE adq.tsolicitud_det(
     fecha_venc date,
     lugar_entrega varchar(500),
     tipo_entrega varchar(40),
-    precio_total numeric(19, 2),
-    porc_anticipo numeric(2, 2),
-    porc_retgar numeric(2, 2),
     nro_contrato varchar(50),
+    tipo_cambio_conv NUMERIC(18,2),
     PRIMARY KEY (id_cotizacion))INHERITS (pxp.tbase);
     
  
@@ -122,6 +123,7 @@ CREATE TABLE adq.tcotizacion_det(
     id_cotizacion int4 NOT NULL,
     id_solicitud_det int4 NOT NULL,
     precio_unitario numeric(19, 2),
+    precio_unitario_mb numeric(19,2),
     cantidad_coti numeric(19, 0),
     cantidad_aduj numeric(19, 0),
     obs varchar(500),

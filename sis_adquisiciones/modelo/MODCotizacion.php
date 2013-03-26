@@ -30,8 +30,7 @@ class MODCotizacion extends MODbase{
 		$this->captura('numero_oc','int4');
 		$this->captura('id_proveedor','int4');
 		$this->captura('desc_proveedor','varchar');
-		$this->captura('porc_anticipo','numeric');
-		$this->captura('precio_total','numeric');
+		
 		$this->captura('fecha_entrega','date');
 		$this->captura('id_moneda','int4');
 		$this->captura('moneda','varchar');
@@ -40,13 +39,20 @@ class MODCotizacion extends MODbase{
 		$this->captura('obs','text');
 		$this->captura('fecha_adju','date');
 		$this->captura('nro_contrato','varchar');
-		$this->captura('porc_retgar','numeric');
+		
 		$this->captura('fecha_reg','timestamp');
 		$this->captura('id_usuario_reg','int4');
 		$this->captura('fecha_mod','timestamp');
 		$this->captura('id_usuario_mod','int4');
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
+		$this->captura('id_estado_wf','integer');
+		$this->captura('id_proceso_wf','integer');
+		$this->captura('desc_moneda','varchar');
+		
+		$this->captura('tipo_cambio_conv','numeric');
+		
+		
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -64,13 +70,13 @@ class MODCotizacion extends MODbase{
 				
 		//Define los parametros para la funcion
 		$this->setParametro('estado_reg','estado_reg','varchar');
-		$this->setParametro('estado','estado','varchar');
+		
 		$this->setParametro('lugar_entrega','lugar_entrega','varchar');
 		$this->setParametro('tipo_entrega','tipo_entrega','varchar');
 		$this->setParametro('fecha_coti','fecha_coti','date');
 		$this->setParametro('numero_oc','numero_oc','int4');
 		$this->setParametro('id_proveedor','id_proveedor','int4');
-		$this->setParametro('porc_anticipo','porc_anticipo','numeric');
+	
 		$this->setParametro('precio_total','precio_total','numeric');
 		$this->setParametro('fecha_entrega','fecha_entrega','date');
 		$this->setParametro('id_moneda','id_moneda','int4');
@@ -79,7 +85,11 @@ class MODCotizacion extends MODbase{
 		$this->setParametro('obs','obs','text');
 		$this->setParametro('fecha_adju','fecha_adju','date');
 		$this->setParametro('nro_contrato','nro_contrato','varchar');
-		$this->setParametro('porc_retgar','porc_retgar','numeric');
+		
+		
+		$this->setParametro('tipo_cambio_conv','tipo_cambio_conv','numeric');
+		
+		
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -98,13 +108,13 @@ class MODCotizacion extends MODbase{
 		//Define los parametros para la funcion
 		$this->setParametro('id_cotizacion','id_cotizacion','int4');
 		$this->setParametro('estado_reg','estado_reg','varchar');
-		$this->setParametro('estado','estado','varchar');
+		
 		$this->setParametro('lugar_entrega','lugar_entrega','varchar');
 		$this->setParametro('tipo_entrega','tipo_entrega','varchar');
 		$this->setParametro('fecha_coti','fecha_coti','date');
 		$this->setParametro('numero_oc','numero_oc','int4');
 		$this->setParametro('id_proveedor','id_proveedor','int4');
-		$this->setParametro('porc_anticipo','porc_anticipo','numeric');
+		
 		$this->setParametro('precio_total','precio_total','numeric');
 		$this->setParametro('fecha_entrega','fecha_entrega','date');
 		$this->setParametro('id_moneda','id_moneda','int4');
@@ -113,7 +123,11 @@ class MODCotizacion extends MODbase{
 		$this->setParametro('obs','obs','text');
 		$this->setParametro('fecha_adju','fecha_adju','date');
 		$this->setParametro('nro_contrato','nro_contrato','varchar');
-		$this->setParametro('porc_retgar','porc_retgar','numeric');
+		
+		
+		
+        $this->setParametro('tipo_cambio_conv','tipo_cambio_conv','numeric');
+        
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -140,6 +154,7 @@ class MODCotizacion extends MODbase{
 		return $this->respuesta;
 	}
 	
+
 	function reporteCotizacion(){
 		//Definicion de variables para ejecucion del procedimientp
 		$this->procedimiento='adq.f_cotizacion_sel';
@@ -178,6 +193,25 @@ class MODCotizacion extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+	function finalizarRegistro(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='adq.f_cotizacion_ime';
+        $this->transaccion='ADQ_FINREGC_IME';
+        $this->tipo_procedimiento='IME';
+                
+        //Define los parametros para la funcion
+        $this->setParametro('id_cotizacion','id_cotizacion','int4');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+	
+
 			
 }
 ?>

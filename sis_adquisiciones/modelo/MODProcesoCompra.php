@@ -43,6 +43,7 @@ class MODProcesoCompra extends MODbase{
 		$this->captura('desc_depto','varchar');
 		$this->captura('desc_funcionario','text');
 		$this->captura('desc_solicitud','varchar');
+		$this->captura('desc_moneda','varchar');
 		
 		 
 		

@@ -43,6 +43,7 @@ class ACTCotizacion extends ACTbase{
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 	
+	
 	function reporteCotizacion(){
 		  $dataSource = new DataSource();
     $idCotizacion = $this->objParam->getParametro('id_cotizacion');
@@ -105,5 +106,14 @@ class ACTCotizacion extends ACTbase{
     $this->res->imprimirRespuesta($this->res->generarJson());			
    }
 
+	
+	function finalizarRegistro(){
+        $this->objFunc=$this->create('MODCotizacion');  
+        $this->res=$this->objFunc->finalizarRegistro($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+    
+			
 }
+
 ?>

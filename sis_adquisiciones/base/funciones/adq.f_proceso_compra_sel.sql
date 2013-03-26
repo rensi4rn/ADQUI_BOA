@@ -88,14 +88,16 @@ BEGIN
                          usu2.cuenta as usr_mod,
                          dep.codigo as desc_depto,
                          fun.desc_funcionario1 as desc_funcionario,
-                         sol.numero as desc_solicitud
-                  from adq.tproceso_compra proc
+                         sol.numero as desc_solicitud,
+                         mon.codigo as desc_moneda
+                   from adq.tproceso_compra proc
                        inner join segu.tusuario usu1 on usu1.id_usuario = proc.id_usuario_reg
                        inner join param.tdepto dep on dep.id_depto = proc.id_depto 
                        inner join adq.tsolicitud sol on sol.id_solicitud = proc.id_solicitud
                        inner join orga.vfuncionario fun on  fun.id_funcionario = sol.id_funcionario
+                       inner join param.tmoneda mon on mon.id_moneda = sol.id_moneda
                        left join segu.tusuario usu2 on usu2.id_usuario = proc.id_usuario_mod
-				       where  '||v_filadd||'  ';
+                       where  '||v_filadd||'  ';
 			
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -133,13 +135,15 @@ BEGIN
         
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(proc.id_proceso_compra)
-					     from adq.tproceso_compra proc
+					    
+                        from adq.tproceso_compra proc
                        inner join segu.tusuario usu1 on usu1.id_usuario = proc.id_usuario_reg
                        inner join param.tdepto dep on dep.id_depto = proc.id_depto 
                        inner join adq.tsolicitud sol on sol.id_solicitud = proc.id_solicitud
                        inner join orga.vfuncionario fun on  fun.id_funcionario = sol.id_funcionario
+                       inner join param.tmoneda mon on mon.id_moneda = sol.id_moneda
                        left join segu.tusuario usu2 on usu2.id_usuario = proc.id_usuario_mod
-				        where  '||v_filadd||'  ';
+                       where  '||v_filadd||'  ';
 			
 			--Definicion de la respuesta		    
 			v_consulta:=v_consulta||v_parametros.filtro;

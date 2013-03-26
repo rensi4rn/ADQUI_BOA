@@ -40,6 +40,7 @@ DECLARE
     v_fecha_soli date;
     v_monto_ga_mb numeric;
     v_monto_sg_mb numeric;
+    v_precio_unitario_mb numeric;
     
     
 			    
@@ -100,7 +101,13 @@ BEGIN
                           'O',-- tipo oficial, venta, compra 
                            NULL);--defecto dos decimales
             
-        
+        v_precio_unitario_mb= param.f_convertir_moneda(
+                            v_id_moneda, 
+                            NULL,   --por defecto moenda base
+                            v_parametros.precio_unitario, 
+                            v_fecha_soli, 
+                            'O',-- tipo oficial, venta, compra 
+                             NULL);
         
         
         	--Sentencia de la insercion
@@ -125,7 +132,8 @@ BEGIN
 			fecha_mod,
 			id_usuario_mod,
             precio_ga_mb,
-            precio_sg_mb
+            precio_sg_mb,
+            precio_unitario_mb
             
             
           	) values(
@@ -149,7 +157,8 @@ BEGIN
 			null,
 			null,
             v_monto_ga_mb,
-            v_monto_sg_mb
+            v_monto_sg_mb,
+            v_precio_unitario_mb
 							
 			)RETURNING id_solicitud_det into v_id_solicitud_det;
 			
@@ -207,6 +216,14 @@ BEGIN
                            NULL);--defecto dos decimales
         
         
+            v_precio_unitario_mb= param.f_convertir_moneda(
+                            v_id_moneda, 
+                            NULL,   --por defecto moenda base
+                            v_parametros.precio_unitario, 
+                            v_fecha_soli, 
+                            'O',-- tipo oficial, venta, compra 
+                             NULL);
+        
 			--Sentencia de la modificacion
 			update adq.tsolicitud_det set
 			id_centro_costo = v_parametros.id_centro_costo,
@@ -224,8 +241,7 @@ BEGIN
 			precio_total = v_parametros.precio_total,
 			cantidad = v_parametros.cantidad_sol,
 			id_auxiliar = v_id_auxiliar,
-			
-            
+            precio_unitario_mb=v_precio_unitario_mb,
 			fecha_mod = now(),
 			id_usuario_mod = p_id_usuario
 			where id_solicitud_det=v_parametros.id_solicitud_det;

@@ -29,13 +29,21 @@ class MODCotizacionDet extends MODbase{
 		$this->captura('cantidad_coti','numeric');
 		$this->captura('obs','varchar');
 		$this->captura('id_solicitud_det','int4');
-		$this->captura('desc_solicitud_det','text');
+		$this->captura('desc_solicitud_det','varchar');
 		$this->captura('fecha_reg','timestamp');
 		$this->captura('id_usuario_reg','int4');
 		$this->captura('fecha_mod','timestamp');
 		$this->captura('id_usuario_mod','int4');
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
+		
+		
+		$this->captura('desc_centro_costo','text');
+        $this->captura('cantidad_sol','integer');
+        $this->captura('precio_unitario_sol','numeric');
+        $this->captura('descripcion_sol','text'); 
+		
+	
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();

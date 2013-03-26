@@ -1,8 +1,13 @@
-CREATE OR REPLACE FUNCTION "adq"."f_cotizacion_det_ime" (	
-				p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
-RETURNS character varying AS
-$BODY$
+--------------- SQL ---------------
 
+CREATE OR REPLACE FUNCTION adq.f_cotizacion_det_ime (
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
+)
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA:		Adquisiciones
  FUNCION: 		adq.f_cotizacion_det_ime
@@ -27,6 +32,17 @@ DECLARE
 	v_nombre_funcion        text;
 	v_mensaje_error         text;
 	v_id_cotizacion_det	integer;
+    
+    
+    v_cantidad_sol integer;
+    v_precio_ga_mb_sol numeric;
+    v_precio_unitario_sol numeric;
+    v_precio_unitario_mb_sol numeric;
+    v_id_moneda_sol integer;
+    
+    v_precio_unitario_mb_coti numeric;
+    v_tipo_cambio_conv numeric;
+	v_id_moneda_coti  integer;
 			    
 BEGIN
 
@@ -43,31 +59,80 @@ BEGIN
 	if(p_transaccion='ADQ_CTD_INS')then
 					
         begin
+        
+           --recuperar datos de la solicitud
+            select 
+            sd.cantidad,
+            sd.precio_ga_mb,
+            sd.precio_unitario,
+            sd.precio_unitario_mb,
+            s.id_moneda
+           into
+            v_cantidad_sol,
+            v_precio_ga_mb_sol,
+            v_precio_unitario_sol,
+            v_precio_unitario_mb_sol,
+            v_id_moneda_sol
+           from adq.tsolicitud_det sd
+           inner join adq.tsolicitud s on s.id_solicitud = sd.id_solicitud
+           where  sd.id_solicitud_det = v_parametros.id_solicitud_det;
+           
+           
+           select 
+          	 c.tipo_cambio_conv,
+          	 c.id_moneda
+           INTO
+          	 v_tipo_cambio_conv,
+           	 v_id_moneda_coti            
+           from adq.tcotizacion c
+           where c.id_cotizacion = v_parametros.id_cotizacion; 
+         
+        
+            --validar que la cantidad cotizada no sea mayor a la cantidad solicitada
+            
+            IF( v_parametros.cantidad_coti > v_cantidad_sol ) THEN 
+            
+              raise exception 'No puede registrar una cantidad mayor que la solicitada';
+            
+            END IF;
+            
+            
+            --calcular el precio unitario en moneda base
+            
+             v_precio_unitario_mb_coti= v_parametros.precio_unitario/v_tipo_cambio_conv;
+             
+         
+            
+               
+        
+        
         	--Sentencia de la insercion
         	insert into adq.tcotizacion_det(
 			estado_reg,
 			id_cotizacion,
 			precio_unitario,
-			cantidad_aduj,
+			--cantidad_aduj,
 			cantidad_coti,
 			obs,
 			id_solicitud_det,
 			fecha_reg,
 			id_usuario_reg,
 			fecha_mod,
-			id_usuario_mod
+			id_usuario_mod,
+            precio_unitario_mb
           	) values(
 			'activo',
 			v_parametros.id_cotizacion,
 			v_parametros.precio_unitario,
-			v_parametros.cantidad_aduj,
+			--v_parametros.cantidad_aduj,
 			v_parametros.cantidad_coti,
 			v_parametros.obs,
 			v_parametros.id_solicitud_det,
 			now(),
 			p_id_usuario,
 			null,
-			null
+			null,
+            v_precio_unitario_mb_coti
 							
 			)RETURNING id_cotizacion_det into v_id_cotizacion_det;
 			
@@ -90,11 +155,55 @@ BEGIN
 	elsif(p_transaccion='ADQ_CTD_MOD')then
 
 		begin
+        
+            --recuperar datos de la solicitud
+            select 
+            sd.cantidad,
+            sd.precio_ga_mb,
+            sd.precio_unitario,
+            sd.precio_unitario_mb,
+            s.id_moneda
+           into
+            v_cantidad_sol,
+            v_precio_ga_mb_sol,
+            v_precio_unitario_sol,
+            v_precio_unitario_mb_sol,
+            v_id_moneda_sol
+           from adq.tsolicitud_det sd
+           inner join adq.tsolicitud s on s.id_solicitud = sd.id_solicitud
+           where  sd.id_solicitud_det = v_parametros.id_solicitud_det;
+           
+           
+           select 
+          	 c.tipo_cambio_conv,
+          	 c.id_moneda
+           INTO
+          	 v_tipo_cambio_conv,
+           	 v_id_moneda_coti            
+           from adq.tcotizacion c
+           where c.id_cotizacion = v_parametros.id_cotizacion; 
+         
+        
+            --validar que la cantidad cotizada no sea mayor a la cantidad solicitada
+            
+            IF( v_parametros.cantidad_coti > v_cantidad_sol ) THEN 
+            
+              raise exception 'No puede registrar una cantidad mayor que la solicitada';
+            
+            END IF;
+            
+            
+            --calcular el precio unitario en moneda base
+            
+              v_precio_unitario_mb_coti= v_parametros.precio_unitario/v_tipo_cambio_conv;
+            
+        
 			--Sentencia de la modificacion
 			update adq.tcotizacion_det set
 			id_cotizacion = v_parametros.id_cotizacion,
 			precio_unitario = v_parametros.precio_unitario,
-			cantidad_aduj = v_parametros.cantidad_aduj,
+            precio_unitario_mb = v_precio_unitario_mb_coti,
+			--cantidad_aduj = v_parametros.cantidad_aduj,
 			cantidad_coti = v_parametros.cantidad_coti,
 			obs = v_parametros.obs,
 			id_solicitud_det = v_parametros.id_solicitud_det,
@@ -150,7 +259,9 @@ EXCEPTION
 		raise exception '%',v_resp;
 				        
 END;
-$BODY$
-LANGUAGE 'plpgsql' VOLATILE
+$body$
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
 COST 100;
-ALTER FUNCTION "adq"."f_cotizacion_det_ime"(integer, integer, character varying, character varying) OWNER TO postgres;
