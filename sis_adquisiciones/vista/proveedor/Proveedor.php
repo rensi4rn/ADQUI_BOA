@@ -50,6 +50,7 @@ Phx.vista.Proveedor=Ext.extend(Phx.gridInterfaz,{
 			type:'Field',
 			form:true 
 		},
+		/*
 		{
 			config:{
 				name: 'tipo',
@@ -69,7 +70,7 @@ Phx.vista.Proveedor=Ext.extend(Phx.gridInterfaz,{
 			id_grupo:0,
 			grid:true,
 			form:true
-		},				
+		},*/				
 	  {
 	   		config:{
 	   				name:'id_persona',
@@ -790,23 +791,19 @@ Phx.vista.Proveedor=Ext.extend(Phx.gridInterfaz,{
 	bsave:false,
 	fwidth:400,
 	
-	iniciarEventos:function()
-	{		
-		
-		//this.ocultarComponente(this.getComponente('id_institucion'));
-		//this.ocultarComponente(this.getComponente('id_persona'));
-		
-		//console.log('entra_antes');
-		//cuando se tikea un registro salta este evento
+	onButtonNew:function(){
+		Phx.vista.Proveedor.superclass.onButtonNew.call(this);
 		this.getComponente('id_institucion').disable();
 		this.getComponente('id_persona').disable();
 		
-		
 		this.ocultarGrupo(1);
-		this.ocultarGrupo(2);		
-		this.getComponente('tipo').on('select',function(c,r,n){
+		this.ocultarGrupo(2);	
+		
+		if(this.cmbProveedor.getValue()==='persona'){
+		
+		//this.getComponente('tipo').on('select',function(c,r,n){
 				
-				if(n=='persona natural' || n=='0'){
+				//if(n=='persona natural' || n=='0'){
 					this.getComponente('id_persona').enable();
 					this.mostrarComponente(this.getComponente('id_persona'));
 					this.ocultarComponente(this.getComponente('id_institucion'));
@@ -836,7 +833,8 @@ Phx.vista.Proveedor=Ext.extend(Phx.gridInterfaz,{
 					this.register='no_registered';
 				}
 				
-		},this);
+		//},this);
+		
 		
 		this.getComponente('id_persona').on('select',function(c,r,n){				
 					this.blockGroup(1);
@@ -871,6 +869,7 @@ Phx.vista.Proveedor=Ext.extend(Phx.gridInterfaz,{
 			this.register='before_registered';
 			},this);
 	},
+	
 	onButtonEdit:function(){
 		datos=this.sm.getSelected().data;
 		Phx.vista.Proveedor.superclass.onButtonEdit.call(this); //sobrecarga enable select

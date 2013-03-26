@@ -139,6 +139,45 @@ class MODCotizacion extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+	
+	function reporteCotizacion(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='adq.f_cotizacion_sel';
+		$this->transaccion='ADQ_COTREP_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		
+		$this->setParametro('id_cotizacion','id_cotizacion','int4');
+				
+		//Definicion de la lista del resultado del query
+		$this->captura('estado','varchar');
+		$this->captura('fecha_adju','date');
+		$this->captura('fecha_coti','date');
+		$this->captura('fecha_entrega','date');
+		$this->captura('fecha_venc','date');
+		$this->captura('id_moneda','int4');
+		$this->captura('moneda','varchar');
+		$this->captura('id_proceso_compra','int4');
+		$this->captura('codigo_proceso','varchar');
+		$this->captura('num_cotizacion','varchar');
+		$this->captura('num_tramite','varchar');
+		$this->captura('id_proveedor','int4');
+		$this->captura('desc_proveedor','varchar');
+		$this->captura('lugar_entrega','varchar');
+		$this->captura('nro_contrato','varchar');		
+		$this->captura('numero_oc','int4');
+		$this->captura('obs','text');
+		$this->captura('porc_anticipo','numeric');
+		$this->captura('porc_retgar','numeric');
+		$this->captura('precio_total','numeric');
+		$this->captura('tipo_entrega','varchar');
+		
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+		
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 			
 }
 ?>

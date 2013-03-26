@@ -86,6 +86,49 @@ BEGIN
 			return v_consulta;
 						
 		end;
+	
+    /*********************************    
+ 	#TRANSACCION:  'ADQ_COTREP_SEL'
+ 	#DESCRIPCION:	Consulta de registros para los reportes
+ 	#AUTOR:		Gonzalo Sarmiento Sejas	
+ 	#FECHA:		22-03-2013
+	***********************************/
+	elsif (p_transaccion='ADQ_COTREP_SEL')then
+    	begin
+        	v_consulta:='select cot.estado,
+        						cot.fecha_adju,
+        					    cot.fecha_coti,
+        						cot.fecha_entrega,
+        						cot.fecha_venc,
+        					    cot.id_moneda,
+        						mon.moneda,
+        						cot.id_proceso_compra,
+                                pc.codigo_proceso,
+        						pc.num_cotizacion,
+        						pc.num_tramite,
+        						cot.id_proveedor,
+                                pv.desc_proveedor,
+        						cot.lugar_entrega,
+        						cot.nro_contrato,
+        						cot.numero_oc,
+        						cot.obs,
+        						cot.porc_anticipo,
+        						cot.porc_retgar,
+                                cot.precio_total,
+                                cot.tipo_entrega
+						from adq.tcotizacion cot
+                        inner join param.tmoneda mon on mon.id_moneda=cot.id_moneda
+                        inner join adq.tproceso_compra pc on pc.id_proceso_compra=cot.id_proceso_compra
+                        inner join param.vproveedor pv on pv.id_proveedor=cot.id_proveedor
+                        where cot.id_cotizacion='||v_parametros.id_cotizacion||' and ';
+                        
+            --Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+
+			--Devuelve la respuesta
+			return v_consulta;
+        end;
 
 	/*********************************    
  	#TRANSACCION:  'ADQ_COT_CONT'

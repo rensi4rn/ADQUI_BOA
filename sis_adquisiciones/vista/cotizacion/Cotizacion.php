@@ -17,7 +17,14 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
     	//llama al constructor de la clase padre
     	
 		Phx.vista.Cotizacion.superclass.constructor.call(this,config);
-		this.init();
+		this.init();		
+  this.addButton('btnReporte',{
+            text :'Reporte',
+            iconCls : 'bpdf32',
+            disabled: true,
+            handler : this.onButtonReporte,
+            tooltip : '<b>Reporte de Cotizacion</b><br/><b>Reporte de Cotizacion de solicitud de Compra</b>'
+  });
 		this.load({params:{start:0, limit:this.tam_pag, id_proceso_compra:this.id_proceso_compra}})
 	},
 	tam_pag:50,
@@ -440,6 +447,42 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
 		{name:'usr_mod', type: 'string'},
 		
 	],
+	
+	onButtonReporte:function(){
+	    var rec=this.sm.getSelected();
+                console.debug(rec);
+                Ext.Ajax.request({
+                    url:'../../sis_adquisiciones/control/Cotizacion/reporteCotizacion',
+                    params:{'id_cotizacion':rec.data.id_cotizacion},
+                    success: this.successExport,
+                    failure: function() {
+                        console.log("fail");
+                    },
+                    timeout: function() {
+                        console.log("timeout");
+                    },
+                    scope:this
+                });  
+	},
+	
+	preparaMenu:function(n){
+      var data = this.getSelectedData();
+      var tb =this.tbar;
+       
+        this.getBoton('btnReporte').setDisabled(false);
+
+        Phx.vista.Cotizacion.superclass.preparaMenu.call(this,n);
+         return tb 
+     },
+     
+     liberaMenu:function(){
+        var tb = Phx.vista.Cotizacion.superclass.liberaMenu.call(this);
+        if(tb){           
+            this.getBoton('btnReporte').setDisabled(true);           
+        }
+       return tb
+    },
+    
 	sortInfo:{
 		field: 'id_cotizacion',
 		direction: 'ASC'
