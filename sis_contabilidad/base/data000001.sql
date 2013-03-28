@@ -89,3 +89,56 @@ VALUES (1, NULL, E'2013-02-26 15:38:52.716', NULL, E'activo', 5, E'ingreso');
 
 
 /***********************************F-DAT-GSS-CONTA-48-20/02/2013*****************************************/
+
+/***********************************I-DAT-GSS-CONTA-81-26/03/2013*****************************************/
+
+--funciones
+
+select pxp.f_insert_tfuncion ('conta.f_config_tipo_cuenta_ime', 'Funcion para tabla     ', 'CONTA');
+select pxp.f_insert_tfuncion ('conta.f_config_tipo_cuenta_sel', 'Funcion para tabla     ', 'CONTA');
+
+--procedimientos
+
+select pxp.f_insert_tprocedimiento ('CONTA_CTA_INS', 'Insercion de registros', 'si', '', '', 'conta.f_cuenta_ime');
+select pxp.f_insert_tprocedimiento ('CONTA_CTA_MOD', 'Modificacion de registros', 'si', '', '', 'conta.f_cuenta_ime');
+select pxp.f_insert_tprocedimiento ('CONTA_CTA_ELI', 'Eliminacion de registros', 'si', '', '', 'conta.f_cuenta_ime');
+select pxp.f_insert_tprocedimiento ('CONTA_CTA_SEL', 'Consulta de datos', 'si', '', '', 'conta.f_cuenta_sel');
+select pxp.f_insert_tprocedimiento ('CONTA_CTA_CONT', 'Conteo de registros', 'si', '', '', 'conta.f_cuenta_sel');
+select pxp.f_insert_tprocedimiento ('CONTA_CTA_ARB_SEL', 'Consulta de datos', 'si', '', '', 'conta.f_cuenta_sel');
+select pxp.f_insert_tprocedimiento ('CONTA_AUXCTA_SEL', 'Consulta de datos', 'si', '', '', 'conta.f_auxiliar_sel');
+select pxp.f_insert_tprocedimiento ('CONTA_AUXCTA_CONT', 'Conteo de registros', 'si', '', '', 'conta.f_auxiliar_sel');
+select pxp.f_insert_tprocedimiento ('CONTA_AUXCTA_INS', 'Insercion de registros', 'si', '', '', 'conta.f_auxiliar_ime');
+select pxp.f_insert_tprocedimiento ('CONTA_AUXCTA_MOD', 'Modificacion de registros', 'si', '', '', 'conta.f_auxiliar_ime');
+select pxp.f_insert_tprocedimiento ('CONTA_AUXCTA_ELI', 'Eliminacion de registros', 'si', '', '', 'conta.f_auxiliar_ime');
+select pxp.f_insert_tprocedimiento ('CONTA_ODT_SEL', 'Consulta de datos', 'si', '', '', 'conta.f_orden_trabajo_sel');
+select pxp.f_insert_tprocedimiento ('CONTA_ODT_CONT', 'Conteo de registros', 'si', '', '', 'conta.f_orden_trabajo_sel');
+select pxp.f_insert_tprocedimiento ('CONTA_ODT_INS', 'Insercion de registros', 'si', '', '', 'conta.f_orden_trabajo_ime');
+select pxp.f_insert_tprocedimiento ('CONTA_ODT_MOD', 'Modificacion de registros', 'si', '', '', 'conta.f_orden_trabajo_ime');
+select pxp.f_insert_tprocedimiento ('CONTA_ODT_ELI', 'Eliminacion de registros', 'si', '', '', 'conta.f_orden_trabajo_ime');
+select pxp.f_insert_tprocedimiento ('CONTA_CTC_INS', 'Insercion de registros', 'si', '', '', 'conta.f_config_tipo_cuenta_ime');
+select pxp.f_insert_tprocedimiento ('CONTA_CTC_MOD', 'Modificacion de registros', 'si', '', '', 'conta.f_config_tipo_cuenta_ime');
+select pxp.f_insert_tprocedimiento ('CONTA_CTC_ELI', 'Eliminacion de registros', 'si', '', '', 'conta.f_config_tipo_cuenta_ime');
+select pxp.f_insert_tprocedimiento ('CONTA_CTC_SEL', 'Consulta de datos', 'si', '', '', 'conta.f_config_tipo_cuenta_sel');
+select pxp.f_insert_tprocedimiento ('CONTA_CTC_CONT', 'Conteo de registros', 'si', '', '', 'conta.f_config_tipo_cuenta_sel');
+
+--procedimientos_gui
+
+select pxp.f_insert_tprocedimiento_gui ('CONTA_CTC_SEL', 'CTA', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CONTA_CTA_INS', 'CTA', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CONTA_CTA_MOD', 'CTA', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CONTA_CTA_ELI', 'CTA', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CONTA_CTA_ARB_SEL', 'CTA', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CONTA_AUXCTA_INS', 'AUXCTA', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CONTA_AUXCTA_MOD', 'AUXCTA', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CONTA_AUXCTA_ELI', 'AUXCTA', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CONTA_AUXCTA_SEL', 'AUXCTA', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CONTA_ODT_INS', 'ODT', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CONTA_ODT_MOD', 'ODT', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CONTA_ODT_ELI', 'ODT', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CONTA_ODT_SEL', 'ODT', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CONTA_CTC_INS', 'CTIP', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CONTA_CTC_MOD', 'CTIP', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CONTA_CTC_ELI', 'CTIP', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CONTA_CTC_SEL', 'CTIP', 'no');
+
+/***********************************F-DAT-GSS-CONTA-81-26/03/2013*****************************************/
