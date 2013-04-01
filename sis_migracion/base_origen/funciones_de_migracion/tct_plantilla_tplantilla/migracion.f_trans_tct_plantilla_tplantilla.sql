@@ -26,7 +26,6 @@ DECLARE
 			v_sw_compro varchar;
 			v_sw_tesoro varchar;
 			v_tipo numeric;
-			v_tipo_plantilla numeric;
 BEGIN
 			
 			
@@ -37,9 +36,8 @@ BEGIN
 			           ---------------------------------------
 			           --previamente se tranforman los datos  (descomentar)
 			           ---------------------------------------
-
-
-			v_id_plantilla=p_id_plantilla::int4;
+			
+			v_id_plantilla=p_tipo_plantilla::int4;
 			v_desc_plantilla=convert(p_desc_plantilla::varchar, 'LATIN1', 'UTF8');
 			v_estado_reg=convert('activo'::varchar, 'LATIN1', 'UTF8');
 			v_fecha_mod=NULL::timestamp;
@@ -58,13 +56,12 @@ BEGIN
             	v_sw_tesoro=convert('no'::varchar, 'LATIN1', 'UTF8');
             end if;
             v_tipo=p_tipo::numeric;
-			v_tipo_plantilla=p_tipo_plantilla::numeric;
-
+ 
 			    --cadena para la llamada a la funcion de insercion en la base de datos destino
 			      
 			        
 			          v_consulta = 'select migra.f__on_trig_tct_plantilla_tplantilla (
-			               '''||v_operacion::varchar||''','||COALESCE(v_id_plantilla::varchar,'NULL')||','||COALESCE(''''||v_desc_plantilla::varchar||'''','NULL')||','||COALESCE(''''||v_estado_reg::varchar||'''','NULL')||','||COALESCE(''''||v_fecha_mod::varchar||'''','NULL')||','||COALESCE(''''||v_fecha_reg::varchar||'''','NULL')||','||COALESCE(v_id_usuario_mod::varchar,'NULL')||','||COALESCE(v_id_usuario_reg::varchar,'NULL')||','||COALESCE(v_nro_linea::varchar,'NULL')||','||COALESCE(''''||v_sw_compro::varchar||'''','NULL')||','||COALESCE(''''||v_sw_tesoro::varchar||'''','NULL')||','||COALESCE(v_tipo::varchar,'NULL')||','||COALESCE(v_tipo_plantilla::varchar,'NULL')||')';
+			               '''||v_operacion::varchar||''','||COALESCE(v_id_plantilla::varchar,'NULL')||','||COALESCE(''''||v_desc_plantilla::varchar||'''','NULL')||','||COALESCE(''''||v_estado_reg::varchar||'''','NULL')||','||COALESCE(''''||v_fecha_mod::varchar||'''','NULL')||','||COALESCE(''''||v_fecha_reg::varchar||'''','NULL')||','||COALESCE(v_id_usuario_mod::varchar,'NULL')||','||COALESCE(v_id_usuario_reg::varchar,'NULL')||','||COALESCE(v_nro_linea::varchar,'NULL')||','||COALESCE(''''||v_sw_compro::varchar||'''','NULL')||','||COALESCE(''''||v_sw_tesoro::varchar||'''','NULL')||','||COALESCE(v_tipo::varchar,'NULL')||')';
 			          --probar la conexion con dblink
 			          
 					   --probar la conexion con dblink

@@ -7,7 +7,7 @@ $BODY$
  FUNCION: 		conta.f_plantilla_sel
  DESCRIPCION:   Funcion que devuelve conjuntos de registros de las consultas relacionadas con la tabla 'conta.tplantilla'
  AUTOR: 		Gonzalo Sarmiento Sejas
- FECHA:	        01-04-2013 19:57:55
+ FECHA:	        01-04-2013 21:49:11
  COMENTARIOS:	
 ***************************************************************************
  HISTORIAL DE MODIFICACIONES:
@@ -30,34 +30,33 @@ BEGIN
     v_parametros = pxp.f_get_record(p_tabla);
 
 	/*********************************    
- 	#TRANSACCION:  'CONTA_PLTL_SEL'
+ 	#TRANSACCION:  'CONTA_PLT_SEL'
  	#DESCRIPCION:	Consulta de datos
  	#AUTOR:		Gonzalo Sarmiento Sejas	
- 	#FECHA:		01-04-2013 19:57:55
+ 	#FECHA:		01-04-2013 21:49:11
 	***********************************/
 
-	if(p_transaccion='CONTA_PLTL_SEL')then
+	if(p_transaccion='CONTA_PLT_SEL')then
      				
     	begin
     		--Sentencia de la consulta
 			v_consulta:='select
-						pltl.id_plantilla,
-						pltl.estado_reg,
-						pltl.tipo,
-						pltl.sw_compro,
-						pltl.sw_tesoro,
-						pltl.nro_linea,
-						pltl.desc_plantilla,
-						pltl.tipo_plantilla,
-						pltl.fecha_reg,
-						pltl.id_usuario_reg,
-						pltl.fecha_mod,
-						pltl.id_usuario_mod,
+						plt.id_plantilla,
+						plt.estado_reg,
+						plt.desc_plantilla,
+						plt.sw_tesoro,
+						plt.sw_compro,
+						plt.nro_linea,
+						plt.tipo,
+						plt.fecha_reg,
+						plt.id_usuario_reg,
+						plt.fecha_mod,
+						plt.id_usuario_mod,
 						usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod	
-						from conta.tplantilla pltl
-						inner join segu.tusuario usu1 on usu1.id_usuario = pltl.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = pltl.id_usuario_mod
+						from conta.tplantilla plt
+						inner join segu.tusuario usu1 on usu1.id_usuario = plt.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = plt.id_usuario_mod
 				        where  ';
 			
 			--Definicion de la respuesta
@@ -70,20 +69,20 @@ BEGIN
 		end;
 
 	/*********************************    
- 	#TRANSACCION:  'CONTA_PLTL_CONT'
+ 	#TRANSACCION:  'CONTA_PLT_CONT'
  	#DESCRIPCION:	Conteo de registros
  	#AUTOR:		Gonzalo Sarmiento Sejas	
- 	#FECHA:		01-04-2013 19:57:55
+ 	#FECHA:		01-04-2013 21:49:11
 	***********************************/
 
-	elsif(p_transaccion='CONTA_PLTL_CONT')then
+	elsif(p_transaccion='CONTA_PLT_CONT')then
 
 		begin
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_plantilla)
-					    from conta.tplantilla pltl
-					    inner join segu.tusuario usu1 on usu1.id_usuario = pltl.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = pltl.id_usuario_mod
+					    from conta.tplantilla plt
+					    inner join segu.tusuario usu1 on usu1.id_usuario = plt.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = plt.id_usuario_mod
 					    where ';
 			
 			--Definicion de la respuesta		    

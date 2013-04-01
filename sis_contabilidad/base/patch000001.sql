@@ -77,8 +77,7 @@ ALTER TABLE conta.tauxiliar OWNER TO postgres;
 /***********************************I-SCP-GSS-CONTA-84-01/04/2013****************************************/
 
 CREATE TABLE conta.tplantilla (
-  id_plantilla SERIAL, 
-  tipo_plantilla NUMERIC(2,0), 
+  id_plantilla SERIAL,  
   nro_linea NUMERIC(2,0), 
   desc_plantilla VARCHAR(255), 
   tipo NUMERIC(1,0), 

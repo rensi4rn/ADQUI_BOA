@@ -3,7 +3,7 @@
 *@package pXP
 *@file Plantilla.php
 *@author  Gonzalo Sarmiento Sejas
-*@date 01-04-2013 19:57:55
+*@date 01-04-2013 21:49:11
 *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
 */
 
@@ -34,30 +34,15 @@ Phx.vista.Plantilla=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'tipo',
-				fieldLabel: 'Tipo',
+				name: 'desc_plantilla',
+				fieldLabel: 'Desc Plantilla',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength:65536
-			},
-			type:'NumberField',
-			filters:{pfiltro:'pltl.tipo',type:'numeric'},
-			id_grupo:1,
-			grid:true,
-			form:true
-		},
-		{
-			config:{
-				name: 'sw_compro',
-				fieldLabel: 'Sw Compro',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:2
+				maxLength:255
 			},
 			type:'TextField',
-			filters:{pfiltro:'pltl.sw_compro',type:'string'},
+			filters:{pfiltro:'plt.desc_plantilla',type:'string'},
 			id_grupo:1,
 			grid:true,
 			form:true
@@ -72,7 +57,22 @@ Phx.vista.Plantilla=Ext.extend(Phx.gridInterfaz,{
 				maxLength:2
 			},
 			type:'TextField',
-			filters:{pfiltro:'pltl.sw_tesoro',type:'string'},
+			filters:{pfiltro:'plt.sw_tesoro',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
+		{
+			config:{
+				name: 'sw_compro',
+				fieldLabel: 'Sw Compro',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:2
+			},
+			type:'TextField',
+			filters:{pfiltro:'plt.sw_compro',type:'string'},
 			id_grupo:1,
 			grid:true,
 			form:true
@@ -87,37 +87,22 @@ Phx.vista.Plantilla=Ext.extend(Phx.gridInterfaz,{
 				maxLength:131072
 			},
 			type:'NumberField',
-			filters:{pfiltro:'pltl.nro_linea',type:'numeric'},
+			filters:{pfiltro:'plt.nro_linea',type:'numeric'},
 			id_grupo:1,
 			grid:true,
 			form:true
 		},
 		{
 			config:{
-				name: 'desc_plantilla',
-				fieldLabel: 'Desc Plantilla',
+				name: 'tipo',
+				fieldLabel: 'Tipo',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength:255
-			},
-			type:'TextField',
-			filters:{pfiltro:'pltl.desc_plantilla',type:'string'},
-			id_grupo:1,
-			grid:true,
-			form:true
-		},
-		{
-			config:{
-				name: 'tipo_plantilla',
-				fieldLabel: 'Tipo Plantilla',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:131072
+				maxLength:65536
 			},
 			type:'NumberField',
-			filters:{pfiltro:'pltl.tipo_plantilla',type:'numeric'},
+			filters:{pfiltro:'plt.tipo',type:'numeric'},
 			id_grupo:1,
 			grid:true,
 			form:true
@@ -132,7 +117,7 @@ Phx.vista.Plantilla=Ext.extend(Phx.gridInterfaz,{
 				maxLength:10
 			},
 			type:'TextField',
-			filters:{pfiltro:'pltl.estado_reg',type:'string'},
+			filters:{pfiltro:'plt.estado_reg',type:'string'},
 			id_grupo:1,
 			grid:true,
 			form:false
@@ -148,7 +133,7 @@ Phx.vista.Plantilla=Ext.extend(Phx.gridInterfaz,{
 						renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
 			},
 			type:'DateField',
-			filters:{pfiltro:'pltl.fecha_reg',type:'date'},
+			filters:{pfiltro:'plt.fecha_reg',type:'date'},
 			id_grupo:1,
 			grid:true,
 			form:false
@@ -179,7 +164,7 @@ Phx.vista.Plantilla=Ext.extend(Phx.gridInterfaz,{
 						renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
 			},
 			type:'DateField',
-			filters:{pfiltro:'pltl.fecha_mod',type:'date'},
+			filters:{pfiltro:'plt.fecha_mod',type:'date'},
 			id_grupo:1,
 			grid:true,
 			form:false
@@ -201,7 +186,7 @@ Phx.vista.Plantilla=Ext.extend(Phx.gridInterfaz,{
 		}
 	],
 	
-	title:'Plantillas de Documentos',
+	title:'Plantilla Documento',
 	ActSave:'../../sis_contabilidad/control/Plantilla/insertarPlantilla',
 	ActDel:'../../sis_contabilidad/control/Plantilla/eliminarPlantilla',
 	ActList:'../../sis_contabilidad/control/Plantilla/listarPlantilla',
@@ -209,12 +194,11 @@ Phx.vista.Plantilla=Ext.extend(Phx.gridInterfaz,{
 	fields: [
 		{name:'id_plantilla', type: 'numeric'},
 		{name:'estado_reg', type: 'string'},
-		{name:'tipo', type: 'numeric'},
-		{name:'sw_compro', type: 'string'},
-		{name:'sw_tesoro', type: 'string'},
-		{name:'nro_linea', type: 'numeric'},
 		{name:'desc_plantilla', type: 'string'},
-		{name:'tipo_plantilla', type: 'numeric'},
+		{name:'sw_tesoro', type: 'string'},
+		{name:'sw_compro', type: 'string'},
+		{name:'nro_linea', type: 'numeric'},
+		{name:'tipo', type: 'numeric'},
 		{name:'fecha_reg', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_reg', type: 'numeric'},
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},

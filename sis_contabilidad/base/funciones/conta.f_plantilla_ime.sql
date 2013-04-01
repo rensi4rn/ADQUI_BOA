@@ -8,7 +8,7 @@ $BODY$
  FUNCION: 		conta.f_plantilla_ime
  DESCRIPCION:   Funcion que gestiona las operaciones basicas (inserciones, modificaciones, eliminaciones de la tabla 'conta.tplantilla'
  AUTOR: 		Gonzalo Sarmiento Sejas
- FECHA:	        01-04-2013 19:57:55
+ FECHA:	        01-04-2013 21:49:11
  COMENTARIOS:	
 ***************************************************************************
  HISTORIAL DE MODIFICACIONES:
@@ -34,36 +34,34 @@ BEGIN
     v_parametros = pxp.f_get_record(p_tabla);
 
 	/*********************************    
- 	#TRANSACCION:  'CONTA_PLTL_INS'
+ 	#TRANSACCION:  'CONTA_PLT_INS'
  	#DESCRIPCION:	Insercion de registros
  	#AUTOR:		Gonzalo Sarmiento Sejas	
- 	#FECHA:		01-04-2013 19:57:55
+ 	#FECHA:		01-04-2013 21:49:11
 	***********************************/
 
-	if(p_transaccion='CONTA_PLTL_INS')then
+	if(p_transaccion='CONTA_PLT_INS')then
 					
         begin
         	--Sentencia de la insercion
         	insert into conta.tplantilla(
 			estado_reg,
-			tipo,
-			sw_compro,
-			sw_tesoro,
-			nro_linea,
 			desc_plantilla,
-			tipo_plantilla,
+			sw_tesoro,
+			sw_compro,
+			nro_linea,
+			tipo,
 			fecha_reg,
 			id_usuario_reg,
 			fecha_mod,
 			id_usuario_mod
           	) values(
 			'activo',
-			v_parametros.tipo,
-			v_parametros.sw_compro,
-			v_parametros.sw_tesoro,
-			v_parametros.nro_linea,
 			v_parametros.desc_plantilla,
-			v_parametros.tipo_plantilla,
+			v_parametros.sw_tesoro,
+			v_parametros.sw_compro,
+			v_parametros.nro_linea,
+			v_parametros.tipo,
 			now(),
 			p_id_usuario,
 			null,
@@ -72,7 +70,7 @@ BEGIN
 			)RETURNING id_plantilla into v_id_plantilla;
 			
 			--Definicion de la respuesta
-			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Plantillas de Documentos almacenado(a) con exito (id_plantilla'||v_id_plantilla||')'); 
+			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Plantilla Documento almacenado(a) con exito (id_plantilla'||v_id_plantilla||')'); 
             v_resp = pxp.f_agrega_clave(v_resp,'id_plantilla',v_id_plantilla::varchar);
 
             --Devuelve la respuesta
@@ -81,29 +79,28 @@ BEGIN
 		end;
 
 	/*********************************    
- 	#TRANSACCION:  'CONTA_PLTL_MOD'
+ 	#TRANSACCION:  'CONTA_PLT_MOD'
  	#DESCRIPCION:	Modificacion de registros
  	#AUTOR:		Gonzalo Sarmiento Sejas	
- 	#FECHA:		01-04-2013 19:57:55
+ 	#FECHA:		01-04-2013 21:49:11
 	***********************************/
 
-	elsif(p_transaccion='CONTA_PLTL_MOD')then
+	elsif(p_transaccion='CONTA_PLT_MOD')then
 
 		begin
 			--Sentencia de la modificacion
 			update conta.tplantilla set
-			tipo = v_parametros.tipo,
-			sw_compro = v_parametros.sw_compro,
-			sw_tesoro = v_parametros.sw_tesoro,
-			nro_linea = v_parametros.nro_linea,
 			desc_plantilla = v_parametros.desc_plantilla,
-			tipo_plantilla = v_parametros.tipo_plantilla,
+			sw_tesoro = v_parametros.sw_tesoro,
+			sw_compro = v_parametros.sw_compro,
+			nro_linea = v_parametros.nro_linea,
+			tipo = v_parametros.tipo,
 			fecha_mod = now(),
 			id_usuario_mod = p_id_usuario
 			where id_plantilla=v_parametros.id_plantilla;
                
 			--Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Plantillas de Documentos modificado(a)'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Plantilla Documento modificado(a)'); 
             v_resp = pxp.f_agrega_clave(v_resp,'id_plantilla',v_parametros.id_plantilla::varchar);
                
             --Devuelve la respuesta
@@ -112,13 +109,13 @@ BEGIN
 		end;
 
 	/*********************************    
- 	#TRANSACCION:  'CONTA_PLTL_ELI'
+ 	#TRANSACCION:  'CONTA_PLT_ELI'
  	#DESCRIPCION:	Eliminacion de registros
  	#AUTOR:		Gonzalo Sarmiento Sejas	
- 	#FECHA:		01-04-2013 19:57:55
+ 	#FECHA:		01-04-2013 21:49:11
 	***********************************/
 
-	elsif(p_transaccion='CONTA_PLTL_ELI')then
+	elsif(p_transaccion='CONTA_PLT_ELI')then
 
 		begin
 			--Sentencia de la eliminacion
@@ -126,7 +123,7 @@ BEGIN
             where id_plantilla=v_parametros.id_plantilla;
                
             --Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Plantillas de Documentos eliminado(a)'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Plantilla Documento eliminado(a)'); 
             v_resp = pxp.f_agrega_clave(v_resp,'id_plantilla',v_parametros.id_plantilla::varchar);
               
             --Devuelve la respuesta
