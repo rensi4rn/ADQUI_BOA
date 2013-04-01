@@ -142,3 +142,25 @@ select pxp.f_insert_tprocedimiento_gui ('CONTA_CTC_ELI', 'CTIP', 'no');
 select pxp.f_insert_tprocedimiento_gui ('CONTA_CTC_SEL', 'CTIP', 'no');
 
 /***********************************F-DAT-GSS-CONTA-81-26/03/2013*****************************************/
+
+/***********************************I-DAT-GSS-CONTA-84-01/04/2013*****************************************/
+
+select pxp.f_insert_tgui ('Plantilla Documento', 'plantillas de documentos', 'PLT', 'si', 4, 'sis_contabilidad/vista/plantilla/Plantilla.php', 2, '', 'Plantilla', 'CONTA');
+select pxp.f_insert_testructura_gui ('PLT', 'CONTA');
+
+select pxp.f_insert_tfuncion ('conta.f_plantilla_sel', 'Funcion para tabla     ', 'CONTA');
+select pxp.f_insert_tfuncion ('conta.f_plantilla_ime', 'Funcion para tabla     ', 'CONTA');
+
+select pxp.f_insert_tprocedimiento ('CONTA_PLTL_SEL', 'Consulta de datos', 'si', '', '', 'conta.f_plantilla_sel');
+select pxp.f_insert_tprocedimiento ('CONTA_PLTL_CONT', 'Conteo de registros', 'si', '', '', 'conta.f_plantilla_sel');
+select pxp.f_insert_tprocedimiento ('CONTA_PLTL_INS', 'Insercion de registros', 'si', '', '', 'conta.f_plantilla_ime');
+select pxp.f_insert_tprocedimiento ('CONTA_PLTL_MOD', 'Modificacion de registros', 'si', '', '', 'conta.f_plantilla_ime');
+select pxp.f_insert_tprocedimiento ('CONTA_PLTL_ELI', 'Eliminacion de registros', 'si', '', '', 'conta.f_plantilla_ime');
+
+select pxp.f_insert_tprocedimiento_gui ('CONTA_PLTL_INS', 'PLT', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CONTA_PLTL_MOD', 'PLT', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CONTA_PLTL_ELI', 'PLT', 'no');
+select pxp.f_insert_tprocedimiento_gui ('CONTA_PLTL_SEL', 'PLT', 'no');
+
+
+/***********************************F-DAT-GSS-CONTA-84-01/04/2013*****************************************/
