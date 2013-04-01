@@ -125,7 +125,7 @@ CREATE TABLE adq.tcotizacion_det(
     precio_unitario numeric(19, 2),
     precio_unitario_mb numeric(19,2),
     cantidad_coti numeric(19, 0),
-    cantidad_aduj numeric(19, 0),
+    cantidad_adju numeric(19, 0),
     obs varchar(500),
     PRIMARY KEY (id_cotizacion_det))INHERITS (pxp.tbase);
     

@@ -285,7 +285,7 @@ BEGIN
                     id_solicitud_det,
                     precio_unitario,
                     cantidad_coti,
-                    cantidad_aduj
+                    cantidad_adju
                    ) 
                   VALUES (
                     p_id_usuario,
@@ -338,7 +338,7 @@ BEGIN
                 --la moneda y el tipo de cambio no pueden cambiar cambiar si tiene detalles registrados
             
                 select 
-                  sum(COALESCE(cd.precio_unitario,0))
+                  sum(COALESCE(cd.precio_unitario,0)* COALESCE(cd.cantidad_coti,0))
                 INTO
                  v_total_detalle  
                  from adq.tcotizacion_det cd 
@@ -445,7 +445,7 @@ BEGIN
              --validamos que el detalle tenga por lo menos un item con valor
              
              select 
-              sum(cd.precio_unitario)
+              sum(cd.precio_unitario*cd.cantidad_coti)
              into
               v_total_detalle
              from adq.tcotizacion_det cd

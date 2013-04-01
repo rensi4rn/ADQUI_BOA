@@ -25,7 +25,7 @@ class MODCotizacionDet extends MODbase{
 		$this->captura('estado_reg','varchar');
 		$this->captura('id_cotizacion','int4');
 		$this->captura('precio_unitario','numeric');
-		$this->captura('cantidad_aduj','numeric');
+		$this->captura('cantidad_adju','numeric');
 		$this->captura('cantidad_coti','numeric');
 		$this->captura('obs','varchar');
 		$this->captura('id_solicitud_det','int4');
@@ -42,6 +42,8 @@ class MODCotizacionDet extends MODbase{
         $this->captura('cantidad_sol','integer');
         $this->captura('precio_unitario_sol','numeric');
         $this->captura('descripcion_sol','text'); 
+        $this->captura('precio_unitario_mb','numeric');
+        $this->captura('precio_unitario_mb_sol','numeric');
 		
 	
 		
@@ -63,7 +65,7 @@ class MODCotizacionDet extends MODbase{
 		$this->setParametro('estado_reg','estado_reg','varchar');
 		$this->setParametro('id_cotizacion','id_cotizacion','int4');
 		$this->setParametro('precio_unitario','precio_unitario','numeric');
-		$this->setParametro('cantidad_aduj','cantidad_aduj','numeric');
+		$this->setParametro('cantidad_adju','cantidad_adju','numeric');
 		$this->setParametro('cantidad_coti','cantidad_coti','numeric');
 		$this->setParametro('obs','obs','varchar');
 		$this->setParametro('id_solicitud_det','id_solicitud_det','int4');
@@ -87,7 +89,7 @@ class MODCotizacionDet extends MODbase{
 		$this->setParametro('estado_reg','estado_reg','varchar');
 		$this->setParametro('id_cotizacion','id_cotizacion','int4');
 		$this->setParametro('precio_unitario','precio_unitario','numeric');
-		$this->setParametro('cantidad_aduj','cantidad_aduj','numeric');
+		$this->setParametro('cantidad_adju','cantidad_adju','numeric');
 		$this->setParametro('cantidad_coti','cantidad_coti','numeric');
 		$this->setParametro('obs','obs','varchar');
 		$this->setParametro('id_solicitud_det','id_solicitud_det','int4');
@@ -116,6 +118,42 @@ class MODCotizacionDet extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+	
+	function totalAdjudicado(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='adq.f_cotizacion_det_ime';
+        $this->transaccion='ADQ_TOTALADJ_IME';
+        $this->tipo_procedimiento='IME';
+                
+        //Define los parametros para la funcion
+        $this->setParametro('id_cotizacion_det','id_cotizacion_det','int4');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+	
+    function AdjudicarDetalle(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='adq.f_cotizacion_det_ime';
+        $this->transaccion='ADQ_ADJDET_IME';
+        $this->tipo_procedimiento='IME';
+                
+        //Define los parametros para la funcion
+        $this->setParametro('id_cotizacion_det','id_cotizacion_det','int4');
+        $this->setParametro('cantidad_adjudicada','cantidad_adjudicada','int4');
+        
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }	
+	
 			
 }
 ?>

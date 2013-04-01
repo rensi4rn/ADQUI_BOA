@@ -35,10 +35,22 @@ class ACTCotizacionDet extends ACTbase{
 	}
 						
 	function eliminarCotizacionDet(){
-			$this->objFunc=$this->create('MODCotizacionDet');	
+	    $this->objFunc=$this->create('MODCotizacionDet');	
 		$this->res=$this->objFunc->eliminarCotizacionDet($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+	
+	function totalAdjudicado(){
+         $this->objFunc=$this->create('MODCotizacionDet');   
+        $this->res=$this->objFunc->totalAdjudicado($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
+   function AdjudicarDetalle(){
+        $this->objFunc=$this->create('MODCotizacionDet');   
+        $this->res=$this->objFunc->AdjudicarDetalle($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }	
 			
 }
 

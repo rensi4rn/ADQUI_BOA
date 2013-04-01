@@ -43,6 +43,13 @@ DECLARE
     v_precio_unitario_mb_coti numeric;
     v_tipo_cambio_conv numeric;
 	v_id_moneda_coti  integer;
+    v_total_adj integer;
+    
+     
+     v_id_solicitud_det integer;
+     v_cantidad_coti integer;
+     
+     v_cantidad_adju integer;
 			    
 BEGIN
 
@@ -242,6 +249,112 @@ BEGIN
             return v_resp;
 
 		end;
+    
+    
+        
+    /*********************************    
+ 	#TRANSACCION:  'ADQ_TOTALADJ_IME'
+ 	#DESCRIPCION:	Recuperar Total adjudicado por item
+ 	#AUTOR:	    Rensi Arteaga Copari
+ 	#FECHA:		1-04-2013 21:44:43
+	***********************************/
+
+	elsif(p_transaccion='ADQ_TOTALADJ_IME')then
+
+		begin
+			--Sentencia de la eliminacion
+			
+           v_total_adj = adq.f_calcular_total_adj_cot_det(v_parametros.id_cotizacion_det);
+            
+            
+            --Definicion de la respuesta
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Recupera Total Adjudicado'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'total_adj',v_total_adj::varchar);
+              
+            --Devuelve la respuesta
+            return v_resp;
+
+		end;    
+   
+
+    /*********************************    
+ 	#TRANSACCION:  'ADQ_ADJDET_IME'
+ 	#DESCRIPCION:	Adjudicada por detalle de la cotizacion
+ 	#AUTOR:	    Rensi Arteaga Copari
+ 	#FECHA:		1-04-2013 21:44:43
+	***********************************/
+
+	elsif(p_transaccion='ADQ_ADJDET_IME')then
+
+		begin
+        
+            --recupera datos de la colitud y la cotizacion
+        
+            
+            select
+               sd.id_solicitud_det, 
+               sd.cantidad,
+               cd.cantidad_coti,
+               cd.cantidad_adju
+            into 
+               v_cantidad_sol,
+               v_id_solicitud_det,
+               v_cantidad_coti,
+               v_cantidad_adju
+            from adq.tsolicitud_det sd
+            inner join adq.tcotizacion_det cd on  cd.id_solicitud_det = sd.id_solicitud_det
+            where cd.id_cotizacion_det = v_parametros.id_cotizacion_det;
+            
+           
+			--Sentencia de la eliminacion
+			
+             v_total_adj = adq.f_calcular_total_adj_cot_det(v_parametros.id_cotizacion_det);
+            
+            
+            IF v_parametros.cantidad_adjudicada <0 THEN
+            
+              raise exception 'No se admiten adjudicaciones negativas';
+            
+            END IF;
+            
+            
+            
+            
+            
+            
+           
+            IF  (v_cantidad_sol - v_total_adj) >= v_parametros.cantidad_adjudicada THEN
+            
+                 IF  v_cantidad_coti >= v_parametros.cantidad_adjudicada THEN
+            
+            
+                   update adq.tcotizacion_det set
+                   cantidad_adju = v_parametros.cantidad_adjudicada
+                   where id_cotizacion_det = v_parametros.id_cotizacion_det;
+                 
+                 ELSE
+                  raise exception 'la cantidad adjudicada tiene que ser menor o igual cotizada';
+            
+                 
+                 END IF;
+            ELSE
+            
+              raise exception 'la cantidad adjudicada tiene que ser menor o igual que la solicitada y que el total adjudicado';
+            
+            END IF;
+            
+            
+            
+            
+            --Definicion de la respuesta
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Se adjudicaron los item indicados'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'id_cotizacion_det',v_parametros.id_cotizacion_det::varchar);
+              
+            --Devuelve la respuesta
+            return v_resp;
+
+		end;       
+        
          
 	else
      

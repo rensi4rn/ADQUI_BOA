@@ -51,7 +51,7 @@ BEGIN
 						ctd.estado_reg,
 						ctd.id_cotizacion,
 						ctd.precio_unitario,
-						ctd.cantidad_aduj,
+						ctd.cantidad_adju,
 						ctd.cantidad_coti,
 						ctd.obs,
 						ctd.id_solicitud_det,
@@ -65,7 +65,9 @@ BEGIN
                         cc.codigo_cc as desc_centro_costo,
                         sold.cantidad as cantidad_sol,
                         sold.precio_unitario as precio_unitario_sol,
-                        sold.descripcion as descripcion_sol	
+                        sold.descripcion as descripcion_sol,
+                        ctd.precio_unitario_mb ,
+                        sold.precio_unitario_mb as precio_unitario_mb_sol		
 						from adq.tcotizacion_det ctd
 						inner join segu.tusuario usu1 on usu1.id_usuario = ctd.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = ctd.id_usuario_mod

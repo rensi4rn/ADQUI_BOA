@@ -19,9 +19,165 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
 		this.init();
 		this.iniciarEventos();
 		//this.load({params:{start:0, limit:this.tam_pag}})
+		
+		this.addButton('adjudicar_det',{text:'Adjudicar Item',iconCls: 'badelante',disabled:true,handler:this.adjudicar_det,tooltip: '<b>Adjudicar</b><p>Permite adjudicar de manera parcial</p>'});
+            
+        
+		//formulario de adjudicacion parcil
+		
+		this.formADJ = new Ext.form.FormPanel({
+            baseCls: 'x-plain',
+            autoDestroy: true,
+           
+            layout: 'form',
+              
+            items: [
+                   { 
+                    xtype: 'numberfield',   
+                    name: 'cant_sol',
+                    fieldLabel: 'Cantidad Ref.',
+                    minValue: 0,
+                    disabled:true,
+                    allowBlank: false
+                    
+                   },
+                   { 
+                    xtype: 'numberfield',   
+                    name: 'catidad_cotizada',
+                    fieldLabel: 'Cotizado',
+                    minValue: 0,
+                    disabled:true,
+                    allowBlank: false
+                   },
+                   { 
+                    xtype: 'numberfield',   
+                    name: 'candidad_adj_total',
+                    minValue: 0,
+                    disabled:true,
+                    fieldLabel: 'Total Adjudicado',
+                    allowBlank: false                  
+                     },
+                   { 
+                    xtype: 'numberfield',   
+                    name: 'candidad_adj',
+                    minValue: 0,
+                    fieldLabel: 'Cantidad a adjudicar',
+                    allowBlank: false                  
+                     }
+                  ]
+        });
+        
+        
+         this.cmpCS =this.formADJ.getForm().findField('cant_sol');
+         this.cmpCC =this.formADJ.getForm().findField('catidad_cotizada');
+         this.cmpCAT =this.formADJ.getForm().findField('candidad_adj_total');
+         this.cmpCA =this.formADJ.getForm().findField('candidad_adj');
+         
+         
+         
+         this.wADJ = new Ext.Window({
+            title: 'Adjudicación',
+            collapsible: true,
+            maximizable: true,
+             autoDestroy: true,
+            width: 350,
+            height: 300,
+            layout: 'fit',
+            plain: true,
+            bodyStyle: 'padding:5px;',
+            buttonAlign: 'center',
+            items: this.formADJ,
+            modal:true,
+             closeAction: 'hide',
+            buttons: [{
+                text: 'Guardar',
+                 handler:this.onAdjudicarDet,
+                scope:this
+                
+            },{
+                text: 'Cancelar',
+                handler:function(){this.wADJ.hide()},
+                scope:this
+            }]
+        });
+	
+	
+	
 	},
+	adjudicar_det:function(){
+	    
+	    //verifica el precio unitario sea menor al precio ref en la moneda que le toca
+	     var data = this.getSelectedData();
+	     if(data.precio_unitario_mb <= data.precio_unitario_mb_sol){
+	        
+	        
+	        this.cmpCS.setValue(data.cantidad_sol); 
+            this.cmpCC.setValue(data.cantidad_coti);
+            console.log('cantidad adjudicada',data.cantidad_adju)
+            this.cmpCA.setValue(data.cantidad_adju);
+           
+            Phx.CP.loadingShow();
+            
+            Ext.Ajax.request({
+                // form:this.form.getForm().getEl(),
+                url:'../../sis_adquisiciones/control/CotizacionDet/totalAdjudicado',
+                params:{id_cotizacion_det:data.id_cotizacion_det},
+                success:this.preparaFormAdj,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            }); 
+	    }
+	    else{
+	        alert("Para adjidicar el precio unitario cotizado debe ser menor o igual al precio unitario referencial");
+	    }
+	},
+	preparaFormAdj:function(resp){
+	   Phx.CP.loadingHide();
+            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+            if(!reg.ROOT.error){
+               this.cmpCAT.setValue(reg.ROOT.datos.total_adj) ;
+               this.cmpCA.setMaxValue( Math.min(this.cmpCS.getValue()-this.cmpCAT.getValue(),this.cmpCC.getValue()));
+               this.wADJ.show();
+            }else{
+                alert('ocurrio un error durante el proceso')
+            }
+	},
+	
+	onAdjudicarDet:function(){
+	  
+	   if (this.formADJ.getForm().isValid()) {
+    	    Phx.CP.loadingShow();
+    	    var data = this.getSelectedData();
+            Ext.Ajax.request({
+               
+                url:'../../sis_adquisiciones/control/CotizacionDet/AdjudicarDetalle',
+                params:{id_cotizacion_det:data.id_cotizacion_det,cantidad_adjudicada: this.cmpCA.getValue()},
+                success:this.successSinc,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            }); 
+        }
+	  
+	    
+	    
+	},
+	successSinc:function(resp){
+            Phx.CP.loadingHide();
+           
+            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+            if(!reg.ROOT.error){
+                this.reload();
+                this.wADJ.hide();
+                
+             }else{
+                alert('ocurrio un error durante el proceso')
+            }
+        },
+        
+	
 	tam_pag:50,
-			
 	Atributos:[
 		{
 			//configuracion del componente
@@ -76,7 +232,15 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
 				anchor: '80%',
 				gwidth: 250,
 				mode: 'remote',
-				renderer: function(value,p,record){return String.format('{0}',record.data['desc_solicitud_det']);},
+				renderer: function(value,p,record){
+				    
+				     if(record.data.cantidad_adju>0){
+                                                     return String.format('<b><font color="green">{0}</font></b>', record.data['desc_solicitud_det']);
+                                                }
+                                                else{
+                                                    return String.format('{0}', record.data['desc_solicitud_det']);
+                                                }
+				    },
 				tpl: '<tpl for="."><div class="x-combo-list-item"><p>{desc_concepto_ingas}<br>{desc_centro_costo}</p></div></tpl>'
 			},
 	           			
@@ -93,6 +257,15 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
                 allowBlank: true,
                 anchor: '80%',
                 gwidth: 200,
+                renderer:function (value, p, record){
+                                                if(record.data.cantidad_adju>0){
+                                                     return String.format('<b><font color="green">{0}</font></b>', value);
+                                                }
+                                                else{
+                                                    return String.format('{0}', value);
+                                                }
+                                            
+                                        },
                 maxLength:500
             },
             type:'TextArea',
@@ -100,6 +273,21 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
             id_grupo:1,
             grid:true,
             form:true
+        },
+        {
+            config:{
+                name: 'cantidad_sol',
+                fieldLabel: 'Cantidad Ref.',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:1245184
+            },
+            type:'NumberField',
+            filters:{pfiltro:'sold.precio_unitario',type:'numeric'},
+            id_grupo:1,
+            grid:true,
+            form:false
         },
         {
             config:{
@@ -118,18 +306,19 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
         },
         {
             config:{
-                name: 'cantidad_sol',
-                fieldLabel: 'Cantidad Ref.',
+                name: 'cantidad_coti',
+                fieldLabel: 'Cant. Ofer.',
                 allowBlank: true,
                 anchor: '80%',
                 gwidth: 100,
                 maxLength:1245184
             },
             type:'NumberField',
-            filters:{pfiltro:'sold.precio_unitario',type:'numeric'},
+            filters:{pfiltro:'ctd.cantidad_coti',type:'numeric'},
             id_grupo:1,
             grid:true,
-            form:false
+            egrid:true,
+            form:true
         },
 		{
 			config:{
@@ -147,25 +336,9 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
 			egrid:true,
 			form:true
 		},
-        {
-            config:{
-                name: 'cantidad_coti',
-                fieldLabel: 'Cant. Ofer.',
-                allowBlank: true,
-                anchor: '80%',
-                gwidth: 100,
-                maxLength:1245184
-            },
-            type:'NumberField',
-            filters:{pfiltro:'ctd.cantidad_coti',type:'numeric'},
-            id_grupo:1,
-            grid:true,
-            egrid:true,
-            form:true
-        },
 		{
 			config:{
-				name: 'cantidad_aduj',
+				name: 'cantidad_adju',
 				fieldLabel: 'Cant. Adjudicada',
 				allowBlank: true,
 				anchor: '80%',
@@ -173,7 +346,7 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
 				maxLength:1245184
 			},
 			type:'NumberField',
-			filters:{pfiltro:'ctd.cantidad_aduj',type:'numeric'},
+			filters:{pfiltro:'ctd.cantidad_adju',type:'numeric'},
 			id_grupo:1,
 			grid:true,
 			form:false
@@ -299,7 +472,7 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
 		{name:'estado_reg', type: 'string'},
 		{name:'id_cotizacion', type: 'numeric'},
 		{name:'precio_unitario', type: 'numeric'},
-		{name:'cantidad_aduj', type: 'numeric'},
+		{name:'cantidad_adju', type: 'numeric'},
 		{name:'cantidad_coti', type: 'numeric'},
 		{name:'obs', type: 'string'},
 		{name:'id_solicitud_det', type: 'numeric'},
@@ -313,7 +486,7 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
 		'desc_centro_costo',
         'cantidad_sol',
         'precio_unitario_sol',
-        'descripcion_sol'],
+        'descripcion_sol','precio_unitario_mb_sol','precio_unitario_mb'],
 	sortInfo:{
 		field: 'id_cotizacion_det',
 		direction: 'ASC'
@@ -376,6 +549,31 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
                this.getBoton('save').disable();
          }
     },
+    
+      preparaMenu:function(n){
+          var data = this.getSelectedData();
+          var tb =this.tbar;
+          Phx.vista.Cotizacion.superclass.preparaMenu.call(this,n);  
+              
+              if(this.maestro.estado==  'cotizado'){
+                 this.getBoton('adjudicar_det').enable();
+                 
+               }
+              else{
+                   this.getBoton('adjudicar_det').disable();
+               }
+            return tb 
+     }, 
+     liberaMenu:function(){
+        var tb = Phx.vista.Cotizacion.superclass.liberaMenu.call(this);
+        if(tb){
+            this.getBoton('adjudicar_det').disable();
+           
+        }
+        
+       return tb
+    }, 
+    
 	
 	onReloadPage:function(m){       
         this.maestro=m;
