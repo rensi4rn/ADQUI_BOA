@@ -420,25 +420,6 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
                     scope:this
                 });  
 	},
-	
-	preparaMenu:function(n){
-      var data = this.getSelectedData();
-      var tb =this.tbar;
-       
-        this.getBoton('btnReporte').setDisabled(false);
-
-        Phx.vista.Cotizacion.superclass.preparaMenu.call(this,n);
-         return tb 
-     },
-     
-     liberaMenu:function(){
-        var tb = Phx.vista.Cotizacion.superclass.liberaMenu.call(this);
-        if(tb){           
-            this.getBoton('btnReporte').setDisabled(true);           
-        }
-       return tb
-    },
-    
 	sortInfo:{
 		field: 'id_cotizacion',
 		direction: 'ASC'
@@ -555,7 +536,7 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
               
               if(data['estado']==  'borrador'){
                  this.getBoton('fin_registro').enable();
-                 
+                 this.getBoton('btnReporte').setDisabled(false);
                }
               else{
                    this.getBoton('fin_registro').disable();
@@ -573,7 +554,7 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
         var tb = Phx.vista.Cotizacion.superclass.liberaMenu.call(this);
         if(tb){
             this.getBoton('fin_registro').disable();
-           
+            this.getBoton('btnReporte').setDisabled(true); 
         }
         
        return tb

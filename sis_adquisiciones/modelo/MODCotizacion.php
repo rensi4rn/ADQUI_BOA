@@ -160,6 +160,7 @@ class MODCotizacion extends MODbase{
 		$this->procedimiento='adq.f_cotizacion_sel';
 		$this->transaccion='ADQ_COTREP_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		$this->setCount(false);
 		
 		$this->setParametro('id_cotizacion','id_cotizacion','int4');
 				
@@ -177,13 +178,24 @@ class MODCotizacion extends MODbase{
 		$this->captura('num_tramite','varchar');
 		$this->captura('id_proveedor','int4');
 		$this->captura('desc_proveedor','varchar');
+		$this->captura('id_persona','int4');
+		$this->captura('id_institucion','int4');
+		$this->captura('dir_per', 'varchar');
+		$this->captura('tel_per1', 'varchar');
+		$this->captura('tel_per2', 'varchar');
+		$this->captura('cel_per','varchar');
+		$this->captura('correo','varchar');
+		$this->captura('nombre_ins','varchar');
+		$this->captura('cel_ins','varchar');
+		$this->captura('dir_ins','varchar');
+		$this->captura('fax','varchar');
+		$this->captura('email_ins','varchar');
+		$this->captura('tel_ins1','varchar');
+		$this->captura('tel_ins2','varchar');		
 		$this->captura('lugar_entrega','varchar');
 		$this->captura('nro_contrato','varchar');		
 		$this->captura('numero_oc','int4');
 		$this->captura('obs','text');
-		$this->captura('porc_anticipo','numeric');
-		$this->captura('porc_retgar','numeric');
-		$this->captura('precio_total','numeric');
 		$this->captura('tipo_entrega','varchar');
 		
 		//Ejecuta la instruccion
