@@ -35,7 +35,7 @@ CREATE TABLE tes.tobligacion_det (
   id_partida INTEGER, 
   id_cuenta INTEGER, 
   id_auxiliar INTEGER, 
-  id_partida_ejecucion_com INTEGER NOT NULL, 
+  id_partida_ejecucion_com INTEGER, 
   monto_pago_mo NUMERIC(19,0), 
   monto_pago_mb INTEGER, 
   factor_porcentual NUMERIC(19,0), 
