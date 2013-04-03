@@ -49,6 +49,13 @@ Phx.vista.ProcesoCompra=Ext.extend(Phx.gridInterfaz,{
                 allowBlank: true,
                 anchor: '80%',
                 gwidth: 100,
+                renderer: function(value,p,record){
+                        if(record.data.estado=='anulado'||record.data.estado=='desierto'){
+                             return String.format('<b><font color="red">{0}</font></b>', value);
+                         }
+                         else{
+                            return String.format('{0}', value);
+                        }},
                 maxLength:30
             },
             type:'TextField',
@@ -113,7 +120,12 @@ Phx.vista.ProcesoCompra=Ext.extend(Phx.gridInterfaz,{
                 minChars: 2,
                 gwidth: 170,
                 renderer: function(value, p, record) {
-                    return String.format('{0}', record.data['desc_solicitud']);
+                        if(record.data.estado=='anulado'||record.data.estado=='desierto'){
+                             return String.format('<b><font color="red">{0}</font></b>', record.data['desc_solicitud']);
+                         }
+                         else{
+                            return String.format('{0}', record.data['desc_solicitud']);
+                        }
                 },
                 tpl: '<tpl for="."><div class="x-combo-list-item"><p>{numero}</p><p>Sol.: <strong>{desc_funcionario}</strong></p><p>UO: <strong>{desc_uo}</strong></p> </div></tpl>'
             },
@@ -394,13 +406,33 @@ Phx.vista.ProcesoCompra=Ext.extend(Phx.gridInterfaz,{
                     'Cotizacion'
         )
     },
+    
+    onButtonNew:function(){         
+            Phx.vista.ProcesoCompra.superclass.onButtonNew.call(this);
+            this.cmbSolicitud.enable();
+            this.cmbDepto.enablle();          
+    },
+    onButtonEdit:function(){         
+            Phx.vista.ProcesoCompra.superclass.onButtonEdit.call(this);
+            this.cmbSolicitud.disable();  
+            this.cmbDepto.disable();        
+    },
+    
+    
     preparaMenu:function(n){
       var data = this.getSelectedData();
       var tb =this.tbar;
-       
-        this.getBoton('btnCotizacion').setDisabled(false);
-
+        
         Phx.vista.ProcesoCompra.superclass.preparaMenu.call(this,n);
+        if(data.estado=='anulado' || data.estado=='desierto'){
+            this.getBoton('edit').disable();
+            this.getBoton('del').disable();
+            this.getBoton('btnCotizacion').disable();
+        }
+        else{
+            this.getBoton('btnCotizacion').enable();
+            
+        }
          return tb 
      },
      

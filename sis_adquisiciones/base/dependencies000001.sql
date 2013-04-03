@@ -31,4 +31,102 @@ ALTER TABLE adq.tsolicitud ADD CONSTRAINT
   fk_solicitud__id_solicitud_ext FOREIGN KEY (id_solicitud_ext) REFERENCES adq.tsolicitud (id_solicitud);
 
 
+--------------- SQL ---------------
+
+ALTER TABLE adq.tcotizacion_det
+  ADD CONSTRAINT fk_tcotizacion_det__id_cotizacion FOREIGN KEY (id_cotizacion)
+    REFERENCES adq.tcotizacion(id_cotizacion)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+
+--------------- SQL ---------------
+
+ALTER TABLE adq.tcotizacion
+  ADD CONSTRAINT fk_tcotizacion__id_proceo_compra FOREIGN KEY (id_proceso_compra)
+    REFERENCES adq.tproceso_compra(id_proceso_compra)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+    
+ --------------- SQL ---------------
+
+ALTER TABLE adq.tproceso_compra
+  ADD CONSTRAINT fk_tproceso_compra__id_solicitud FOREIGN KEY (id_solicitud)
+    REFERENCES adq.tsolicitud(id_solicitud)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+
+--------------- SQL ---------------
+ALTER TABLE adq.tproceso_compra
+  ADD CONSTRAINT fk_tproceso_compra__id_depto FOREIGN KEY (id_depto)
+    REFERENCES param.tdepto(id_depto)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+
+ALTER TABLE adq.tproceso_compra
+  ADD CONSTRAINT fk_tproceso_compra__id_proceso_wf FOREIGN KEY (id_proceso_wf)
+    REFERENCES wf.tproceso_wf(id_proceso_wf)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+
+--------------- SQL ---------------
+
+ALTER TABLE adq.tsolicitud_det
+  ADD CONSTRAINT fk_tsolicitud_det__id_solicitud FOREIGN KEY (id_solicitud)
+    REFERENCES adq.tsolicitud(id_solicitud)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+
+--------------- SQL ---------------
+
+ALTER TABLE adq.tsolicitud_det
+  ADD CONSTRAINT fk_tsolicitud_det__id_concepto_ingas FOREIGN KEY (id_concepto_ingas)
+    REFERENCES param.tconcepto_ingas(id_concepto_ingas)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+
+--------------- SQL ---------------
+
+ALTER TABLE adq.tsolicitud_det
+  ADD CONSTRAINT fk_tsolicitud_det__id_partida FOREIGN KEY (id_partida)
+    REFERENCES pre.tpartida(id_partida)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+--------------- SQL ---------------
+
+ALTER TABLE adq.tsolicitud_det
+  ADD CONSTRAINT fk_tsolicitud_det__id_cuenta FOREIGN KEY (id_cuenta)
+    REFERENCES conta.tcuenta(id_cuenta)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+
+--------------- SQL ---------------
+
+ALTER TABLE adq.tsolicitud_det
+  ADD CONSTRAINT fk_tsolicitud_det__id_auxiliar FOREIGN KEY (id_auxiliar)
+    REFERENCES conta.tauxiliar(id_auxiliar)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+
+--------------- SQL ---------------
+
+ALTER TABLE adq.tsolicitud_det
+  ADD CONSTRAINT fk_tsolicitud_det__id_centro_costo FOREIGN KEY (id_centro_costo)
+    REFERENCES param.tcentro_costo(id_centro_costo)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+
 /***********************************F-DEP-FRH-ADQ-0-15/02/2013*****************************************/
+
+
+

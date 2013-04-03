@@ -18,9 +18,10 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
 		Phx.vista.CotizacionDet.superclass.constructor.call(this,config);
 		this.init();
 		this.iniciarEventos();
+		this.bloquearMenus();
 		//this.load({params:{start:0, limit:this.tam_pag}})
 		
-		this.addButton('adjudicar_det',{text:'Adjudicar Item',iconCls: 'badelante',disabled:true,handler:this.adjudicar_det,tooltip: '<b>Adjudicar</b><p>Permite adjudicar de manera parcial</p>'});
+		this.addButton('adjudicar_det',{text:'Adjudicar Item',iconCls: 'bchecklist',disabled:true,handler:this.adjudicar_det,tooltip: '<b>Adjudicar</b><p>Permite adjudicar de manera parcial</p>'});
             
         
 		//formulario de adjudicacion parcil
@@ -113,7 +114,6 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
 	        
 	        this.cmpCS.setValue(data.cantidad_sol); 
             this.cmpCC.setValue(data.cantidad_coti);
-            console.log('cantidad adjudicada',data.cantidad_adju)
             this.cmpCA.setValue(data.cantidad_adju);
            
             Phx.CP.loadingShow();
@@ -518,59 +518,51 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
 	    
 	    
 	},
-	  preparaMenu:function(n){
-         
-         Phx.vista.SolicitudReqDet.superclass.preparaMenu.call(this,n); 
-          if(this.maestro.estado ==  'borrador'){
-               this.getBoton('edit').enable();
-               this.getBoton('new').enable();
-               this.getBoton('del').enable();
-               this.getBoton('save').enable();
-         }
-         else{
-             
-               this.getBoton('edit').disable();
-               this.getBoton('new').disable();
-               this.getBoton('del').disable();
-               this.getBoton('save').disable();
-         }
-          
-        
-          
-     },
-     liberaMenu: function() {
-         Phx.vista.SolicitudReqDet.superclass.liberaMenu.call(this); 
-           if(this.maestro&&(this.maestro.estado !=  'borrador' )){
-           }
-           else{      
-               this.getBoton('edit').disable();
-               this.getBoton('new').disable();
-               this.getBoton('del').disable();
-               this.getBoton('save').disable();
-         }
-    },
-    
-      preparaMenu:function(n){
-          var data = this.getSelectedData();
+	 preparaMenu:function(n){
+	      var data = this.getSelectedData();
           var tb =this.tbar;
           Phx.vista.Cotizacion.superclass.preparaMenu.call(this,n);  
               
-              if(this.maestro.estado==  'cotizado'){
+              if(this.maestro.estado ==  'cotizado'){
                  this.getBoton('adjudicar_det').enable();
                  
                }
               else{
                    this.getBoton('adjudicar_det').disable();
                }
+            
+            if(this.maestro.estado ==  'borrador'){ 
+                
+                this.getBoton('edit').enable();
+                this.getBoton('new').enable();
+                this.getBoton('del').enable();
+                this.getBoton('save').enable();
+             } 
+             else{
+                 
+                this.getBoton('edit').disable();
+                this.getBoton('new').disable();
+                this.getBoton('del').disable();
+                this.getBoton('save').disable(); 
+                 
+             }
+               
+               
             return tb 
      }, 
      liberaMenu:function(){
         var tb = Phx.vista.Cotizacion.superclass.liberaMenu.call(this);
         if(tb){
+             
             this.getBoton('adjudicar_det').disable();
-           
+            
+            if(this.maestro&&this.maestro.estado !=  'borrador'){ 
+                this.getBoton('edit').disable();
+                this.getBoton('new').disable();
+                this.getBoton('del').disable();
+                this.getBoton('save').disable();
+             } 
         }
-        
        return tb
     }, 
     

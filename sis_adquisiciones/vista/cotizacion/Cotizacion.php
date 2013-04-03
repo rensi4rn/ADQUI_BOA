@@ -14,27 +14,102 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
 
 	constructor:function(config){
 		this.maestro=config.maestro;
+		//llama al constructor de la clase padre
+    	Phx.vista.Cotizacion.superclass.constructor.call(this,config);
 		
-		console.log('config maestr',config)
-    	//llama al constructor de la clase padre
-    	
-		Phx.vista.Cotizacion.superclass.constructor.call(this,config);
-		
-          this.addButton('btnReporte',{
+		this.addButton('btnReporte',{
                     text :'Reporte',
                     iconCls : 'bpdf32',
                     disabled: true,
                     handler : this.onButtonReporte,
                     tooltip : '<b>Reporte de Cotizacion</b><br/><b>Reporte de Cotizacion de solicitud de Compra</b>'
           });
+          
+         this.addButton('ant_estado',{
+              argument: {estado: 'anterior'},
+              text:'Anterior',
+              iconCls: 'batras',
+              disabled:true,
+              handler:this.antEstado,
+              tooltip: '<b>Pasar al Anterior Estado</b>'
+          });
+         
 		
-		this.addButton('fin_registro',{text:'Fin Reg.',iconCls: 'badelante',disabled:true,handler:this.fin_registro,tooltip: '<b>Finalizar</b><p>Finalizar registro de cotización</p>'});
-            
+		 this.addButton('fin_registro',{text:'Fin Reg.',iconCls: 'badelante',disabled:true,handler:this.fin_registro,tooltip: '<b>Finalizar</b><p>Finalizar registro de cotización</p>'});
+         
+         this.addButton('btnAdjudicar',{
+                    text :'Adjudicar',
+                    iconCls : 'bchecklist',
+                    disabled: true,
+                    handler : this.onAdjudicarTodo,
+                    tooltip : '<b>Adjudicar Todo</b><br/><b>Adjudica todo lo disponible</b>'
+          });   
+		
+		this.addButton('btnGenOC',{
+                    text :'Generar OC',
+                    iconCls : 'bchecklist',
+                    disabled: true,
+                    handler : this.onGenOC,
+                    tooltip : '<b>Genrar OC</b><br/><b>Genera el Número de Orden de Compra</b>'
+          });
+		
 		
 		this.init();
 		this.iniciarEventos();
 		this.store.baseParams={id_proceso_compra:this.id_proceso_compra}; 
-		this.load({params:{start:0, limit:this.tam_pag}})
+		this.load({params:{start:0, limit:this.tam_pag}});
+		
+		//formulario de adjudicacion parcil
+        
+        this.formOC = new Ext.form.FormPanel({
+            baseCls: 'x-plain',
+            autoDestroy: true,
+            layout: 'form',
+            items: [
+                   { 
+                    xtype: 'datefield',   
+                    name: 'fecha_oc',
+                    fieldLabel: 'Fecha OC',
+                    disabled:true,
+                    allowBlank: false
+                    
+                   }
+                  ]
+        });
+        
+        
+         this.cmpFechaOC =this.formOC.getForm().findField('fecha_oc');
+         
+         
+         
+         this.wOC= new Ext.Window({
+            title: 'Generar OC',
+            collapsible: true,
+            maximizable: true,
+             autoDestroy: true,
+            width: 350,
+            height: 170,
+            layout: 'fit',
+            plain: true,
+            bodyStyle: 'padding:5px;',
+            buttonAlign: 'center',
+            items: this.formOC,
+            modal:true,
+             closeAction: 'hide',
+            buttons: [{
+                text: 'Guardar',
+                 handler:this.onSubmitGenOC,
+                scope:this
+                
+            },{
+                text: 'Cancelar',
+                handler:function(){this.wOC.hide()},
+                scope:this
+            }]
+        });
+        
+        
+		
 
 	},
 	tam_pag:50,
@@ -65,7 +140,17 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
                 fieldLabel: 'Estado',
                 allowBlank: true,
                 anchor: '80%',
-                gwidth: 100,
+                gwidth: 90,
+                renderer: function(value,p,record){
+                         if(record.data.estado=='anulado'){
+                             return String.format('<b><font color="red">{0}</font></b>', value);
+                         }
+                        else if(record.data.estado=='adjudicado'){
+                             return String.format('<b><font color="green">{0}</font></b>', value);
+                        }
+                        else{
+                            return String.format('{0}', value);
+                        }},
                 maxLength:30
             },
             type:'TextField',
@@ -95,20 +180,29 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
 	    					remoteSort: true,
 	    					baseParams:{par_filtro:'codigo#desc_proveedor'}
 	    				}),
-	   valueField: 'id_proveedor',
-	   displayField: 'desc_proveedor',
-	   gdisplayField: 'desc_proveedor',
-	   hiddenName: 'id_proveedor',
-	   triggerAction: 'all',
-	   //queryDelay:1000,
-	   pageSize:10,
+        	    valueField: 'id_proveedor',
+        	    displayField: 'desc_proveedor',
+        	    gdisplayField: 'desc_proveedor',
+        	    hiddenName: 'id_proveedor',
+        	    triggerAction: 'all',
+        	    //queryDelay:1000,
+        	    pageSize:10,
 				forceSelection: true,
 				typeAhead: true,
 				allowBlank: false,
 				anchor: '80%',
-				gwidth: 100,
+				gwidth: 150,
 				mode: 'remote',
-				renderer: function(value,p,record){return String.format('{0}',record.data['desc_proveedor']);}
+				renderer: function(value,p,record){
+                        if(record.data.estado=='anulado'){
+                             return String.format('<b><font color="red">{0}</font></b>', record.data['desc_proveedor']);
+                         }
+                        else if(record.data.estado=='adjudicado'){
+                             return String.format('<b><font color="green">{0}</font></b>', record.data['desc_proveedor']);
+                        }
+                        else{
+                            return String.format('{0}', record.data['desc_proveedor']);
+                        }}
 			},
 	           			
 			type:'ComboBox',
@@ -117,6 +211,33 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
 			grid:true,
 			form:true
 		},
+        {
+            config:{
+                name: 'numero_oc',
+                fieldLabel: 'Numero O.C.',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 140,
+                renderer: function(value,p,record){
+                        if(record.data.estado=='anulado'){
+                             return String.format('<b><font color="red">{0}</font></b>', value);
+                         }
+                        else if(record.data.estado=='adjudicado'){
+                             return String.format('<b><font color="green">{0}</font></b>', value);
+                         
+                        
+                        }
+                        else{
+                            return String.format('{0}', value);
+                        }},
+                maxLength:4
+            },
+            type:'NumberField',
+            filters:{pfiltro:'cot.numero_oc',type:'numeric'},
+            id_grupo:1,
+            grid:true,
+            form:false
+        },
           {
             config:{
                 name: 'fecha_coti',
@@ -243,21 +364,6 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
 			grid:true,
 			form:true
 		},
-        {
-            config:{
-                name: 'numero_oc',
-                fieldLabel: 'Numero O.C.',
-                allowBlank: true,
-                anchor: '80%',
-                gwidth: 100,
-                maxLength:4
-            },
-            type:'NumberField',
-            filters:{pfiltro:'cot.numero_oc',type:'numeric'},
-            id_grupo:1,
-            grid:true,
-            form:false
-        },
 		{
 			config:{
 				name: 'nro_contrato',
@@ -381,7 +487,7 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
 		{name:'lugar_entrega', type: 'string'},
 		{name:'tipo_entrega', type: 'string'},
 		{name:'fecha_coti', type: 'date',dateFormat:'Y-m-d'},
-		{name:'numero_oc', type: 'numeric'},
+		'numero_oc',
 		{name:'id_proveedor', type: 'numeric'},
 		{name:'desc_proveedor', type: 'string'},
 		{name:'porc_anticipo', type: 'numeric'},
@@ -400,7 +506,7 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},'desc_moneda','tipo_cambio_conv'
+		{name:'usr_mod', type: 'string'},'desc_moneda','tipo_cambio_conv','id_estado_wf','id_proceso_wf'
 		
 	],
 	
@@ -421,23 +527,7 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
                 });  
 	},
 	
-	preparaMenu:function(n){
-      var data = this.getSelectedData();
-      var tb =this.tbar;
-       
-        this.getBoton('btnReporte').setDisabled(false);
-
-        Phx.vista.Cotizacion.superclass.preparaMenu.call(this,n);
-         return tb 
-     },
-     
-     liberaMenu:function(){
-        var tb = Phx.vista.Cotizacion.superclass.liberaMenu.call(this);
-        if(tb){           
-            this.getBoton('btnReporte').setDisabled(true);           
-        }
-       return tb
-    },
+	
     
 	sortInfo:{
 		field: 'id_cotizacion',
@@ -456,7 +546,6 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
          
 			this.getComponente('id_proceso_compra').setValue(this.id_proceso_compra);			
 	},
-	
 	
 
 	
@@ -532,48 +621,135 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
                 scope:this
             });     
         },
-       successSinc:function(resp){
-            
+     
+        
+         onAdjudicarTodo:function(){
+            var data = this.getSelectedData();
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                // form:this.form.getForm().getEl(),
+                url:'../../sis_adquisiciones/control/Cotizacion/adjudicarTodo',
+                params:{id_cotizacion:data.id_cotizacion},
+                success:this.successSinc,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
+        },
+        
+       
+        successSinc:function(resp){
             Phx.CP.loadingHide();
             var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
             if(!reg.ROOT.error){
-               
-               this.reload();
-                
-            }else{
-                
+                 this.wOC.hide(); 
+                this.reload();
+             }else{
                 alert('ocurrio un error durante el proceso')
             }
-           
+        },
+        
+        onGenOC:function(){
+            
+          this.cmpFechaOC.setValue(new Date());
+          this.cmpFechaOC.disable();
+          this.wOC.show(); 
             
         },
+        onSubmitGenOC:function(){
+            var data = this.getSelectedData();
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                url:'../../sis_adquisiciones/control/Cotizacion/generarOC',
+                params:{id_cotizacion:data.id_cotizacion,fecha_oc: this.cmpFechaOC.getValue().dateFormat('d/m/Y')},
+                success:this.successSinc,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
+            
+            
+        },
+        antEstado:function(res,eve)
+        {                   
+            var d= this.sm.getSelected().data;
+            Phx.CP.loadingShow();
+            var operacion = 'cambiar';
+            operacion=  res.argument.estado == 'inicio'?'inicio':operacion; 
+            
+            Ext.Ajax.request({
+                url:'../../sis_adquisiciones/control/Cotizacion/anteriorEstadoCotizacion',
+                params:{id_cotizacion:d.id_cotizacion, 
+                        id_estado_wf:d.id_estado_wf, 
+                        operacion: operacion},
+                success:this.successSinc,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });     
+        }, 
         
         preparaMenu:function(n){
           var data = this.getSelectedData();
           var tb =this.tbar;
-          Phx.vista.Cotizacion.superclass.preparaMenu.call(this,n);  
+          Phx.vista.Cotizacion.superclass.preparaMenu.call(this,n); 
+          
+          this.getBoton('btnReporte').enable(); 
               
               if(data['estado']==  'borrador'){
                  this.getBoton('fin_registro').enable();
+                 this.getBoton('btnAdjudicar').disable();
+                 this.getBoton('btnGenOC').disable();
+                 this.getBoton('ant_estado').disable();
                  
                }
               else{
+                   this.getBoton('ant_estado').enable();
+                   
+                   if(data['estado']=='cotizado'){
+                     this.getBoton('btnAdjudicar').enable();
+                     this.getBoton('btnGenOC').enable();
+                   }
+                   else{
+                      this.getBoton('btnAdjudicar').disable(); 
+                      this.getBoton('btnGenOC').disable();
+                   }
+                  
                    this.getBoton('fin_registro').disable();
                    this.getBoton('edit').disable();
                    this.getBoton('new').disable();
-                   this.getBoton('del').disable();
-                  // this.getBoton('save').disable();
+                 }
+               
+               if (data['estado']==  'borrador'||data['estado']=='cotizado'||data['estado']== 'adjudicado'){
+                   
+                    this.getBoton('del').enable();
+               }
+               else{
+                   
+                    this.getBoton('del').disable();
+               }
+               
+               if (data['estado']==  'anulado'){
+                   this.getBoton('ant_estado').disable();
+                   this.getBoton('btnReporte').disable();
+                   
+               }
                 
-                  
-                  
-              }
+               
+               
             return tb 
      }, 
+     
+    
+     
      liberaMenu:function(){
         var tb = Phx.vista.Cotizacion.superclass.liberaMenu.call(this);
         if(tb){
             this.getBoton('fin_registro').disable();
-           
+            this.getBoton('btnAdjudicar').disable();
+            this.getBoton('btnGenOC').disable();
+            this.getBoton('ant_estado').disable();
+            this.getBoton('btnReporte').disable();
         }
         
        return tb
@@ -585,8 +761,7 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
         url:'../../../sis_adquisiciones/vista/cotizacion_det/CotizacionDet.php',
         title:'Detalles Cotizacion', 
         height : '50%',
-        cls:'CotizacionDet'    
-    }
+        cls:'CotizacionDet'}
 	}
 )
 </script>

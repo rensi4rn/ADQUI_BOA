@@ -113,6 +113,27 @@ class ACTCotizacion extends ACTbase{
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
     
+    function adjudicarTodo(){
+        $this->objFunc=$this->create('MODCotizacion');  
+        $this->res=$this->objFunc->adjudicarTodo($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+    
+     function generarOC(){
+        $this->objFunc=$this->create('MODCotizacion');  
+        $this->res=$this->objFunc->generarOC($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+    
+     function anteriorEstadoCotizacion(){
+        $this->objFunc=$this->create('MODCotizacion');  
+        $this->res=$this->objFunc->anteriorEstadoCotizacion($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+    
+    
+    
+    
 			
 }
 

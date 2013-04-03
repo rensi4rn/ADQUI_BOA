@@ -103,7 +103,7 @@ CREATE TABLE adq.tsolicitud_det(
     id_moneda int4 NOT NULL,
     id_estado_wf int4,
     id_proceso_wf int4 ,
-    numero_oc int4,
+    numero_oc varchar(50),
     estado varchar(30),
     fecha_coti date,
     fecha_adju date,

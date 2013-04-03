@@ -27,7 +27,7 @@ class MODCotizacion extends MODbase{
 		$this->captura('lugar_entrega','varchar');
 		$this->captura('tipo_entrega','varchar');
 		$this->captura('fecha_coti','date');
-		$this->captura('numero_oc','int4');
+		$this->captura('numero_oc','varchar');
 		$this->captura('id_proveedor','int4');
 		$this->captura('desc_proveedor','varchar');
 		
@@ -179,7 +179,7 @@ class MODCotizacion extends MODbase{
 		$this->captura('desc_proveedor','varchar');
 		$this->captura('lugar_entrega','varchar');
 		$this->captura('nro_contrato','varchar');		
-		$this->captura('numero_oc','int4');
+		$this->captura('numero_oc','varchar');
 		$this->captura('obs','text');
 		$this->captura('porc_anticipo','numeric');
 		$this->captura('porc_retgar','numeric');
@@ -210,6 +210,62 @@ class MODCotizacion extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
+    
+    function adjudicarTodo(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='adq.f_cotizacion_ime';
+        $this->transaccion='ADQ_ADJTODO_IME';
+        $this->tipo_procedimiento='IME';
+                
+        //Define los parametros para la funcion
+        $this->setParametro('id_cotizacion','id_cotizacion','int4');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    
+      function generarOC(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='adq.f_cotizacion_ime';
+        $this->transaccion='ADQ_GENOC_IME';
+        $this->tipo_procedimiento='IME';
+                
+        //Define los parametros para la funcion
+        $this->setParametro('id_cotizacion','id_cotizacion','int4');
+        $this->setParametro('fecha_oc','fecha_oc','date');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    
+    function anteriorEstadoCotizacion(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='adq.f_cotizacion_ime';
+        $this->transaccion='ADQ_ANTEST_IME';
+        $this->tipo_procedimiento='IME';
+                
+        //Define los parametros para la funcion
+        $this->setParametro('id_cotizacion','id_cotizacion','int4');
+        $this->setParametro('operacion','operacion','varchar');
+        $this->setParametro('id_estado_wf','id_estado_wf','int4');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    
+    
 	
 
 			
