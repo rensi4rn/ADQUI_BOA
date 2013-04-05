@@ -302,8 +302,8 @@ BEGIN
                sd.precio_unitario_mb,
                cd.precio_unitario_mb
             into 
-               v_cantidad_sol,
                v_id_solicitud_det,
+               v_cantidad_sol,
                v_cantidad_coti,
                v_cantidad_adju,
                v_precio_unitario_mb_sol,
@@ -324,7 +324,7 @@ BEGIN
             
             
            
-			--Sentencia de la eliminacion
+			--calcula el total adjudicado en otras cotizaciones
 			
              v_total_adj = adq.f_calcular_total_adj_cot_det(v_parametros.id_cotizacion_det);
             
@@ -335,11 +335,7 @@ BEGIN
             
             END IF;
             
-            
-            
-            
-            
-            
+            --raise exception 'c% o %  sol %,  adj  %',v_cantidad_coti,v_parametros.cantidad_adjudicada,v_cantidad_sol,v_total_adj;
            
             IF  (v_cantidad_sol - v_total_adj) >= v_parametros.cantidad_adjudicada THEN
             

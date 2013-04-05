@@ -233,3 +233,12 @@ for f in funciones:
             child.expect(message)
             child.sendline(password)
 
+#crear funciones de plantilla
+funciones_dir = url + '/funciones_de_migracion/tct_plantilla_tplantilla/'
+funciones = os.listdir( funciones_dir )
+for f in funciones:
+    if f.endswith('.sql'):
+            command = 'psql -q -U ' + cuenta + ' -h ' + ip + ' -d ' + nameDb + ' -f ' + funciones_dir + f
+            child = pexpect.spawn(command)
+            child.expect(message)
+            child.sendline(password)

@@ -114,18 +114,31 @@ BEGIN
         						pc.num_tramite,
         						cot.id_proveedor,
                                 pv.desc_proveedor,
+                                pv.id_persona,
+                                pv.id_institucion,
+                                per.direccion as dir_per,
+                                per.telefono1 as tel_per1,
+                                per.telefono2 as tel_per2,
+                                per.celular1 as cel_per,
+                                per.correo,
+                                ins.nombre as nombre_ins,
+                                ins.celular1 as cel_ins,
+                                ins.direccion as dir_ins,
+                                ins.fax,
+                                ins.email1 as email_ins,
+                                ins.telefono1 as tel_ins1,
+                                ins.telefono2 as tel_ins2,
         						cot.lugar_entrega,
         						cot.nro_contrato,
         						cot.numero_oc,
         						cot.obs,
-        						cot.porc_anticipo,
-        						cot.porc_retgar,
-                                cot.precio_total,
                                 cot.tipo_entrega
 						from adq.tcotizacion cot
                         inner join param.tmoneda mon on mon.id_moneda=cot.id_moneda
                         inner join adq.tproceso_compra pc on pc.id_proceso_compra=cot.id_proceso_compra
                         inner join param.vproveedor pv on pv.id_proveedor=cot.id_proveedor
+                        left join segu.tpersona per on per.id_persona=pv.id_persona
+                        left join param.tinstitucion ins on ins.id_institucion=pv.id_institucion
                         where cot.id_cotizacion='||v_parametros.id_cotizacion||' and ';
                         
             --Definicion de la respuesta

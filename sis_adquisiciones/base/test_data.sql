@@ -202,3 +202,39 @@ select pxp.f_insert_trol_procedimiento_gui ('Proceso de compra encargado', 'ADQ_
 -- FIN ROLES 
 -- Autor Gonzalo Sarmiento Sejas
 ------------------------------------------
+
+
+-------------------------------------------
+-- INICIO USUARIOS DE PRUEBA 
+-- Autor Gonzalo Sarmiento Sejas
+------------------------------------------
+
+INSERT INTO segu.tusuario ("id_usuario", "id_clasificador", "cuenta", "contrasena", "fecha_caducidad", "fecha_reg", "estilo", "contrasena_anterior", "id_persona", "estado_reg", "autentificacion")
+VALUES (2, 1, E'juan', E'a94652aa97c7211ba8954dd15a3cf838', E'2014-04-29', E'2013-03-28', E'xtheme-blue.css', NULL, 2, E'activo', E'local');
+
+INSERT INTO segu.tusuario ("id_usuario", "id_clasificador", "cuenta", "contrasena", "fecha_caducidad", "fecha_reg", "estilo", "contrasena_anterior", "id_persona", "estado_reg", "autentificacion")
+VALUES (3, 1, E'ga', E'32d7508fe69220cb40af28441ef746d9', E'2014-04-29', E'2013-03-28', E'xtheme-blue.css', NULL, 4, E'activo', E'local');
+
+INSERT INTO segu.tusuario ("id_usuario", "id_clasificador", "cuenta", "contrasena", "fecha_caducidad", "fecha_reg", "estilo", "contrasena_anterior", "id_persona", "estado_reg", "autentificacion")
+VALUES (4, 1, E'jo', E'674f33841e2309ffdd24c85dc3b999de', E'2014-04-29', E'2013-03-28', E'xtheme-blue.css', NULL, 5, E'activo', E'local');
+
+INSERT INTO segu.tusuario ("id_usuario", "id_clasificador", "cuenta", "contrasena", "fecha_caducidad", "fecha_reg", "estilo", "contrasena_anterior", "id_persona", "estado_reg", "autentificacion")
+VALUES (5, 1, E'edu', E'379ef4bd50c30e261ccfb18dfc626d9f', E'2014-04-29', E'2013-03-28', E'xtheme-blue.css', NULL, 6, E'activo', E'local');
+
+
+INSERT INTO segu.tusuario_rol ("id_usuario_rol", "id_rol", "id_usuario", "fecha_reg", "estado_reg")
+VALUES (2, 2, 2, NULL, E'activo');
+
+INSERT INTO segu.tusuario_rol ("id_usuario_rol", "id_rol", "id_usuario", "fecha_reg", "estado_reg")
+VALUES (3, 3, 3, NULL, E'activo');
+
+INSERT INTO segu.tusuario_rol ("id_usuario_rol", "id_rol", "id_usuario", "fecha_reg", "estado_reg")
+VALUES (4, 3, 4, NULL, E'activo');
+
+INSERT INTO segu.tusuario_rol ("id_usuario_rol", "id_rol", "id_usuario", "fecha_reg", "estado_reg")
+VALUES (5, 4, 5, NULL, E'activo');
+
+-------------------------------------------
+-- FIN USUARIOS DE PRUEBA 
+-- Autor Gonzalo Sarmiento Sejas
+------------------------------------------

@@ -526,9 +526,7 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
                     scope:this
                 });  
 	},
-	
-	
-    
+
 	sortInfo:{
 		field: 'id_cotizacion',
 		direction: 'ASC'
@@ -702,6 +700,7 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
                  this.getBoton('btnGenOC').disable();
                  this.getBoton('ant_estado').disable();
                  
+
                }
               else{
                    this.getBoton('ant_estado').enable();
@@ -750,6 +749,7 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
             this.getBoton('btnGenOC').disable();
             this.getBoton('ant_estado').disable();
             this.getBoton('btnReporte').disable();
+
         }
         
        return tb

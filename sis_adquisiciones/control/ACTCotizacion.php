@@ -45,7 +45,7 @@ class ACTCotizacion extends ACTbase{
 	
 	
 	function reporteCotizacion(){
-		  $dataSource = new DataSource();
+		  $dataSource = new DataSource();				
     $idCotizacion = $this->objParam->getParametro('id_cotizacion');
     $this->objParam->addParametroConsulta('ordenacion','id_cotizacion');
     $this->objParam->addParametroConsulta('dir_ordenacion','ASC');
@@ -53,8 +53,7 @@ class ACTCotizacion extends ACTbase{
     $this->objParam->addParametroConsulta('puntero',0);
     $this->objFunc = $this->create('MODCotizacion');
     $this->res = $this->objFunc->reporteCotizacion();
-    $datosCotizacion = $this->res->getDatos();
- 			
+				$datosCotizacion = $this->res->getDatos();
     //armamos el array parametros y metemos ahi los data sets de las otras tablas
     $dataSource->putParameter('estado', $datosCotizacion[0]['estado']);
 				$dataSource->putParameter('fecha_adju', $datosCotizacion[0]['fecha_adju']);
@@ -69,16 +68,26 @@ class ACTCotizacion extends ACTbase{
 				$dataSource->putParameter('num_tramite', $datosCotizacion[0]['num_tramite']);
     $dataSource->putParameter('id_proveedor', $datosCotizacion[0]['id_proveedor']);
 				$dataSource->putParameter('desc_proveedor', $datosCotizacion[0]['desc_proveedor']);
+				if($datosCotizacion[0]['id_institucion']===NULL){
+						$dataSource->putParameter('direccion', $datosCotizacion[0]['dir_per']);
+						$dataSource->putParameter('telefono1', $datosCotizacion[0]['tel_per1']);
+						$dataSource->putParameter('telefono2', $datosCotizacion[0]['tel_per2']);
+						$dataSource->putParameter('celular', $datosCotizacion[0]['cel_per']);					
+						$dataSource->putParameter('email', $datosCotizacion[0]['correo']);
+				}else{
+						$dataSource->putParameter('direccion', $datosCotizacion[0]['dir_ins']);
+						$dataSource->putParameter('telefono1', $datosCotizacion[0]['tel_ins1']);
+						$dataSource->putParameter('telefono2', $datosCotizacion[0]['tel_ins2']);
+						$dataSource->putParameter('celular', $datosCotizacion[0]['cel_ins']);
+						$dataSource->putParameter('email', $datosCotizacion[0]['email_ins']);
+				}
+			 $dataSource->putParameter('fax', $datosCotizacion[0]['fax']);				
     $dataSource->putParameter('lugar_entrega', $datosCotizacion[0]['lugar_entrega']);
     $dataSource->putParameter('nro_contrato', $datosCotizacion[0]['nro_contrato']);
 				$dataSource->putParameter('numero_oc', $datosCotizacion[0]['numero_oc']);				
     $dataSource->putParameter('obs', $datosCotizacion[0]['obs']);
-    $dataSource->putParameter('porc_anticipo', $datosCotizacion[0]['porc_anticipo']);
-				$dataSource->putParameter('porc_retgar', $datosCotizacion[0]['porc_retgar']);
-				$dataSource->putParameter('precio_total', $datosCotizacion[0]['precio_total']);
-				$dataSource->putParameter('tipo_entrega', $datosCotizacion[0]['tipo_entrega']);
-				
-    //get detalle
+    $dataSource->putParameter('tipo_entrega', $datosCotizacion[0]['tipo_entrega']);
+				//get detalle
     //Reset all extra params:
     $this->objParam->defecto('ordenacion', 'id_cotizacion_det');
     $this->objParam->defecto('cantidad', 1000);
@@ -90,7 +99,7 @@ class ACTCotizacion extends ACTbase{
 				$cotizacionDetDataSource = new DataSource();
 				$cotizacionDetDataSource->setDataSet($resultCotizacionDet->getDatos());
     $dataSource->putParameter('detalleDataSource', $cotizacionDetDataSource);
-            
+			      
     //build the report
     $reporte = new RCotizacion();
     $reporte->setDataSource($dataSource);

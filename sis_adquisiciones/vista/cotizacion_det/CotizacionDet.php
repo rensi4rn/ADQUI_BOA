@@ -111,6 +111,8 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
 	     var data = this.getSelectedData();
 	     if(data.precio_unitario_mb <= data.precio_unitario_mb_sol){
 	        
+	        console.log('datos....',data)
+	        
 	        
 	        this.cmpCS.setValue(data.cantidad_sol); 
             this.cmpCC.setValue(data.cantidad_coti);
