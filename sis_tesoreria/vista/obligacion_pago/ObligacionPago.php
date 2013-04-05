@@ -18,6 +18,7 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
 		Phx.vista.ObligacionPago.superclass.constructor.call(this,config);
 		this.init();
 		this.load({params:{start:0, limit:this.tam_pag}})
+		this.iniciarEventos();
 	},
 	tam_pag:50,
 			
@@ -152,7 +153,24 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
 			id_grupo:1,
 			grid:true,
 			form:true
-		},	
+		},
+  {
+   config:{
+       name: 'funcionario_proveedor',
+       fieldLabel: 'Funcionario/<br/>Proveedor',
+       anchor: '80%',
+       gwidth: 100,
+       maxLength:30,
+       items: [
+           {boxLabel: 'Funcionario', name: 'rg-auto', inputValue: 'funcionario', checked:true},
+           {boxLabel: 'Proveedor', name: 'rg-auto', inputValue: 'proveedor'}
+       ]
+   },
+   type:'RadioGroup',
+   id_grupo:1,
+   grid:false,
+   form:true
+  },
 		{
 			config: {
 				name: 'id_proveedor',
@@ -175,7 +193,7 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
 				name: 'id_funcionario',
 				fieldLabel: 'Funcionario',
 				tinit: true,
-				allowBlank: true,
+				allowBlank: false,
 				anchor: '80%',
 				origen: 'FUNCIONARIO',				
 				gdisplayField: 'desc_funcionario1',
@@ -401,6 +419,58 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
 		field: 'id_obligacion_pago',
 		direction: 'ASC'
 	},
+	
+	iniciarEventos:function()
+	{
+		this.ocultarComponente(this.getComponente('id_proveedor'));
+		this.ocultarComponente(this.getComponente('id_funcionario'));
+		this.ocultarComponente(this.getComponente('funcionario_proveedor'));
+		
+		this.getComponente('tipo_obligacion').on('select',function(c,r,n){
+				
+				if(n=='adquisiciones' || n=='0'){
+					this.getComponente('id_proveedor').enable();
+					this.mostrarComponente(this.getComponente('id_proveedor'));
+					this.ocultarComponente(this.getComponente('id_funcionario'));
+					this.ocultarComponente(this.getComponente('funcionario_proveedor'));
+					this.getComponente('id_funcionario').reset();
+				}else{
+					if(n=='viatico' || n=='fondo_en_avance' || n=='2' || n=='3'){
+								this.getComponente('id_funcionario').enable();
+								this.mostrarComponente(this.getComponente('id_funcionario'));
+								this.ocultarComponente(this.getComponente('id_proveedor'));
+								this.ocultarComponente(this.getComponente('funcionario_proveedor'));								
+								this.getComponente('id_proveedor').reset();
+						}else{							
+							 this.getComponente('funcionario_proveedor').reset();
+							 this.getComponente('funcionario_proveedor').enable();
+							 this.mostrarComponente(this.getComponente('funcionario_proveedor'));							
+							 this.mostrarComponente(this.getComponente('id_funcionario'));
+							 this.ocultarComponente(this.getComponente('id_proveedor'));
+								var rbtItSer = this.getComponente('funcionario_proveedor');
+        rbtItSer.on('change',function(groupRadio,radio){
+            this.enableDisable(radio.inputValue);
+        },this);
+						}
+				}				
+		},this);		
+		
+	},
+	enableDisable: function(val){
+   var cmbIt = this.getComponente('id_funcionario');
+   var cmbServ = this.getComponente('id_proveedor');
+   if(val=='funcionario'){   	   	
+							cmbServ.reset();
+							cmbIt.reset();
+							this.mostrarComponente(cmbIt);
+							this.ocultarComponente(cmbServ);
+   } else{   	
+   				cmbServ.reset();
+       cmbIt.reset();
+   				this.mostrarComponente(cmbServ);
+   				this.ocultarComponente(cmbIt);
+   }   
+ },
 	bdel:true,
 	bsave:true
 	}
