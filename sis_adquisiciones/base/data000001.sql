@@ -117,7 +117,7 @@ select wf.f_insert_testructura_estado ('Cotizado', 'Adjudicado', '1', '', 'activ
 select wf.f_insert_testructura_estado ('Adjudicado', 'Habilitado para pagar', '1', '', 'activo');
 select wf.f_insert_testructura_estado ('Habilitado para pagar', 'En pago', '1', '', 'activo');
 select wf.f_insert_testructura_estado ('En pago', 'Finalizada', '1', '', 'activo');
-select wf.f_insert_testructura_estado ('Inicio de Proceso de COmpra', 'Proceso Finalizado', '', '', 'activo');-----------------------------------
+select wf.f_insert_testructura_estado ('Inicio de Proceso de COmpra', 'Proceso Finalizado', '1', '', 'activo');-----------------------------------
 -- DOCUMENTOS
 ---------------------------------
 

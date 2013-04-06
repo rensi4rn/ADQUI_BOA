@@ -19,29 +19,43 @@ require_once dirname(__FILE__).'/../../pxp/pxpReport/Report.php';
         $this->Cell(20, $height, '', 0, 0, 'C', false, '', 1, false, 'T', 'C');
 								
         $this->SetFontSize(16);
-        $this->SetFont('','B');        
-        $this->Cell(145, $height, 'Solicitud de Cotización', 0, 0, 'C', false, '', 1, false, 'T', 'C');        
+        $this->SetFont('','B'); 
+								$tipo=$this->getDataSource()->getParameter('tipo');       
+        $this->Cell(145, $height, 'Solicitud de Cotización '.ucfirst($tipo), 0, 0, 'C', false, '', 1, false, 'T', 'C');        
         
 								$x=$this->getX();
 								$y=$this->getY();
 								$this->setXY($x,$y-10);
+								$this->SetFontSize(8);
+								$this->SetFont('', 'B');
+								$this->Cell(20, $height, $this->getDataSource()->getParameter('nro_contrato'), 0, 0, 'L', false, '', 1, false, 'T', 'C');
+								
+								$this->setXY($x,$y-7);
 								$this->SetFontSize(6);
 								$this->SetFont('', 'B');
 								$this->Cell(20, $height, 'Localidad', 0, 0, 'L', false, '', 1, false, 'T', 'C');
-								$this->setXY($x,$y-7);
+								$this->setXY($x,$y-4);
 								$this->SetFontSize(7);
 								$this->setFont('','');
 								$this->Cell(20, $height, strtoupper($this->getDataSource()->getParameter('lugar_entrega')), 0, 0, 'L', false, '', 1, false, 'T', 'C');
-								$this->setXY($x,$y+5);
+								$this->setXY($x,$y+8);
 								$this->setFont('','');
 								$this->Cell(6, $height/5, 'Dia', 1, 0, 'L', false, '', 1, false, 'T', 'C');
 								$this->Cell(6, $height/5, 'Mes', 1, 0, 'L', false, '', 1, false, 'T', 'C');
 								$this->Cell(7, $height/5, 'Año', 1, 0, 'L', false, '', 1, false, 'T', 'C');
-								$this->setXY($x,$y+9);
+								$this->setXY($x,$y+12);
 								$fecha_coti = explode('-', $this->getDataSource()->getParameter('fecha_coti'));
 								$this->Cell(6, $height/4, $fecha_coti[2], 1, 0, 'C', false, '', 1, false, 'T', 'C');
 								$this->Cell(6, $height/4, $fecha_coti[1], 1, 0, 'C', false, '', 1, false, 'T', 'C');
-								$this->Cell(7, $height/4, $fecha_coti[0], 1, 0, 'C', false, '', 1, false, 'T', 'C');								
+								$this->Cell(7, $height/4, $fecha_coti[0], 1, 0, 'C', false, '', 1, false, 'T', 'C');
+								$this->Ln();		
+								if($tipo=='adjudicado'){
+								  $this->SetFontSize(9);
+          $this->SetFont('','B');						
+										$this->Cell(30, $height, 'Numero de O.C. :', 0, 0, 'L', false, '', 1, false, 'T', 'C');
+										$this->SetFont('','');	
+										$this->Cell(30, $height, $this->getDataSource()->getParameter('numero_oc'), 0, 0, 'L', false, '', 1, false, 'T', 'C');
+								}
     }
     
     public function Footer() {
@@ -151,21 +165,16 @@ Class RCotizacion extends Report {
         $pdf->Ln();
         $pdf->Ln();
 								$pdf->SetFontSize(10);
-								$pdf->SetFont('', 'B');								
-								$pdf->MultiCell(0, $height, 'Agradecemos a Ud.(s) cotizar el siguiente material con IMPUESTOS INCLUIDOS, indicando plazo de entrega y validez de su oferta hasta el '.$this->getDataSource()->getParameter('fecha_venc'), 1,'L', false ,1);
-								
-								$this->writeDetalles($this->getDataSource()->getParameter('detalleDataSource'), $pdf);
+								$pdf->SetFont('', 'B');
+								$tipo=$this->getDataSource()->getParameter('tipo');
+								if($tipo=='borrador')						
+										$pdf->MultiCell(0, $height, 'Agradecemos a Ud.(s) cotizar el siguiente material con IMPUESTOS INCLUIDOS, indicando plazo de entrega y validez de su oferta hasta el '.$this->getDataSource()->getParameter('fecha_venc'), 1,'L', false ,1);
+								$this->writeDetalles($this->getDataSource()->getParameter('detalleDataSource'), $pdf,$tipo);
         
-        $pdf->SetFont('', 'B');
-        $pdf->Cell($width4+$width3*2+$width2, $height, 'IMPORTE TOTAL:', 0, 0, 'R', false, '', 0, false, 'T', 'C');
-								$pdf->SetFont('', '');
-								$pdf->Cell($width2, $height, $this->getDataSource()->getParameter('precio_total'), 1, 0, 'R', true, '', 0, false, 'T', 'C');
-								$pdf->Ln();
-								
 								$pdf->SetFontSize(9);
 								$pdf->Ln();
         $pdf->SetFont('', 'B');
-        $pdf->Cell($width3, $height, 'Plazo de Entrega:', 0, 0, 'L', false, '', 0, false, 'T', 'C');
+        $pdf->Cell($width3, $height, 'Fecha de Entrega:', 0, 0, 'L', false, '', 0, false, 'T', 'C');
         $pdf->SetFont('', '');
         $pdf->SetFillColor(192,192,192, true);
         $pdf->Cell($width3+$width2, $height, $this->getDataSource()->getParameter('fecha_entrega'), $white, 0, 'L', true, '', 0, false, 'T', 'C');        
@@ -177,10 +186,10 @@ Class RCotizacion extends Report {
         $pdf->Cell($width3+$width2, $height, $this->getDataSource()->getParameter('moneda'), $white, 0, 'L', true, '', 0, false, 'T', 'C');        
         $pdf->Ln();
         $pdf->SetFont('', 'B');
-        $pdf->Cell($width3, $height, 'Validez de la oferta:', 0, 0, 'L', false, '', 0, false, 'T', 'C');
+        $pdf->Cell($width3, $height, 'Tipo de Entrega:', 0, 0, 'L', false, '', 0, false, 'T', 'C');
         $pdf->SetFont('', '');
         $pdf->SetFillColor(192,192,192, true);
-        $pdf->Cell($width3+$width2, $height, $this->getDataSource()->getParameter(''), $white, 0, 'L', true, '', 0, false, 'T', 'C');        
+        $pdf->Cell($width3+$width2, $height, $this->getDataSource()->getParameter('tipo_entrega'), $white, 0, 'L', true, '', 0, false, 'T', 'C');        
         $pdf->Cell(5, $height, '', 0, 0, 'L', false, '', 0, false, 'T', 'C');
         $pdf->SetFont('', 'B');
         $pdf->Cell($width3, $height, 'Lugar de Entrega:', 0, 0, 'L', false, '', 0, false, 'T', 'C');
@@ -188,28 +197,23 @@ Class RCotizacion extends Report {
         $pdf->SetFillColor(192,192,192, true);
         $pdf->Cell($width3+$width2, $height, $this->getDataSource()->getParameter('lugar_entrega'), $white, 0, 'L', true, '', 0, false, 'T', 'C');        
         $pdf->Ln();
-        $pdf->SetFont('', 'B');
-        $pdf->Cell($width3, $height, 'Forma de Pago:', 0, 0, 'L', false, '', 0, false, 'T', 'C');
-        $pdf->SetFont('', '');
-        $pdf->SetFillColor(192,192,192, true);
-        $pdf->Cell($width3+$width2, $height, $this->getDataSource()->getParameter(''), $white, 0, 'L', true, '', 0, false, 'T', 'C');        
-        $pdf->Cell(5, $height, '', 0, 0, 'L', false, '', 0, false, 'T', 'C');
-        $pdf->SetFont('', 'B');
-        $pdf->Cell($width3, $height, 'Garantia:', 0, 0, 'L', false, '', 0, false, 'T', 'C');
-        $pdf->SetFont('', '');
-        $pdf->SetFillColor(192,192,192, true);
-        $pdf->Cell($width3+$width2, $height, $this->getDataSource()->getParameter(''), $white, 0, 'L', true, '', 0, false, 'T', 'C');        
-        $pdf->Ln();
+								if($this->getDataSource()->getParameter('tipo')=='adjudicado'){	        
+	        $pdf->SetFont('', 'B');
+	        $pdf->Cell($width3, $height, 'Fecha Adjudicacion:', 0, 0, 'L', false, '', 0, false, 'T', 'C');
+	        $pdf->SetFont('', '');
+	        $pdf->SetFillColor(192,192,192, true);
+	        $pdf->Cell($width3+$width2, $height, $this->getDataSource()->getParameter('fecha_adju'), $white, 0, 'L', true, '', 0, false, 'T', 'C');        
+								}								 
         								
         $pdf->Output($fileName, 'F');
     }
     
-    function writeDetalles (DataSource $dataSource, TCPDF $pdf) {
+    function writeDetalles (DataSource $dataSource, TCPDF $pdf,$tipo) {
     	
     	   $blackAll = array('LTRB' =>array('width' => 0.3, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
         $widthMarginLeft = 1;
         $width1 = 20;
-        $width2 = 125;
+        $width2 = 85;
         
         $pdf->Ln();
         $pdf->SetFontSize(7.5);
@@ -217,20 +221,56 @@ Class RCotizacion extends Report {
         $height = 5;
         $pdf->SetFillColor(255,255,255, true);
         $pdf->setTextColor(0,0,0);        
-        //$pdf->Cell($widthMarginLeft, $height, '', 0, 0, 'C', false, '', 0, false, 'T', 'C');
-        $pdf->Cell($width1, $height, 'Cantidad', $blackAll, 0, 'l', true, '', 1, false, 'T', 'C');
-        $pdf->Cell($width2, $height, 'Item', $blackAll, 0, 'L', true, '', 1, false, 'T', 'C');
-        $pdf->Cell($width1, $height, 'Precio Unitario', $blackAll, 0, 'C', true, '', 1, false, 'T', 'C');
-        $pdf->Cell($width1, $height, 'Total', $blackAll, 0, 'C', true, '', 1, false, 'T', 'C');
+        if($tipo=='adjudicado'){
+        			$pdf->Cell($width2-$width1*2, $height, 'Item', $blackAll, 0, 'l', true, '', 1, false, 'T', 'C');
+								}else{
+									  $pdf->Cell($width2, $height, 'Item', $blackAll, 0, 'l', true, '', 1, false, 'T', 'C');
+								}
+        $pdf->Cell($width1, $height, 'Cantidad Ref.', $blackAll, 0, 'L', true, '', 1, false, 'T', 'C');
+        $pdf->Cell($width1, $height, 'Precio Unitario Ref.', $blackAll, 0, 'C', true, '', 1, false, 'T', 'C');
+        $pdf->Cell($width1, $height, 'Cantidad Ofert.', $blackAll, 0, 'L', true, '', 1, false, 'T', 'C');
+        $pdf->Cell($width1, $height, 'Precio Unitario Ofert.', $blackAll, 0, 'C', true, '', 1, false, 'T', 'C');
+        $pdf->Cell($width1, $height, 'Total Ofert.', $blackAll, 0, 'C', true, '', 1, false, 'T', 'C');
+        if($tipo=='adjudicado'){
+        			$pdf->Cell($width1, $height, 'Cantidad Adj.', $blackAll, 0, 'l', true, '', 1, false, 'T', 'C');
+									  $pdf->Cell($width1, $height, 'Total', $blackAll, 0, 'l', true, '', 1, false, 'T', 'C');
+								}
         $pdf->Ln();
         $pdf->SetFontSize(6.5);
         foreach($dataSource->getDataset() as $row) {
         				$pdf->SetFont('', '');
-            //$pdf->Cell($widthMarginLeft, $height, '', 0, 0, 'C', false, '', 1, false, 'T', 'C');
-            $pdf->Cell($width1, $height, $row['cantidad_coti'], 1, 0, 'L', false, '', 1, false, 'T', 'C');
-            $pdf->Cell($width2, $height, $row['desc_solicitud_det'], 1, 0, 'L', false, '', 1, false, 'T', 'C');
-            $pdf->Cell($width1, $height, $row['precio_unitario'], 1, 0, 'L', false, '', 1, false, 'T', 'C');
-            $pdf->Cell($width1, $height, $row['torla'], 1, 0, 'L', false, '', 1, false, 'T', 'C');
+            //$totalItem
+												if($tipo=='borrador'){
+            	 $pdf->Cell($width2, $height, $row['desc_solicitud_det'], 1, 0, 'L', false, '', 1, false, 'T', 'C');
+              $pdf->Cell($width1, $height, $row['cantidad_sol'], 1, 0, 'R', false, '', 1, false, 'T', 'C');
+              $pdf->Cell($width1, $height, number_format($row['precio_unitario_sol'],2), 1, 0, 'R', false, '', 1, false, 'T', 'C');
+													 $pdf->Cell($width1, $height, '', 1, 0, 'R', false, '', 1, false, 'T', 'C');
+													 $pdf->Cell($width1, $height, '', 1, 0, 'R', false, '', 1, false, 'T', 'C');
+														$pdf->Cell($width1, $height, '', 1, 0, 'R', false, '', 1, false, 'T', 'C');
+            }
+            else{
+            	 if($tipo=='cotizado'){
+			            	 $pdf->Cell($width2, $height, $row['desc_solicitud_det'], 1, 0, 'L', false, '', 1, false, 'T', 'C');
+			              $pdf->Cell($width1, $height, $row['cantidad_sol'], 1, 0, 'R', false, '', 1, false, 'T', 'C');
+			              $pdf->Cell($width1, $height, number_format($row['precio_unitario_sol'],2), 1, 0, 'R', false, '', 1, false, 'T', 'C');
+																 $pdf->Cell($width1, $height, $row['cantidad_coti'], 1, 0, 'R', false, '', 1, false, 'T', 'C');
+																	$pdf->Cell($width1, $height, number_format($row['precio_unitario'],2), 1, 0, 'R', false, '', 1, false, 'T', 'C');
+			              $totalItem=number_format($row['cantidad_coti']*$row['precio_unitario'],2);
+																	$pdf->Cell($width1, $height, $totalItem, 1, 0, 'R', false, '', 1, false, 'T', 'C');
+												  }else{
+																 $pdf->Cell($width2-$width1*2, $height, $row['desc_solicitud_det'], 1, 0, 'L', false, '', 1, false, 'T', 'C');
+			              $pdf->Cell($width1, $height, $row['cantidad_sol'], 1, 0, 'R', false, '', 1, false, 'T', 'C');
+			              $pdf->Cell($width1, $height, number_format($row['precio_unitario_sol'],2), 1, 0, 'R', false, '', 1, false, 'T', 'C');
+																 $pdf->Cell($width1, $height, $row['cantidad_coti'], 1, 0, 'R', false, '', 1, false, 'T', 'C');
+																	$pdf->Cell($width1, $height, number_format($row['precio_unitario'],2), 1, 0, 'R', false, '', 1, false, 'T', 'C');
+			              $totalItem=number_format($row['cantidad_coti']*$row['precio_unitario'],2);
+																	$pdf->Cell($width1, $height, $totalItem, 1, 0, 'R', false, '', 1, false, 'T', 'C');
+																	$pdf->Cell($width1, $height, $row['cantidad_adju'], 1, 0, 'R', false, '', 1, false, 'T', 'C');
+																	$totalAdj=number_format($row['cantidad_adju']*$row['precio_unitario'],2);
+																	$pdf->Cell($width1, $height, $totalAdj, 1, 0, 'R', false, '', 1, false, 'T', 'C');
+														}
+												}
+            
             $pdf->Ln();
         }        									
     }      

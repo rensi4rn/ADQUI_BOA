@@ -47,6 +47,7 @@ class ACTCotizacion extends ACTbase{
 	function reporteCotizacion(){
 		  $dataSource = new DataSource();				
     $idCotizacion = $this->objParam->getParametro('id_cotizacion');
+				$tipo = $this->objParam->getParametro('tipo');								
     $this->objParam->addParametroConsulta('ordenacion','id_cotizacion');
     $this->objParam->addParametroConsulta('dir_ordenacion','ASC');
     $this->objParam->addParametroConsulta('cantidad',1000);
@@ -55,6 +56,7 @@ class ACTCotizacion extends ACTbase{
     $this->res = $this->objFunc->reporteCotizacion();
 				$datosCotizacion = $this->res->getDatos();
     //armamos el array parametros y metemos ahi los data sets de las otras tablas
+    $dataSource->putParameter('tipo',$tipo);
     $dataSource->putParameter('estado', $datosCotizacion[0]['estado']);
 				$dataSource->putParameter('fecha_adju', $datosCotizacion[0]['fecha_adju']);
     $dataSource->putParameter('fecha_venc', $datosCotizacion[0]['fecha_venc']);

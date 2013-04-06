@@ -16,15 +16,15 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
 		this.maestro=config.maestro;
 		//llama al constructor de la clase padre
     	Phx.vista.Cotizacion.superclass.constructor.call(this,config);
-		
-		this.addButton('btnReporte',{
+								
+									 this.addButton('btnReporte',{
                     text :'Reporte',
                     iconCls : 'bpdf32',
                     disabled: true,
                     handler : this.onButtonReporte,
-                    tooltip : '<b>Reporte de Cotizacion</b><br/><b>Reporte de Cotizacion de solicitud de Compra</b>'
+                    tooltip : '<b>Reporte de Cotizacion</b><br/><b>Cotizacion de solicitud de Compra</b>'
           });
-          
+       
          this.addButton('ant_estado',{
               argument: {estado: 'anterior'},
               text:'Anterior',
@@ -512,10 +512,9 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
 	
 	onButtonReporte:function(){
 	    var rec=this.sm.getSelected();
-                console.debug(rec);
                 Ext.Ajax.request({
                     url:'../../sis_adquisiciones/control/Cotizacion/reporteCotizacion',
-                    params:{'id_cotizacion':rec.data.id_cotizacion},
+                    params:{'id_cotizacion':rec.data.id_cotizacion,'tipo':rec.data.estado},
                     success: this.successExport,
                     failure: function() {
                         console.log("fail");
@@ -691,23 +690,22 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
           var data = this.getSelectedData();
           var tb =this.tbar;
           Phx.vista.Cotizacion.superclass.preparaMenu.call(this,n); 
-          
-          this.getBoton('btnReporte').enable(); 
+          this.getBoton('btnReporte').enable();
+
+          //this.getBoton('btnReporte').enable(); 
               
               if(data['estado']==  'borrador'){
                  this.getBoton('fin_registro').enable();
                  this.getBoton('btnAdjudicar').disable();
                  this.getBoton('btnGenOC').disable();
                  this.getBoton('ant_estado').disable();
-                 
-
                }
               else{
                    this.getBoton('ant_estado').enable();
                    
                    if(data['estado']=='cotizado'){
                      this.getBoton('btnAdjudicar').enable();
-                     this.getBoton('btnGenOC').enable();
+                     this.getBoton('btnGenOC').enable();   
                    }
                    else{
                       this.getBoton('btnAdjudicar').disable(); 
@@ -730,7 +728,7 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
                
                if (data['estado']==  'anulado'){
                    this.getBoton('ant_estado').disable();
-                   this.getBoton('btnReporte').disable();
+                   //this.getBoton('btnReporte').disable();
                    
                }
                 
