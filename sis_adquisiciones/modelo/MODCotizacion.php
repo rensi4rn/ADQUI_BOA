@@ -257,6 +257,40 @@ class MODCotizacion extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
+  
+  function reporteOrdenCompra(){
+		$this->procedimiento='adq.f_cotizacion_sel';
+		$this->transaccion='ADQ_COTOC_REP';
+		$this->tipo_procedimiento='SEL';
+		
+		$this->setParametro('id_cotizacion','id_cotizacion','int4');
+		$this->captura('desc_proveedor','varchar');
+		$this->captura('id_persona','int4');
+		$this->captura('dir_persona','varchar');
+		$this->captura('telf1_persona','varchar');
+		$this->captura('telf2_persona','varchar');
+		$this->captura('cel_persona','varchar');
+		$this->captura('correo_persona','varchar');
+		$this->captura('id_institucion','int4');
+		$this->captura('dir_institucion','varchar');
+		$this->captura('telf1_institucion','varchar');
+		$this->captura('telf2_institucion','varchar');
+		$this->captura('cel_institucion','varchar');
+		$this->captura('email_institucion','varchar');
+		$this->captura('fax_institucion','varchar');
+		$this->captura('fecha_entrega','date');
+		$this->captura('lugar_entrega','varchar');
+		$this->captura('numero_oc','varchar');
+		$this->captura('tipo_entrega','varchar');
+		$this->captura('id_proceso_compra','int4');
+		$this->captura('tipo','varchar');
+		$this->captura('fecha_oc','date');
+		$this->captura('moneda','varchar');
+		
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+		return $this->respuesta;
+	}
     
     function anteriorEstadoCotizacion(){
         //Definicion de variables para ejecucion del procedimiento

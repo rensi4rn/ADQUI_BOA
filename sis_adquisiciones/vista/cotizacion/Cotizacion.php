@@ -24,6 +24,14 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
                     handler : this.onButtonReporte,
                     tooltip : '<b>Reporte de Cotizacion</b><br/><b>Cotizacion de solicitud de Compra</b>'
           });
+          
+          this.addButton('btnRepOC',{
+            text :'Orden de Compra',
+            iconCls : 'bpdf32',
+            disabled: true,
+            handler : this.onButtonRepOC,
+            tooltip : '<b>Orden de Compra</b><br/><b>Orden de Compra</b>'
+	 							 });
        
          this.addButton('ant_estado',{
               argument: {estado: 'anterior'},
@@ -653,6 +661,24 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
           this.wOC.show(); 
             
         },
+        
+        onButtonRepOC: function(){
+		   							var rec=this.sm.getSelected();
+                console.debug(rec);
+                Ext.Ajax.request({
+                    url:'../../sis_adquisiciones/control/Cotizacion/reporteOC',
+                    params:{'id_cotizacion':rec.data.id_cotizacion},
+                    success: this.successExport,
+                    failure: function() {
+                        console.log("fail");
+                    },
+                    timeout: function() {
+                        console.log("timeout");
+                    },
+                    scope:this
+                });
+								},
+								
         onSubmitGenOC:function(){
             var data = this.getSelectedData();
             Phx.CP.loadingShow();
@@ -699,17 +725,20 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
                  this.getBoton('btnAdjudicar').disable();
                  this.getBoton('btnGenOC').disable();
                  this.getBoton('ant_estado').disable();
+                 this.getBoton('btnRepOC').disable();
                }
               else{
                    this.getBoton('ant_estado').enable();
                    
                    if(data['estado']=='cotizado'){
                      this.getBoton('btnAdjudicar').enable();
-                     this.getBoton('btnGenOC').enable();   
+                     this.getBoton('btnGenOC').enable();
+                     this.getBoton('btnRepOC').disable();   
                    }
                    else{
                       this.getBoton('btnAdjudicar').disable(); 
                       this.getBoton('btnGenOC').disable();
+                      this.getBoton('btnRepOC').enable();
                    }
                   
                    this.getBoton('fin_registro').disable();
