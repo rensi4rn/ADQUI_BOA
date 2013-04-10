@@ -46,6 +46,11 @@ class MODObligacionPago extends MODbase{
 		$this->captura('id_usuario_mod','int4');
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
+		$this->captura('fecha','date');
+		$this->captura('numero','varchar');
+		$this->captura('tipo_cambio_conv','numeric');
+		$this->captura('id_gestion','integer');
+		$this->captura('comprometido','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -63,19 +68,15 @@ class MODObligacionPago extends MODbase{
 				
 		//Define los parametros para la funcion
 		$this->setParametro('id_proveedor','id_proveedor','int4');
-		$this->setParametro('estado','estado','varchar');
 		$this->setParametro('tipo_obligacion','tipo_obligacion','varchar');
 		$this->setParametro('id_moneda','id_moneda','int4');
 		$this->setParametro('obs','obs','varchar');
 		$this->setParametro('porc_retgar','porc_retgar','numeric');
-		$this->setParametro('id_subsistema','id_subsistema','int4');
 		$this->setParametro('id_funcionario','id_funcionario','int4');
-		$this->setParametro('estado_reg','estado_reg','varchar');
 		$this->setParametro('porc_anticipo','porc_anticipo','numeric');
-		$this->setParametro('id_estado_wf','id_estado_wf','int4');
 		$this->setParametro('id_depto','id_depto','int4');
-		$this->setParametro('num_tramite','num_tramite','varchar');
-		$this->setParametro('id_proceso_wf','id_proceso_wf','int4');
+		$this->setParametro('fecha','fecha','date');
+		$this->setParametro('tipo_cambio_conv','tipo_cambio_conv','numeric');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -94,19 +95,17 @@ class MODObligacionPago extends MODbase{
 		//Define los parametros para la funcion
 		$this->setParametro('id_obligacion_pago','id_obligacion_pago','int4');
 		$this->setParametro('id_proveedor','id_proveedor','int4');
-		$this->setParametro('estado','estado','varchar');
 		$this->setParametro('tipo_obligacion','tipo_obligacion','varchar');
 		$this->setParametro('id_moneda','id_moneda','int4');
 		$this->setParametro('obs','obs','varchar');
 		$this->setParametro('porc_retgar','porc_retgar','numeric');
 		$this->setParametro('id_subsistema','id_subsistema','int4');
 		$this->setParametro('id_funcionario','id_funcionario','int4');
-		$this->setParametro('estado_reg','estado_reg','varchar');
 		$this->setParametro('porc_anticipo','porc_anticipo','numeric');
-		$this->setParametro('id_estado_wf','id_estado_wf','int4');
+		$this->setParametro('fecha','fecha','date');
 		$this->setParametro('id_depto','id_depto','int4');
-		$this->setParametro('num_tramite','num_tramite','varchar');
-		$this->setParametro('id_proceso_wf','id_proceso_wf','int4');
+		$this->setParametro('tipo_cambio_conv','tipo_cambio_conv','numeric');
+		
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -132,6 +131,44 @@ class MODObligacionPago extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+	
+	
+	
+    function finalizarRegistro(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='tes.ft_obligacion_pago_ime';
+        $this->transaccion='TES_FINREG_IME';
+        $this->tipo_procedimiento='IME';
+                
+        //Define los parametros para la funcion
+        $this->setParametro('id_obligacion_pago','id_obligacion_pago','int4');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    
+    function anteriorEstadoObligacion(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='tes.ft_obligacion_pago_ime';
+        $this->transaccion='TES_ANTEOB_IME';
+        $this->tipo_procedimiento='IME';
+                
+        //Define los parametros para la funcion
+        $this->setParametro('id_obligacion_pago','id_obligacion_pago','int4');
+        $this->setParametro('operacion','operacion','varchar');
+        
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+	
+				
 }
 ?>

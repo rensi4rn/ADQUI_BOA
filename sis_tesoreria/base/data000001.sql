@@ -67,4 +67,15 @@ select pxp.f_insert_tprocedimiento_gui ('TES_OBDET_MOD', 'OBPG.1', 'no');
 select pxp.f_insert_tprocedimiento_gui ('TES_OBDET_ELI', 'OBPG.1', 'no');
 select pxp.f_insert_tprocedimiento_gui ('TES_OBDET_SEL', 'OBPG.1', 'no');
 
+-----------------------------
+-- DOCUMENTOS
+---------------------------------
+
+
+--inserta documentos de adquisiciones
+
+SELECT * FROM param.f_inserta_documento('TES', 'PGD', 'Pago Directo', 'periodo', NULL, 'depto', NULL);
+
+
+
 /***********************************F-DAT-GSS-TES-45-02/04/2013*****************************************/

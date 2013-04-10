@@ -35,7 +35,7 @@ class MODObligacionDet extends MODbase{
 		$this->captura('id_obligacion_pago','int4');
 		$this->captura('id_centro_costo','int4');
 		$this->captura('codigo_cc','text');
-		$this->captura('monto_pago_mb','int4');
+		$this->captura('monto_pago_mb','numeric');
 		$this->captura('factor_porcentual','numeric');
 		$this->captura('id_partida_ejecucion_com','int4');
 		$this->captura('fecha_reg','timestamp');
@@ -44,6 +44,7 @@ class MODObligacionDet extends MODbase{
 		$this->captura('id_usuario_mod','int4');
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
+		$this->captura('descripcion','text');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -68,10 +69,11 @@ class MODObligacionDet extends MODbase{
 		$this->setParametro('monto_pago_mo','monto_pago_mo','numeric');
 		$this->setParametro('id_obligacion_pago','id_obligacion_pago','int4');
 		$this->setParametro('id_centro_costo','id_centro_costo','int4');
-		$this->setParametro('monto_pago_mb','monto_pago_mb','int4');
 		$this->setParametro('factor_porcentual','factor_porcentual','numeric');
 		$this->setParametro('id_partida_ejecucion_com','id_partida_ejecucion_com','int4');
-
+        $this->setParametro('descripcion','descripcion','text');
+        
+		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -96,15 +98,15 @@ class MODObligacionDet extends MODbase{
 		$this->setParametro('monto_pago_mo','monto_pago_mo','numeric');
 		$this->setParametro('id_obligacion_pago','id_obligacion_pago','int4');
 		$this->setParametro('id_centro_costo','id_centro_costo','int4');
-		$this->setParametro('monto_pago_mb','monto_pago_mb','int4');
 		$this->setParametro('factor_porcentual','factor_porcentual','numeric');
 		$this->setParametro('id_partida_ejecucion_com','id_partida_ejecucion_com','int4');
-
+        $this->setParametro('descripcion','descripcion','text');
+        
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
 
-		//Devuelve la respuesta
+	    //Devuelve la respuesta
 		return $this->respuesta;
 	}
 			

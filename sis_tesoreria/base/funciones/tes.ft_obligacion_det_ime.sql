@@ -1,8 +1,13 @@
-CREATE OR REPLACE FUNCTION "tes"."ft_obligacion_det_ime" (	
-				p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
-RETURNS character varying AS
-$BODY$
+--------------- SQL ---------------
 
+CREATE OR REPLACE FUNCTION tes.ft_obligacion_det_ime (
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
+)
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA:		Sistema de Tesoreria
  FUNCION: 		tes.ft_obligacion_det_ime
@@ -27,7 +32,12 @@ DECLARE
 	v_nombre_funcion        text;
 	v_mensaje_error         text;
 	v_id_obligacion_det	integer;
-			    
+    v_tipo_cambio_conv	   numeric;
+    v_monto_mb numeric;
+    v_tipo_obligacion varchar;
+    v_id_moneda integer;
+      
+    
 BEGIN
 
     v_nombre_funcion = 'tes.ft_obligacion_det_ime';
@@ -43,6 +53,33 @@ BEGIN
 	if(p_transaccion='TES_OBDET_INS')then
 					
         begin
+        
+           --calculo monto en moneda base
+           
+           select
+           op.tipo_cambio_conv,
+           op.tipo_obligacion
+           into
+           v_tipo_cambio_conv,
+           v_tipo_obligacion
+           from tes.tobligacion_pago op 
+           where op.id_obligacion_pago = v_parametros.id_obligacion_pago;
+           
+          
+          --no se admiten incersiones para pago tipo obligacion
+          IF v_tipo_obligacion='adquisiciones' THEN
+          
+              raise exception 'no se permiten inserciones en pagos de adquisiciones';
+          
+          END IF;
+          
+        
+        
+          --calcula monto en moneda base
+           v_monto_mb = v_parametros.monto_pago_mo * v_tipo_cambio_conv;
+        
+        
+        
         	--Sentencia de la insercion
         	insert into tes.tobligacion_det(
 			estado_reg,
@@ -54,8 +91,8 @@ BEGIN
 			id_obligacion_pago,
 			id_centro_costo,
 			monto_pago_mb,
-			factor_porcentual,
-			id_partida_ejecucion_com,
+			
+			
 			fecha_reg,
 			id_usuario_reg,
 			fecha_mod,
@@ -69,9 +106,8 @@ BEGIN
 			v_parametros.monto_pago_mo,
 			v_parametros.id_obligacion_pago,
 			v_parametros.id_centro_costo,
-			v_parametros.monto_pago_mb,
-			v_parametros.factor_porcentual,
-			v_parametros.id_partida_ejecucion_com,
+			v_monto_mb,
+		
 			now(),
 			p_id_usuario,
 			null,
@@ -98,6 +134,24 @@ BEGIN
 	elsif(p_transaccion='TES_OBDET_MOD')then
 
 		begin
+        
+           --calculo monto en moneda base
+           
+           select
+           op.tipo_cambio_conv,
+           op.id_moneda
+           into
+           v_tipo_cambio_conv,
+           v_id_moneda
+           from tes.tobligacion_pago op 
+           where op.id_obligacion_pago = v_parametros.id_obligacion_pago;
+           
+         
+        
+        
+           v_monto_mb = v_parametros.monto_pago_mo * v_tipo_cambio_conv;
+        
+        
 			--Sentencia de la modificacion
 			update tes.tobligacion_det set
 			id_cuenta = v_parametros.id_cuenta,
@@ -107,10 +161,8 @@ BEGIN
 			monto_pago_mo = v_parametros.monto_pago_mo,
 			id_obligacion_pago = v_parametros.id_obligacion_pago,
 			id_centro_costo = v_parametros.id_centro_costo,
-			monto_pago_mb = v_parametros.monto_pago_mb,
-			factor_porcentual = v_parametros.factor_porcentual,
-			id_partida_ejecucion_com = v_parametros.id_partida_ejecucion_com,
-			fecha_mod = now(),
+			monto_pago_mb = v_monto_mb,
+		    fecha_mod = now(),
 			id_usuario_mod = p_id_usuario
 			where id_obligacion_det=v_parametros.id_obligacion_det;
                
@@ -162,7 +214,9 @@ EXCEPTION
 		raise exception '%',v_resp;
 				        
 END;
-$BODY$
-LANGUAGE 'plpgsql' VOLATILE
+$body$
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
 COST 100;
-ALTER FUNCTION "tes"."ft_obligacion_det_ime"(integer, integer, character varying, character varying) OWNER TO postgres;

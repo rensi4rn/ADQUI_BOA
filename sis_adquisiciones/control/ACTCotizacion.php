@@ -215,6 +215,21 @@ class ACTCotizacion extends ACTbase{
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
     
+<<<<<<< Updated upstream
+=======
+       function habilitarPago(){
+        $this->objFunc=$this->create('MODCotizacion');  
+        $this->res=$this->objFunc->habilitarPago($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+    
+    
+    
+    
+    
+    
+			
+>>>>>>> Stashed changes
 }
 
 ?>

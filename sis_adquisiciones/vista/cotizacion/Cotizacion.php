@@ -61,6 +61,13 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
                     tooltip : '<b>Genrar OC</b><br/><b>Genera el Número de Orden de Compra</b>'
           });
 		
+		this.addButton('btnHabPago',{
+                    text :'Habilitar Pago',
+                    iconCls : 'bcharge',
+                    disabled: true,
+                    handler : this.onHabPag,
+                    tooltip : '<b>Habilitar Pago</b><br/><b> Permite solicitar pagos en el modulo de cuentar por pagar</b>'
+          });
 		
 		this.init();
 		this.iniciarEventos();
@@ -116,10 +123,81 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
             }]
         });
         
+        //formulario de departamentos
         
-		
-
-	},
+        this.formDEPTO = new Ext.form.FormPanel({
+            baseCls: 'x-plain',
+            autoDestroy: true,
+            layout: 'form',
+            items: [
+                   {
+                    xtype: 'combo',
+                    name: 'id_depto_tes',
+                     hiddenName: 'id_depto_tes',
+                    fieldLabel: 'DEP TESORERIA',
+                    allowBlank: false,
+                    emptyText:'Elija un Depto',
+                    store:new Ext.data.JsonStore(
+                    {
+                        url: '../../sis_parametros/control/Depto/listarDepto',
+                        id: 'id_depto',
+                        root: 'datos',
+                        sortInfo:{
+                            field: 'deppto.nombre',
+                            direction: 'ASC'
+                        },
+                        totalProperty: 'total',
+                        fields: ['id_depto','nombre'],
+                        // turn on remote sorting
+                        remoteSort: true,
+                        baseParams:{par_filtro:'deppto.nombre#deppto.codigo',estado:'activo',codigo_subsistema:'TES',tipo_filtro:'DEP_EP-DEP_EP'}
+                    }),
+                    valueField: 'id_depto',
+                    displayField: 'nombre',
+                    tpl:'<tpl for="."><div class="x-combo-list-item"><p>{nombre}</p></div></tpl>',
+                    hiddenName: 'id_depto_tes',
+                    forceSelection:true,
+                    typeAhead: true,
+                    triggerAction: 'all',
+                    lazyRender:true,
+                    mode:'remote',
+                    pageSize:10,
+                    queryDelay:1000,
+                    width:250,
+                    listWidth:'280',
+                    minChars:2
+                }
+                  ]
+        });
+        
+        this.cmpDeptoTes =this.formDEPTO.getForm().findField('id_depto_tes');
+        
+        this.wDEPTO= new Ext.Window({
+            title: 'Depto Tesoreria',
+            collapsible: true,
+            maximizable: true,
+             autoDestroy: true,
+            width: 400,
+            height: 200,
+            layout: 'fit',
+            plain: true,
+            bodyStyle: 'padding:5px;',
+            buttonAlign: 'center',
+            items: this.formDEPTO,
+            modal:true,
+             closeAction: 'hide',
+            buttons: [{
+                text: 'Guardar',
+                 handler:this.onSubmitHabPag,
+                scope:this
+                
+            },{
+                text: 'Cancelar',
+                handler:function(){this.wDEPTO.hide()},
+                scope:this
+            }]
+        });
+    },
 	tam_pag:50,
 			
 	Atributos:[
@@ -645,9 +723,11 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
        
         successSinc:function(resp){
             Phx.CP.loadingHide();
+           
             var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
             if(!reg.ROOT.error){
                  this.wOC.hide(); 
+                 this.wDEPTO.hide();
                 this.reload();
              }else{
                 alert('ocurrio un error durante el proceso')
@@ -662,6 +742,7 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
             
         },
         
+
         onButtonRepOC: function(){
 		   							var rec=this.sm.getSelected();
                 console.debug(rec);
@@ -679,6 +760,30 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
                 });
 								},
 								
+
+        onHabPag:function(){
+            console.log(this.id_depto);
+            this.cmpDeptoTes.reset();
+            this.cmpDeptoTes.store.baseParams.id_depto = this.id_depto;
+            this.cmpDeptoTes.modificado = true;
+            this.wDEPTO.show();
+            
+        },
+        
+        onSubmitHabPag:function(){
+            var data = this.getSelectedData();
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                url:'../../sis_adquisiciones/control/Cotizacion/habilitarPago',
+                params:{id_cotizacion:data.id_cotizacion,id_depto_tes: this.cmpDeptoTes.getValue()},
+                success:this.successSinc,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
+        },
+        
+
         onSubmitGenOC:function(){
             var data = this.getSelectedData();
             Phx.CP.loadingShow();
@@ -760,9 +865,15 @@ Phx.vista.Cotizacion=Ext.extend(Phx.gridInterfaz,{
                    //this.getBoton('btnReporte').disable();
                    
                }
+               
+                if (data['estado']!='adjudicado'){
+                   this.getBoton('btnHabPago').disable();
+                 }
+                 else{
+                    this.getBoton('btnHabPago').enable();  
+                 }
+               
                 
-               
-               
             return tb 
      }, 
      

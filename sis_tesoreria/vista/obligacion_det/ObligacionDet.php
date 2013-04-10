@@ -19,6 +19,7 @@ Phx.vista.ObligacionDet=Ext.extend(Phx.gridInterfaz,{
 		this.grid.getTopToolbar().disable();
 		this.grid.getBottomToolbar().disable();
 		this.init();
+		this.iniciarEventos()
 	},
 	tam_pag:50,
 			
@@ -33,6 +34,93 @@ Phx.vista.ObligacionDet=Ext.extend(Phx.gridInterfaz,{
 			type:'Field',
 			form:true 
 		},
+        {
+            config:{
+                labelSeparator:'',
+                name: 'id_obligacion_pago',
+                fieldLabel: 'id_obligacion_pago',
+                inputType:'hidden'
+            },
+            type:'Field',
+            form:true
+        },                    
+        {
+            config:{
+                name:'id_concepto_ingas',
+                fieldLabel:'Concepto Ingreso Gasto',
+                allowBlank:true,
+                emptyText:'Concepto Ingreso Gasto...',
+                store: new Ext.data.JsonStore({
+                         url: '../../sis_parametros/control/ConceptoIngas/listarConceptoIngas',
+                         id: 'id_concepto_ingas',
+                         root: 'datos',
+                         sortInfo:{
+                            field: 'desc_ingas',
+                            direction: 'ASC'
+                    },
+                    totalProperty: 'total',
+                    fields: ['id_concepto_ingas','tipo','desc_ingas','movimiento'],
+                    // turn on remote sorting
+                    remoteSort: true,
+                    baseParams:{par_filtro:'desc_ingas',movimiento:'gasto'}
+                    }),
+                valueField: 'id_concepto_ingas',
+                displayField: 'desc_ingas',
+                gdisplayField:'nombre_ingas',
+                tpl:'<tpl for="."><div class="x-combo-list-item"><p>{desc_ingas}</p><p>TIPO:{tipo}</p><p>MOVIMIENTO:{movimiento}</p></div></tpl>',
+                hiddenName: 'id_concepto_ingas',
+                forceSelection:true,
+                typeAhead: true,
+                triggerAction: 'all',
+                lazyRender:true,
+                mode:'remote',
+                pageSize:10,
+                queryDelay:1000,
+                anchor:'80%', 
+                gwidth: 200,      
+                renderer:function(value, p, record){return String.format('{0}', record.data['nombre_ingas']);}
+            },
+            type:'ComboBox',
+            id_grupo:0,
+            filters:{   
+                        pfiltro:'cig.movimiento#cig.desc_ingas',
+                        type:'string'
+                    },
+            grid:true,
+            form:true
+        },
+        {
+            config:{
+                name: 'descripcion',
+                fieldLabel: 'Descripión',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 200,
+                maxLength:1245184
+            },
+            type:'TextArea',
+            filters:{pfiltro:'obdet.descripcion',type:'numeric'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        },
+        {
+            config:{
+                name: 'id_centro_costo',
+                fieldLabel: 'Centro Costo',
+                allowBlank: true,
+                tinit:false,
+                origen:'CENTROCOSTO',
+                gdisplayField: 'codigo_cc',
+                anchor: '80%',
+                gwidth: 300
+            },
+            type:'ComboRec',
+            filters:{pfiltro:'cc.codigo_cc',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        },
 		{
  			config:{
  				name:'id_cuenta',
@@ -51,15 +139,15 @@ Phx.vista.ObligacionDet=Ext.extend(Phx.gridInterfaz,{
 					fields: ['id_cuenta','nombre_cuenta','desc_cuenta'],
 					// turn on remote sorting
 					remoteSort: true,
-					baseParams:{par_filtro:'nombre_cuenta#desc_cuenta'}
+					baseParams:{par_filtro:'nombre_cuenta#desc_cuenta',sw_transaccional:'movimiento'}
 					}),
  				valueField: 'id_cuenta',
  				displayField: 'nombre_cuenta',
  				hiddenName: 'id_cuenta',
  				forceSelection:true,
  				typeAhead: true,
-     triggerAction: 'all',
-     lazyRender:true,
+                triggerAction: 'all',
+                lazyRender:true,
  				mode:'remote',
  				pageSize:10,
  				queryDelay:1000,
@@ -74,7 +162,7 @@ Phx.vista.ObligacionDet=Ext.extend(Phx.gridInterfaz,{
  					},
  			grid:true,
  			form:true
- 	},		
+ 	    },		
 		{
  			config:{
  				name:'id_partida',
@@ -93,7 +181,7 @@ Phx.vista.ObligacionDet=Ext.extend(Phx.gridInterfaz,{
 					fields: ['id_partida','codigo','nombre_partida'],
 					// turn on remote sorting
 					remoteSort: true,
-					baseParams:{par_filtro:'codigo#nombre_partida'}
+					baseParams:{par_filtro:'codigo#nombre_partida',sw_transaccional:'movimiento'}
 					}),
  				valueField: 'id_partida',
  				displayField: 'nombre_partida',
@@ -101,8 +189,8 @@ Phx.vista.ObligacionDet=Ext.extend(Phx.gridInterfaz,{
  				hiddenName: 'id_partida',
  				forceSelection:true,
  				typeAhead: true,
-     triggerAction: 'all',
-     lazyRender:true,
+                triggerAction: 'all',
+                lazyRender:true,
  				mode:'remote',
  				pageSize:10,
  				queryDelay:1000,
@@ -117,7 +205,7 @@ Phx.vista.ObligacionDet=Ext.extend(Phx.gridInterfaz,{
  					},
  			grid:true,
  			form:true
- 	},			
+ 	    },			
 		{
  			config:{
  				name:'id_auxiliar',
@@ -144,8 +232,8 @@ Phx.vista.ObligacionDet=Ext.extend(Phx.gridInterfaz,{
  				hiddenName: 'id_auxiliar',
  				forceSelection:true,
  				typeAhead: true,
-     triggerAction: 'all',
-     lazyRender:true,
+                triggerAction: 'all',
+                lazyRender:true,
  				mode:'remote',
  				pageSize:10,
  				queryDelay:1000,
@@ -160,87 +248,18 @@ Phx.vista.ObligacionDet=Ext.extend(Phx.gridInterfaz,{
  					},
  			grid:true,
  			form:true
- 	},					
-		{
- 			config:{
- 				name:'id_concepto_ingas',
- 				fieldLabel:'Concepto Ingreso Gasto',
- 				allowBlank:true,
- 				emptyText:'Concepto Ingreso Gasto...',
- 				store: new Ext.data.JsonStore({
-						 url: '../../sis_parametros/control/ConceptoIngas/listarConceptoIngas',
-						 id: 'id_concepto_ingas',
-						 root: 'datos',
-						 sortInfo:{
-							field: 'desc_ingas',
-							direction: 'ASC'
-					},
-					totalProperty: 'total',
-					fields: ['id_concepto_ingas','tipo','desc_ingas','movimiento'],
-					// turn on remote sorting
-					remoteSort: true,
-					baseParams:{par_filtro:'desc_ingas'}
-					}),
- 				valueField: 'id_concepto_ingas',
- 				displayField: 'desc_ingas',
- 				tpl:'<tpl for="."><div class="x-combo-list-item"><p>{desc_ingas}</p><p>TIPO:{tipo}</p><p>MOVIMIENTO:{movimiento}</p></div></tpl>',
- 				hiddenName: 'id_concepto_ingas',
- 				forceSelection:true,
- 				typeAhead: true,
-     triggerAction: 'all',
-     lazyRender:true,
- 				mode:'remote',
- 				pageSize:10,
- 				queryDelay:1000,
- 				anchor:'80%',		
- 				renderer:function(value, p, record){return String.format('{0}', record.data['nombre_ingas']);}
- 			},
- 			type:'ComboBox',
- 			id_grupo:0,
- 			filters:{   
- 						pfiltro:'cig.movimiento#cig.desc_ingas',
- 						type:'string'
- 					},
- 			grid:true,
- 			form:true
- 	},
-		{
-			config:{
-				labelSeparator:'',
-				name: 'id_obligacion_pago',
-				fieldLabel: 'id_obligacion_pago',
-				inputType:'hidden'
-			},
-			type:'Field',
-			form:true
-		},
-		{
-			config:{
-				name: 'id_centro_costo',
-				fieldLabel: 'Centro Costo',
-				allowBlank: true,
-				tinit:true,
-				origen:'CENTROCOSTO',
-				gdisplayField: 'codigo_cc',
-				anchor: '80%',
-				gwidth: 100
-			},
-			type:'ComboRec',
-			filters:{pfiltro:'cc.codigo_cc',type:'string'},
-			id_grupo:1,
-			grid:true,
-			form:true
-		},
+ 	    },
 		{
 			config:{
 				name: 'monto_pago_mo',
-				fieldLabel: 'Monto Pago Mo',
-				allowBlank: true,
+				currencyChar:' ',
+				fieldLabel: 'Monto Total Pago',
+				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:1245184
 			},
-			type:'NumberField',
+			type:'MoneyField',
 			filters:{pfiltro:'obdet.monto_pago_mo',type:'numeric'},
 			id_grupo:1,
 			grid:true,
@@ -249,17 +268,18 @@ Phx.vista.ObligacionDet=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'monto_pago_mb',
-				fieldLabel: 'Monto Pago Mb',
+				fieldLabel: 'Monto Pago Bs.',
+				currencyChar:'Bs. ',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength:4
+				maxLength:123456778
 			},
-			type:'NumberField',
+			type:'MoneyField',
 			filters:{pfiltro:'obdet.monto_pago_mb',type:'numeric'},
 			id_grupo:1,
 			grid:true,
-			form:true
+			form:false
 		},
 		{
 			config:{
@@ -274,7 +294,7 @@ Phx.vista.ObligacionDet=Ext.extend(Phx.gridInterfaz,{
 			filters:{pfiltro:'obdet.factor_porcentual',type:'numeric'},
 			id_grupo:1,
 			grid:true,
-			form:true
+			form:false
 		},
 		{
 			config:{
@@ -289,8 +309,8 @@ Phx.vista.ObligacionDet=Ext.extend(Phx.gridInterfaz,{
 			type:'NumberField',
 			filters:{pfiltro:'obdet.id_partida_ejecucion_com',type:'numeric'},
 			id_grupo:1,
-			grid:false,
-			form:true
+			grid:true,
+			form:false
 		},		
 		{
 			config:{
@@ -399,33 +419,118 @@ Phx.vista.ObligacionDet=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},
-		
+		{name:'usr_mod', type: 'string'},'desc_ingas','nombre_ingas','descripcion'
 	],
+	onButtonEdit:function(){
+	    
+	  Phx.vista.ObligacionDet.superclass.onButtonEdit.call(this);   
+	  
+	  if(this.maestro.tipo_obligacion=='adquisiciones'){
+	  
+	     this.cmpMontoPagoMo.disable();
+	     this.cmpConceptoIngas.disable();
+	     this.cmpCentroCostos.disable();
+	  
+	  }
+	  else{
+	      this.cmpMontoPagoMo.enable();
+	      this.cmpConceptoIngas.enable();
+	       this.cmpCentroCostos.enable();
+	  }
 	
-	onReloadPage:function(m){
+	
+	},
+	onButtonNew:function(){
+	    Phx.vista.ObligacionDet.superclass.onButtonNew.call(this); 
+	    this.cmpMontoPagoMo.enable(); 
+	    this.cmpObligacionPago.setValue(this.maestro.id_obligacion_pago)
+	    
+	},
+	iniciarEventos:function(){
+	    
+	    this.cmpMontoPagoMo=this.getComponente('monto_pago_mo');
+	    this.cmpConceptoIngas=this.getComponente('id_concepto_ingas');
+	    this.cmpCentroCostos=this.getComponente('id_centro_costo');
+        this.cmpPartida=this.getComponente('id_partida');
+        this.cmpCuenta=this.getComponente('id_cuenta');
+        this.cmpAuxiliar=this.getComponente('id_auxiliar');
+        this.cmpObligacionPago=this.getComponente('id_obligacion_pago');
+	    
+	},
+	
+	
+	 onReloadPage:function(m){
        
         this.maestro=m;
-        console.debug(this.Atributos[5]);
-        this.Atributos[5].valorInicial=this.maestro.id_obligacion_pago;
-
-       if(m.id != 'id'){
+        
+        this.getBoton('new').disable();
+        
+        this.cmpCentroCostos.store.baseParams.id_gestion=this.maestro.id_gestion
+        this.cmpCentroCostos.modificado=true;
+        
+        this.cmpPartida.store.baseParams.id_gestion=this.maestro.id_gestion
+        this.cmpPartida.modificado=true;
+        
+        this.cmpCuenta.store.baseParams.id_gestion=this.maestro.id_gestion
+        this.cmpCuenta.modificado=true;
+        
+        
         this.store.baseParams={id_obligacion_pago:this.maestro.id_obligacion_pago};
         this.load({params:{start:0, limit:50}})
-       }
-       else{
-         this.grid.getTopToolbar().disable();
-         this.grid.getBottomToolbar().disable(); 
-         this.store.removeAll(); 
-       }
- },
+       
+    },
+	
+
+  preparaMenu:function(n){
+         
+         Phx.vista.ObligacionDet.superclass.preparaMenu.call(this,n); 
+          if(this.maestro.estado ==  'borrador'){
+               this.getBoton('edit').enable();
+               this.getBoton('new').enable();
+               this.getBoton('del').enable();
+         }
+         else{
+             
+               this.getBoton('edit').disable();
+               this.getBoton('new').disable();
+               this.getBoton('del').disable();
+         }
+         
+          if(this.maestro&&(this.maestro.estado ==  'borrador' && this.maestro.tipo_obligacion=='adquisiciones')){
+               
+               this.getBoton('edit').enable();
+               this.getBoton('new').disable();
+               this.getBoton('del').disable();
+         }
+          
+        
+          
+     },
+     
+     liberaMenu: function() {
+         Phx.vista.ObligacionDet.superclass.liberaMenu.call(this); 
+           if(this.maestro&&(this.maestro.estado !=  'borrador')){
+               
+               this.getBoton('edit').disable();
+               this.getBoton('new').disable();
+               this.getBoton('del').disable();
+         }
+          if(this.maestro&&(this.maestro.estado ==  'borrador' && this.maestro.tipo_obligacion=='adquisiciones')){
+               
+               this.getBoton('edit').disable();
+               this.getBoton('new').disable();
+               this.getBoton('del').disable();
+         }
+         
+    },
+    
  
 	sortInfo:{
 		field: 'id_obligacion_det',
 		direction: 'ASC'
 	},
 	bdel:true,
-	bsave:true
+	bsave:false
 	}
 )
 </script>
