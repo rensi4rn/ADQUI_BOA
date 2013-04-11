@@ -21,7 +21,7 @@ require_once dirname(__FILE__).'/../../pxp/pxpReport/Report.php';
         $this->SetFontSize(16);
         $this->SetFont('','B'); 
 								$tipo=$this->getDataSource()->getParameter('tipo');       
-        $this->Cell(145, $height, 'Solicitud de Cotización '.ucfirst($tipo), 0, 0, 'C', false, '', 1, false, 'T', 'C');        
+        $this->Cell(145, $height, 'Solicitud de Cotización', 0, 0, 'C', false, '', 1, false, 'T', 'C');        
         
 								$x=$this->getX();
 								$y=$this->getY();
@@ -227,7 +227,9 @@ Class RCotizacion extends Report {
 									  $pdf->Cell($width2, $height, 'Item', $blackAll, 0, 'l', true, '', 1, false, 'T', 'C');
 								}
         $pdf->Cell($width1, $height, 'Cantidad Ref.', $blackAll, 0, 'L', true, '', 1, false, 'T', 'C');
-        $pdf->Cell($width1, $height, 'Precio Unitario Ref.', $blackAll, 0, 'C', true, '', 1, false, 'T', 'C');
+        if($tipo!='borrador')
+        	$pdf->Cell($width1, $height, 'Precio Unitario Ref.', $blackAll, 0, 'C', true, '', 1, false, 'T', 'C');
+        
         $pdf->Cell($width1, $height, 'Cantidad Ofert.', $blackAll, 0, 'L', true, '', 1, false, 'T', 'C');
         $pdf->Cell($width1, $height, 'Precio Unitario Ofert.', $blackAll, 0, 'C', true, '', 1, false, 'T', 'C');
         $pdf->Cell($width1, $height, 'Total Ofert.', $blackAll, 0, 'C', true, '', 1, false, 'T', 'C');
@@ -239,27 +241,38 @@ Class RCotizacion extends Report {
         $pdf->SetFontSize(6.5);
         foreach($dataSource->getDataset() as $row) {
         				$pdf->SetFont('', '');
-            //$totalItem
+												$xAntesMultiCell = $pdf->getX();
+												$yAntesMultiCell = $pdf->getY();												
+            //$totalItem            
 												if($tipo=='borrador'){
-            	 $pdf->Cell($width2, $height, $row['desc_solicitud_det'], 1, 0, 'L', false, '', 1, false, 'T', 'C');
-              $pdf->Cell($width1, $height, $row['cantidad_sol'], 1, 0, 'R', false, '', 1, false, 'T', 'C');
-              $pdf->Cell($width1, $height, number_format($row['precio_unitario_sol'],2), 1, 0, 'R', false, '', 1, false, 'T', 'C');
-													 $pdf->Cell($width1, $height, '', 1, 0, 'R', false, '', 1, false, 'T', 'C');
+													 
+            	 $pdf->MultiCell($width2, $height, $row['desc_solicitud_det']."\r\n".'  - '.$row['descripcion_sol'], 1,'L', false ,1);
+														$yDespuesMultiCell= $pdf->getY();
+														$height = $yDespuesMultiCell-$yAntesMultiCell;
+														$pdf->setXY($xAntesMultiCell+$width2,$yAntesMultiCell);	
+            	 $pdf->Cell($width1, $height, $row['cantidad_sol'], 1, 0, 'R', false, '', 1, false, 'T', 'C');
+              $pdf->Cell($width1, $height, '', 1, 0, 'R', false, '', 1, false, 'T', 'C');
 													 $pdf->Cell($width1, $height, '', 1, 0, 'R', false, '', 1, false, 'T', 'C');
 														$pdf->Cell($width1, $height, '', 1, 0, 'R', false, '', 1, false, 'T', 'C');
             }
             else{
             	 if($tipo=='cotizado'){
-			            	 $pdf->Cell($width2, $height, $row['desc_solicitud_det'], 1, 0, 'L', false, '', 1, false, 'T', 'C');
-			              $pdf->Cell($width1, $height, $row['cantidad_sol'], 1, 0, 'R', false, '', 1, false, 'T', 'C');
+			            	 $pdf->MultiCell($width2, $height, $row['desc_solicitud_det']."\r\n".'  - '.$row['descripcion_sol'], 1,'L', false ,1);
+																	$yDespuesMultiCell= $pdf->getY();
+																	$height = $yDespuesMultiCell-$yAntesMultiCell;
+															  $pdf->setXY($xAntesMultiCell+$width2,$yAntesMultiCell);	
+            	    $pdf->Cell($width1, $height, $row['cantidad_sol'], 1, 0, 'R', false, '', 1, false, 'T', 'C');
 			              $pdf->Cell($width1, $height, number_format($row['precio_unitario_sol'],2), 1, 0, 'R', false, '', 1, false, 'T', 'C');
 																 $pdf->Cell($width1, $height, $row['cantidad_coti'], 1, 0, 'R', false, '', 1, false, 'T', 'C');
 																	$pdf->Cell($width1, $height, number_format($row['precio_unitario'],2), 1, 0, 'R', false, '', 1, false, 'T', 'C');
 			              $totalItem=number_format($row['cantidad_coti']*$row['precio_unitario'],2);
 																	$pdf->Cell($width1, $height, $totalItem, 1, 0, 'R', false, '', 1, false, 'T', 'C');
 												  }else{
-																 $pdf->Cell($width2-$width1*2, $height, $row['desc_solicitud_det'], 1, 0, 'L', false, '', 1, false, 'T', 'C');
-			              $pdf->Cell($width1, $height, $row['cantidad_sol'], 1, 0, 'R', false, '', 1, false, 'T', 'C');
+												  	  $pdf->MultiCell($width2-$width1*2, $height, $row['desc_solicitud_det']."\r\n".'  - '.$row['descripcion_sol'], 1,'L', false ,1);
+																	$yDespuesMultiCell= $pdf->getY();
+																	$height = $yDespuesMultiCell-$yAntesMultiCell;
+														   $pdf->setXY($xAntesMultiCell+$width2-$width1*2,$yAntesMultiCell);	
+            	 		 $pdf->Cell($width1, $height, $row['cantidad_sol'], 1, 0, 'R', false, '', 1, false, 'T', 'C');
 			              $pdf->Cell($width1, $height, number_format($row['precio_unitario_sol'],2), 1, 0, 'R', false, '', 1, false, 'T', 'C');
 																 $pdf->Cell($width1, $height, $row['cantidad_coti'], 1, 0, 'R', false, '', 1, false, 'T', 'C');
 																	$pdf->Cell($width1, $height, number_format($row['precio_unitario'],2), 1, 0, 'R', false, '', 1, false, 'T', 'C');

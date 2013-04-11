@@ -221,9 +221,7 @@ class ACTCotizacion extends ACTbase{
         $this->res=$this->objFunc->habilitarPago($this->objParam);
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
-    
-    
- 
+
 }
 
 ?>

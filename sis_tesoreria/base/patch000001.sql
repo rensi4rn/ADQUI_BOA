@@ -10,7 +10,10 @@ CREATE TABLE tes.tobligacion_pago (
   id_moneda INTEGER, 
   id_depto INTEGER, 
   id_estado_wf INTEGER, 
+<<<<<<< HEAD
   id_proceso_wf INTEGER, 
+=======
+>>>>>>> 022b3764103641f0b85fe37ac09f95c742d9318b
   id_gestion integer not NULL,
   fecha DATE,
   numero VARCHAR(50),

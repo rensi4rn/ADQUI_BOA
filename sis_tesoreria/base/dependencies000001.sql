@@ -41,20 +41,4 @@ ALTER TABLE tes.tplan_pago
     ON UPDATE NO ACTION
     NOT DEFERRABLE;
 
---tabla tes.tprorrateo
-
-ALTER TABLE tes.tprorrateo
-  ADD CONSTRAINT fk_tprorrateo__id_plan_pago FOREIGN KEY (id_plan_pago)
-    REFERENCES tes.tplan_pago(id_plan_pago)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE;
-
-ALTER TABLE tes.tprorrateo
-  ADD CONSTRAINT fk_tprorrateo__id_obligacion_det FOREIGN KEY (id_obligacion_det)
-    REFERENCES tes.tobligacion_det(id_obligacion_det)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE;
-
 /***********************************F-SCP-GSS-TES-45-02/04/2013****************************************/
