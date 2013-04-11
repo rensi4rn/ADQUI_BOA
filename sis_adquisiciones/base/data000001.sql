@@ -86,6 +86,8 @@ select wf.f_insert_tproceso_macro ('COMINT', 'Compra internacional', 'SI', 'acti
 select wf.f_insert_ttipo_proceso ('', 'Solicitud de compra', 'SOLCO', 'adq.tsolicitud', 'id_solicitud', 'activo', 'si', 'COMINT');
 select wf.f_insert_ttipo_proceso ('En_Proceso', 'Proceso de Compra', 'PROC', 'adq.tproceso_compra', 'id_proceso_compra', 'activo', 'no', 'COMINT');
 select wf.f_insert_ttipo_proceso ('Inicio de Proceso de COmpra', 'Cotizacion', 'COT', 'adq.tcotizacion', 'id_cotizacion', 'activo', '', 'COMINT');
+select wf.f_insert_ttipo_proceso ('Habilitado para pagar', 'Obligacion de Pago', 'OBLI', 'tes.tobligacion_pago', 'id_obligacion_pago', 'activo', 'si', 'COMINT');
+select wf.f_insert_ttipo_proceso ('', 'Plan de Pago', 'PLAPA', 'tes.tplan_pago', 'id_plan_pago', 'activo', 'no', 'COMINT');
 select wf.f_insert_ttipo_estado ('borrador', 'Borrador', 'si', 'no', '', 'listado', '', 'ninguno', '', '', 'activo', 'SOLCO', '');
 select wf.f_insert_ttipo_estado ('proceso', 'En_Proceso', 'no', 'si', '', 'todos', '', 'ninguno', '', '', 'activo', 'SOLCO', 'PROC');
 select wf.f_insert_ttipo_estado ('finalizado', 'Finalizado', 'no', 'no', '', '', '', 'ninguno', '', '', 'activo', 'SOLCO', '');
@@ -100,11 +102,15 @@ select wf.f_insert_ttipo_estado ('desierto', 'Proceso Desierto', 'no', 'no', 'si
 select wf.f_insert_ttipo_estado ('borrador', 'Borrador de Cotizacion', 'si', 'no', 'no', 'ninguno', '', 'depto_func_list', 'PROCDEP', '', 'activo', 'COT', '');
 select wf.f_insert_ttipo_estado ('cotizado', 'Cotizado', 'no', 'no', 'no', 'ninguno', '', 'anterior', '', '', 'activo', 'COT', '');
 select wf.f_insert_ttipo_estado ('adjudicado', 'Adjudicado', 'no', 'no', 'no', 'ninguno', '', 'anterior', '', '', 'activo', 'COT', '');
-select wf.f_insert_ttipo_estado ('pago_habilitado', 'Habilitado para pagar', 'no', 'si', 'no', 'ninguno', '', 'anterior', '', '', 'activo', 'COT', '');
-select wf.f_insert_ttipo_estado ('en_pago', 'En pago', 'no', 'no', 'no', 'ninguno', '', 'anterior', '', '', 'activo', 'COT', '');
+select wf.f_insert_ttipo_estado ('pago_habilitado', 'Habilitado para pagar', 'no', 'si', 'no', 'ninguno', '', 'anterior', '', '', 'activo', 'COT', 'OBLI');
 select wf.f_insert_ttipo_estado ('finalizada', 'Finalizada', 'no', 'no', 'si', 'ninguno', '', 'anterior', '', '', 'activo', 'COT', '');
 select wf.f_insert_ttipo_estado ('anulado', 'Anulado', 'no', 'no', 'si', 'anterior', '', 'anterior', '', '', 'activo', 'PROC', '');
+select wf.f_insert_ttipo_estado ('borrador', 'Borrador', 'si', 'no', 'no', 'anterior', '', 'anterior', '', '', 'activo', 'OBLI', '');
+select wf.f_insert_ttipo_estado ('registrado', 'Registrado', 'no', 'no', 'no', 'anterior', '', 'anterior', '', '', 'activo', 'OBLI', '');
+select wf.f_insert_ttipo_estado ('en_pago', 'En Pago', 'no', 'si', 'no', 'anterior', '', 'anterior', '', '', 'activo', 'OBLI', '');
+select wf.f_insert_ttipo_estado ('finalizado', 'Finalizado', 'no', 'no', 'si', 'anterior', '', 'anterior', '', '', 'activo', 'OBLI', '');
 select wf.f_insert_ttipo_estado ('anulado', 'Anulado', 'no', 'no', 'si', 'anterior', '', 'anterior', '', '', 'activo', 'COT', '');
+select wf.f_insert_ttipo_estado ('anulado', 'Anulado', 'no', 'no', 'si', 'anterior', '', 'anterior', '', '', 'activo', 'OBLI', '');
 select wf.f_insert_testructura_estado ('En_Proceso', 'Finalizado', '2', 'ff2', 'activo');
 select wf.f_insert_testructura_estado ('Aprobación Supervisor', 'Visto Bueno Activos Fijos', '3', '', 'activo');
 select wf.f_insert_testructura_estado ('Borrador', 'Aprobación Supervisor', '0', '', 'activo');
@@ -115,9 +121,12 @@ select wf.f_insert_testructura_estado ('Proceso pendiente', 'Inicio de Proceso d
 select wf.f_insert_testructura_estado ('Borrador de Cotizacion', 'Cotizado', '1', '', 'activo');
 select wf.f_insert_testructura_estado ('Cotizado', 'Adjudicado', '1', '', 'activo');
 select wf.f_insert_testructura_estado ('Adjudicado', 'Habilitado para pagar', '1', '', 'activo');
-select wf.f_insert_testructura_estado ('Habilitado para pagar', 'En pago', '1', '', 'activo');
-select wf.f_insert_testructura_estado ('En pago', 'Finalizada', '1', '', 'activo');
-select wf.f_insert_testructura_estado ('Inicio de Proceso de COmpra', 'Proceso Finalizado', '1', '', 'activo');-----------------------------------
+select wf.f_insert_testructura_estado ('Inicio de Proceso de COmpra', 'Proceso Finalizado', '1', '', 'activo');
+select wf.f_insert_testructura_estado ('Borrador', 'Registrado', '1', '', 'activo');
+select wf.f_insert_testructura_estado ('Registrado', 'En Pago', '1', '', 'activo');
+select wf.f_insert_testructura_estado ('Habilitado para pagar', 'Finalizada', '1', '', 'activo');
+
+-------------------------------------
 -- DOCUMENTOS
 ---------------------------------
 

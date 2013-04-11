@@ -115,8 +115,7 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
 				triggerAction: 'all',
 				lazyRender: true,
 				mode: 'local',
-				wisth: 250,
-				renderer:function(value, p, record){return String.format('{0}', record.data['tipo_obligacion']);}
+				wisth: 250
 			},
 			type:'ComboBox',
 			filters:{pfiltro:'obpg.tipo_obligacion',type:'string'},
@@ -638,11 +637,12 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
                this.getBoton('ant_estado').disable();
           }
           else{
-               if (data['estado']== 'borrador'){   
-                 this.getBoton('ant_estado').disable();
+               if (data['estado']== 'registrado'){   
+                 this.getBoton('ant_estado').enable();
+                  this.getBoton('fin_registro').disable();
               }
               
-              this.getBoton('fin_registro').disable();
+             
               this.getBoton('edit').disable();
               this.getBoton('new').disable();
               this.getBoton('del').disable();
