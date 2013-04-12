@@ -77,30 +77,6 @@ select pxp.f_insert_tprocedimiento_gui ('TES_OBDET_SEL', 'OBPG.1', 'no');
 SELECT * FROM param.f_inserta_documento('TES', 'PGD', 'Pago Directo', 'periodo', NULL, 'depto', NULL);
 
 
-
---------------------------------
---     WF
----------------------------
-
-----------------------------------
---COPY LINES TO data.sql FILE  
----------------------------------
-
-select wf.f_insert_tproceso_macro ('TES-PD', 'Pago Directo', 'si', 'activo', 'Sistema de Tesoreria');
-select wf.f_insert_ttipo_proceso ('', 'Obligacion de Pago', 'TOPD', 'tes.tobligacion_pago', 'id_obligacion_pago', 'activo', 'si', 'TES-PD');
-select wf.f_insert_ttipo_estado ('borrador', 'Borrador', 'si', 'no', 'no', 'ninguno', '', 'ninguno', '', '', 'activo', 'TOPD', '');
-select wf.f_insert_ttipo_estado ('registrado', 'Registrado', 'no', 'no', 'no', 'anterior', '', 'anterior', '', '', 'activo', 'TOPD', '');
-select wf.f_insert_ttipo_estado ('comprometido', 'Comprometido', 'no', 'no', 'no', 'anterior', '', 'anterior', '', '', 'activo', 'TOPD', '');
-select wf.f_insert_ttipo_estado ('en_pago', 'En pago', 'no', 'si', 'no', 'anterior', '', 'anterior', '', '', 'activo', 'TOPD', '');
-select wf.f_insert_ttipo_estado ('finalizado', 'Finalizado', 'no', 'no', 'si', 'anterior', '', 'anterior', '', '', 'activo', 'TOPD', '');
-select wf.f_insert_ttipo_estado ('anulado', 'Anulado', 'no', 'no', 'si', 'anterior', '', 'anterior', '', '', 'activo', 'TOPD', '');
-select wf.f_insert_testructura_estado ('Borrador', 'Registrado', '1', '', 'activo');
-select wf.f_insert_testructura_estado ('Registrado', 'Comprometido', '1', '', 'activo');
-select wf.f_insert_testructura_estado ('Comprometido', 'En pago', '1', '', 'activo');
-select wf.f_insert_testructura_estado ('En pago', 'Finalizado', '1', '', 'activo');
-
-
-
 /***********************************F-DAT-GSS-TES-45-02/04/2013*****************************************/
 
 
