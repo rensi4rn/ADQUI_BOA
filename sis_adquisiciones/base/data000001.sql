@@ -136,8 +136,9 @@ select wf.f_insert_testructura_estado ('borrador', 'OBLI', 'registrado', 'OBLI',
 select wf.f_insert_testructura_estado ('en_pago', 'OBLI', 'finalizado', 'OBLI', '1', '', 'activo');
 select wf.f_insert_testructura_estado ('borrador', 'APLAD', 'pendiente', 'APLAD', '1', '', 'activo');
 select wf.f_insert_testructura_estado ('pendiente', 'APLAD', 'devengado', 'APLAD', '1', '', 'activo');
-select wf.f_insert_testructura_estado ('devengado', 'APLAD', 'finalizado', 'APLAD', 1, '', 'activo');
+select wf.f_insert_testructura_estado ('devengado', 'APLAD', 'finalizado', 'APLAD', '', '', 'activo');
 
+-------------------------------------
 -- DOCUMENTOS
 ---------------------------------
 

@@ -22,7 +22,7 @@ class MODPlanPago extends MODbase{
 		//Definicion de la lista del resultado del query
 		$this->captura('id_plan_pago','int4');
 		$this->captura('estado_reg','varchar');
-		$this->captura('nro_cuota','int4');
+		$this->captura('nro_cuota','numeric');
 		$this->captura('monto_ejecutar_total_mb','numeric');
 		$this->captura('nro_sol_pago','varchar');
 		$this->captura('tipo_cambio','numeric');

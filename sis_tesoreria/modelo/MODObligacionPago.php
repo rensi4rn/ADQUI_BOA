@@ -51,6 +51,10 @@ class MODObligacionPago extends MODbase{
 		$this->captura('tipo_cambio_conv','numeric');
 		$this->captura('id_gestion','integer');
 		$this->captura('comprometido','varchar');
+		$this->captura('nro_cuota_vigente','numeric');
+		$this->captura('tipo_moneda','varchar');
+		
+		
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();

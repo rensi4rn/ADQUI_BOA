@@ -17,6 +17,7 @@ Phx.vista.PlanPago=Ext.extend(Phx.gridInterfaz,{
     	//llama al constructor de la clase padre
 		Phx.vista.PlanPago.superclass.constructor.call(this,config);
 		this.init();
+		this.iniciarEventos();
 		 //si la interface es pestanha este código es para iniciar 
           var dataPadre = Phx.CP.getPagina(this.idContenedorPadre).getSelectedData()
           if(dataPadre){
@@ -70,7 +71,59 @@ Phx.vista.PlanPago=Ext.extend(Phx.gridInterfaz,{
             id_grupo:1,
             grid:true,
             form:false
-        },
+        },{
+           config:{
+               name: 'tipo',
+               fieldLabel: 'Operación',
+               gwidth: 100,
+               maxLength:30,
+               items: [
+                   {boxLabel: 'Devengar y Pagar',name: 'rg-auto'+this.idContenedor,  inputValue: 'devengado_pagado', checked:true},
+                   {boxLabel: 'Devengar',name: 'rg-auto'+this.idContenedor, inputValue: 'devengado'}
+               ]
+           },
+           type:'RadioGroup',
+           filters:{pfiltro:'plapa.tipo',type:'string'},
+           id_grupo:1,
+           grid:false,
+           form:true
+          },
+         {
+            config:{
+                name: 'tipo_pago',
+                fieldLabel: 'Tipo de Cuoata',
+                allowBlank: false,
+                anchor: '80%',
+                emptyText:'Tipo de Cuoata',
+                renderer:function (value, p, record){
+                        var dato='';
+                        dato = (dato==''&&value=='anticipo')?'Anticipo':dato;
+                        dato = (dato==''&&value=='adelanto')?'Adelanto':dato;
+                        dato = (dato==''&&value=='normal')?'Normal':dato;
+                        return String.format('{0}', dato);
+                    },
+            
+                    store:new Ext.data.ArrayStore({
+                            fields: ['variable', 'valor'],
+                            data : [ ['anticipo','Anticipo (No ejecuta Presupuesto)'],
+                                     ['adelanto','Adelanto (Ejecuta Presupueto)'],
+                                     ['normal','Normal']]
+                                    }),
+                valueField: 'variable',
+                displayField: 'valor',
+                forceSelection: true,
+                triggerAction: 'all',
+                lazyRender: true,
+                mode: 'local',
+                wisth: 250
+                },
+            type:'ComboBox',
+            filters:{pfiltro:'tipo_pago',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        }
+          ,
 		{
 			config:{
 				name: 'nro_cuota',
@@ -84,23 +137,8 @@ Phx.vista.PlanPago=Ext.extend(Phx.gridInterfaz,{
 			filters:{pfiltro:'plapa.nro_cuota',type:'numeric'},
 			id_grupo:1,
 			grid:true,
-			form:true
+			form:false
 		},
-        {
-            config:{
-                name: 'tipo',
-                fieldLabel: 'Momento',
-                allowBlank: true,
-                anchor: '80%',
-                gwidth: 100,
-                maxLength:30
-            },
-            type:'TextField',
-            filters:{pfiltro:'plapa.tipo',type:'string'},
-            id_grupo:1,
-            grid:true,
-            form:true
-        },
 		{
 			config:{
 				name: 'nro_sol_pago',
@@ -114,23 +152,7 @@ Phx.vista.PlanPago=Ext.extend(Phx.gridInterfaz,{
 			filters:{pfiltro:'plapa.nro_sol_pago',type:'string'},
 			id_grupo:1,
 			grid:true,
-			form:true
-		},
-		{
-			config:{
-				name: 'fecha_pag',
-				fieldLabel: 'Fecha Pago',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-						format: 'd/m/Y', 
-						renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
-			},
-			type:'DateField',
-			filters:{pfiltro:'plapa.fecha_pag',type:'date'},
-			id_grupo:1,
-			grid:true,
-			form:true
+			form:false
 		},
 		{
 			config:{
@@ -150,6 +172,22 @@ Phx.vista.PlanPago=Ext.extend(Phx.gridInterfaz,{
 		},
         {
             config:{
+                name: 'fecha_pag',
+                fieldLabel: 'Fecha Pago',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                        format: 'd/m/Y', 
+                        renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
+            },
+            type:'DateField',
+            filters:{pfiltro:'plapa.fecha_pag',type:'date'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        },
+        {
+            config:{
                 name: 'tipo_cambio',
                 fieldLabel: 'Tip Cambio',
                 allowBlank: true,
@@ -165,21 +203,6 @@ Phx.vista.PlanPago=Ext.extend(Phx.gridInterfaz,{
         },
 		{
 			config:{
-				name: 'tipo_pago',
-				fieldLabel: 'Tipo de Pago',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:20
-			},
-			type:'TextField',
-			filters:{pfiltro:'plapa.tipo_pago',type:'string'},
-			id_grupo:1,
-			grid:true,
-			form:true
-		},
-		{
-			config:{
 				name: 'id_plantilla',
 				fieldLabel: 'Doc. de Pago',
 				allowBlank: false,
@@ -192,128 +215,25 @@ Phx.vista.PlanPago=Ext.extend(Phx.gridInterfaz,{
 			id_grupo:1,
 			grid:true,
 			form:true
-		},
-        {
-            config:{
-                name: 'monto',
-                fieldLabel: 'Monto a Pagar',
-                allowBlank: true,
-                anchor: '80%',
-                gwidth: 100,
-                maxLength:1245186
-            },
-            type:'NumberField',
-            filters:{pfiltro:'plapa.monto',type:'numeric'},
-            id_grupo:1,
-            grid:true,
-            form:true
-        },
-		{
-			config:{
-				name: 'descuento_anticipo',
-				fieldLabel: 'Desc. Anticipo',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:1245186
-			},
-			type:'NumberField',
-			filters:{pfiltro:'plapa.descuento_anticipo',type:'numeric'},
-			id_grupo:1,
-			grid:true,
-			form:true
-		},
-        {
-            config:{
-                name: 'Obs. Desc. Anticipo',
-                fieldLabel: 'Obs. Desc. Antic.',
-                allowBlank: true,
-                anchor: '80%',
-                gwidth: 100,
-                maxLength:-5
-            },
-            type:'TextArea',
-            filters:{pfiltro:'plapa.obs_descuentos_anticipo',type:'string'},
-            id_grupo:1,
-            grid:true,
-            form:true
-        },
-		{
-			config:{
-				name: 'monto_no_pagado',
-				fieldLabel: 'Monto no pagado',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:1245186
-			},
-			type:'NumberField',
-			filters:{pfiltro:'plapa.monto_no_pagado',type:'numeric'},
-			id_grupo:1,
-			grid:true,
-			form:true
-		},
-        {
-            config:{
-                name: 'obs_monto_no_pagado',
-                fieldLabel: 'Obs. Monto no Pagado',
-                allowBlank: true,
-                anchor: '80%',
-                gwidth: 100,
-                maxLength:-5
-            },
-            type:'TextArea',
-            filters:{pfiltro:'plapa.obs_monto_no_pagado',type:'string'},
-            id_grupo:1,
-            grid:true,
-            form:true
-        },
-        {
-            config:{
-                name: 'otros_decuentos',
-                fieldLabel: 'Otros Decuentos',
-                allowBlank: true,
-                anchor: '80%',
-                gwidth: 100,
-                maxLength:1245186
-            },
-            type:'NumberField',
-            filters:{pfiltro:'plapa.otros_decuentos',type:'numeric'},
-            id_grupo:1,
-            grid:true,
-            form:true
-        },
-        {
-            config:{
-                name: 'obs_otros_descuentos',
-                fieldLabel: 'Obs. otros desc.',
-                allowBlank: true,
-                anchor: '80%',
-                gwidth: 100,
-                maxLength:-5
-            },
-            type:'TextArea',
-            filters:{pfiltro:'plapa.obs_otros_descuentos',type:'string'},
-            id_grupo:1,
-            grid:true,
-            form:true
-        },
-        {
-            config:{
-                name: 'monto_ejecutar_total_mo',
-                fieldLabel: 'Monto a Ejecutar',
-                allowBlank: true,
-                anchor: '80%',
-                gwidth: 100,
-                maxLength:1245186
-            },
-            type:'NumberField',
-            filters:{pfiltro:'plapa.monto_ejecutar_total_mo',type:'numeric'},
-            id_grupo:1,
-            grid:true,
-            form:true
-        },
-        {
+		},{
+           config:{
+               name: 'forma_pago',
+               fieldLabel: 'Forma de Pago',
+               gwidth: 100,
+               maxLength:30,
+               items: [
+                   {boxLabel: 'Cheque',name: 'fp-auto',  inputValue: 'cheque', checked:true},
+                   {boxLabel: 'Transferencia',name: 'fp-auto', inputValue: 'transferencia'},
+                   {boxLabel: 'Caja',name: 'fp-auto', inputValue: 'Caja'}
+               ]
+           },
+           type:'RadioGroup',
+           filters:{pfiltro:'plapa.forma_pago',type:'string'},
+           id_grupo:1,
+           grid:false,
+           form:true
+          },
+		 {
             config:{
                 name: 'nombre_pago',
                 fieldLabel: 'Nombre Pago',
@@ -330,21 +250,6 @@ Phx.vista.PlanPago=Ext.extend(Phx.gridInterfaz,{
         },
         {
             config:{
-                name: 'forma_pago',
-                fieldLabel: 'Forma Pago',
-                allowBlank: true,
-                anchor: '80%',
-                gwidth: 100,
-                maxLength:25
-            },
-            type:'TextField',
-            filters:{pfiltro:'plapa.forma_pago',type:'string'},
-            id_grupo:1,
-            grid:true,
-            form:true
-        },
-        {
-            config:{
                 name: 'id_cuenta_bancaria',
                 fieldLabel: 'Cuenta Bancaria Origen',
                 allowBlank: true,
@@ -354,6 +259,141 @@ Phx.vista.PlanPago=Ext.extend(Phx.gridInterfaz,{
             },
             type:'NumberField',
             filters:{pfiltro:'plapa.id_cuenta_bancaria',type:'numeric'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        },
+        {
+            config:{
+                name: 'monto',
+                fieldLabel: 'Monto a Pagar',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:1245186
+            },
+            type:'MoneyField',
+            filters:{pfiltro:'plapa.monto',type:'numeric'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        },
+		{
+			config:{
+				name: 'descuento_anticipo',
+				fieldLabel: 'Desc. Anticipo',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:1245186
+			},
+			type:'MoneyField',
+			filters:{pfiltro:'plapa.descuento_anticipo',type:'numeric'},
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
+		{
+			config:{
+				name: 'monto_no_pagado',
+				fieldLabel: 'Monto no pagado',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:1245186
+			},
+			type:'MoneyField',
+			filters:{pfiltro:'plapa.monto_no_pagado',type:'numeric'},
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
+        {
+            config:{
+                name: 'otros_decuentos',
+                fieldLabel: 'Otros Decuentos',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:1245186
+            },
+            type:'MoneyField',
+            filters:{pfiltro:'plapa.otros_decuentos',type:'numeric'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        },
+        {
+            config:{
+                name: 'monto_ejecutar_total_mo',
+                fieldLabel: 'Monto a Ejecutar',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:1245186
+            },
+            type:'MoneyField',
+            filters:{pfiltro:'plapa.monto_ejecutar_total_mo',type:'numeric'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        },
+        {
+            config:{
+                name: 'liquido_pagable',
+                fieldLabel: 'Liquido Pagable',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:1245186
+            },
+            type:'MoneyField',
+            filters:{pfiltro:'plapa.liquido_pagable',type:'numeric'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        },
+        {
+            config:{
+                name: 'Obs. Desc. Anticipo',
+                fieldLabel: 'Obs. Desc. Antic.',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:300
+            },
+            type:'TextArea',
+            filters:{pfiltro:'plapa.obs_descuentos_anticipo',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        },
+        {
+            config:{
+                name: 'obs_monto_no_pagado',
+                fieldLabel: 'Obs. Monto no Pagado',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:300
+            },
+            type:'TextArea',
+            filters:{pfiltro:'plapa.obs_monto_no_pagado',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        },
+        {
+            config:{
+                name: 'obs_otros_descuentos',
+                fieldLabel: 'Obs. otros desc.',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:300
+            },
+            type:'TextArea',
+            filters:{pfiltro:'plapa.obs_otros_descuentos',type:'string'},
             id_grupo:1,
             grid:true,
             form:true
@@ -444,6 +484,7 @@ Phx.vista.PlanPago=Ext.extend(Phx.gridInterfaz,{
 	id_store:'id_plan_pago',
 	fields: [
 		{name:'id_plan_pago', type: 'numeric'},
+		'id_obligacion_pago',
 		{name:'estado_reg', type: 'string'},
 		{name:'nro_cuota', type: 'numeric'},
 		{name:'monto_ejecutar_total_mb', type: 'numeric'},
@@ -458,7 +499,7 @@ Phx.vista.PlanPago=Ext.extend(Phx.gridInterfaz,{
 		{name:'descuento_anticipo_mb', type: 'numeric'},
 		{name:'obs_descuentos_anticipo', type: 'string'},
 		{name:'id_plan_pago_fk', type: 'numeric'},
-		{name:'id_obligacion_pago', type: 'numeric'},
+		
 		{name:'id_plantilla', type: 'numeric'},
 		{name:'descuento_anticipo', type: 'numeric'},
 		{name:'otros_decuentos', type: 'numeric'},
@@ -486,24 +527,87 @@ Phx.vista.PlanPago=Ext.extend(Phx.gridInterfaz,{
 	iniciarEventos:function(){
         
         this.cmpObligacionPago=this.getComponente('id_obligacion_pago');
+        this.cmpFechaDev=this.getComponente('fecha_dev');
+        this.cmpFechaPag=this.getComponente('fecha_pag');
+        this.cmpTipoPago=this.getComponente('tipo_pago');
+        this.cmpTipoCambio=this.getComponente('tipo_cambio');
+        this.cmpPlantilla=this.getComponente('id_plantilla');
+        this.cmpNombrePago=this.getComponente('nombre_pago');
+        this.cmpFormaPago=this.getComponente('forma_pago');
+        this.cmpTipo=this.getComponente('tipo');
+        this.cmpMonto=this.getComponente('monto');
+        this.cmpDescuentoAnticipo=this.getComponente('descuento_anticipo');
+        this.cmpMontoNoPagado=this.getComponente('monto_no_pagado');
+        this.cmpOtrosDescuentos=this.getComponente('otros_descuentos');
+       
         
     },
+    
+    onButtonNew:function(){
+        Phx.vista.PlanPago.superclass.onButtonNew.call(this); 
+        this.cmpObligacionPago.setValue(this.maestro.id_obligacion_pago);
+        this.ocultarComponente(this.cmpFechaPag);
+        this.cmpFechaDev.minValue = new Date();
+        this.cmpFechaDev.setValue(new Date());
+        if(this.maestro.nro_cuota_vigente ==0){
+            this.cmpTipoPago.setValue('normal');
+            this.cmpTipoPago.enable();
+        }
+        else{
+             this.cmpTipoPago.setValue('normal');
+              this.cmpTipoPago.disable();
+        }
+        
+        
+         if(this.maestro.tipo_moneda == 'base'){
+             this.cmpTipoCambio.setValue(1);
+             this.cmpTipoCambio.disable();
+         }
+         else{
+             this.cmpTipoCambio.enable()
+             this.obtenerTipoCambio(); 
+             
+         }
+         
+         this.cmpNombrePago.setValue(this.maestro.desc_proveedor);
+        
+        
+      
+        
+    },
+     obtenerTipoCambio:function(){
+         
+         var fecha = this.cmpFechaDev.getValue().dateFormat(this.cmpFechaDev.format);
+         var id_moneda = this.maestro.id_moneda;
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                    // form:this.form.getForm().getEl(),
+                    url:'../../sis_parametros/control/TipoCambio/obtenerTipoCambio',
+                    params:{fecha:fecha,id_moneda:id_moneda},
+                    success:this.successTC,
+                    failure: this.conexionFailure,
+                    timeout:this.timeout,
+                    scope:this
+             });
+        }, 
+    successTC:function(resp){
+       Phx.CP.loadingHide();
+            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+            if(!reg.ROOT.error){
+                
+                this.cmpTipoCambio.setValue(reg.ROOT.datos.tipo_cambio);
+            }else{
+                
+                alert('ocurrio al obtener el tipo de Cambio')
+            } 
+    },
 	onReloadPage:function(m){
-       
         this.maestro=m;
-        
-        
-        
         this.store.baseParams={id_obligacion_pago:this.maestro.id_obligacion_pago};
         this.load({params:{start:0, limit:this.tam_pag}})
        
     },
-    onButtonNew:function(){
-        Phx.vista.PlanPago.superclass.onButtonNew.call(this); 
-         
-        this.cmpObligacionPago.setValue(this.maestro.id_obligacion_pago)
-        
-    },
+    
 	sortInfo:{
 		field: 'id_plan_pago',
 		direction: 'ASC'
