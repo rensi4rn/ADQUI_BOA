@@ -150,6 +150,54 @@ BEGIN
         end;
 
 	/*********************************    
+ 	#TRANSACCION:  'ADQ_COTOC_REP'
+ 	#DESCRIPCION:	Reporte Orden Compra
+ 	#AUTOR:		Gonzalo Sarmiento Sejas	
+ 	#FECHA:		08-04-2013
+	***********************************/
+	elsif(p_transaccion='ADQ_COTOC_REP')then
+    	begin
+		v_consulta:='select  
+        			pv.desc_proveedor,
+                    per.id_persona,
+					per.direccion as dir_persona,
+			        per.telefono1 as telf1_persona,
+                    per.telefono2 as telf2_persona,
+                    per.celular1 as cel_persona,
+                    per.correo as correo_persona,
+                    ins.id_institucion,
+                    ins.direccion as dir_institucion,
+                    ins.telefono1 as telf1_institucion,
+                    ins.telefono2 as telf2_institucion,
+                    ins.celular1 as cel_institucion,
+                    ins.email1 as email_institucion,
+                    ins.fax as fax_institucion,
+                    cot.fecha_entrega,
+                    sol.lugar_entrega,
+                    cot.numero_oc,
+                    cot.tipo_entrega,
+                    cot.id_proceso_compra,
+                    sol.tipo,
+                    current_date as fecha_oc,
+                    mon.moneda
+              from adq.tcotizacion cot 
+              inner join param.vproveedor pv on pv.id_proveedor=cot.id_proveedor
+              left join segu.tpersona per on per.id_persona=pv.id_persona
+              left join param.tinstitucion ins on ins.id_institucion= pv.id_institucion
+              inner join adq.tproceso_compra pc on pc.id_proceso_compra=cot.id_proceso_compra
+			  inner join adq.tsolicitud sol on sol.id_solicitud=pc.id_solicitud
+			  inner join param.tmoneda mon on mon.id_moneda=cot.id_moneda
+              where cot.estado=''adjudicado'' and cot.id_cotizacion='||v_parametros.id_cotizacion|| ' and ';
+          
+          --Definicion de la respuesta
+          v_consulta:=v_consulta||v_parametros.filtro;
+          v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+
+          --Devuelve la respuesta
+          return v_consulta;
+        end;
+        
+	/*********************************    
  	#TRANSACCION:  'ADQ_COT_CONT'
  	#DESCRIPCION:	Conteo de registros
  	#AUTOR:		Gonzalo Sarmiento Sejas	
