@@ -11,7 +11,7 @@ CREATE TABLE tes.tobligacion_pago (
   id_depto INTEGER, 
   id_proceso_wf INTEGER, 
   id_estado_wf INTEGER, 
-  id_gestion integer not NULL;
+  id_gestion integer not NULL,
   fecha DATE,
   numero VARCHAR(50),
   estado VARCHAR(255), 

@@ -17,7 +17,7 @@ CREATE OR REPLACE FUNCTION migra.f__on_trig_tct_plantilla_tplantilla (
 						    if(v_operacion = 'INSERT') THEN
 						
 						          INSERT INTO 
-						            CONTA.tplantilla (
+						            PARAM.tplantilla (
 						id_plantilla,
 						desc_plantilla,
 						estado_reg,
@@ -45,7 +45,7 @@ CREATE OR REPLACE FUNCTION migra.f__on_trig_tct_plantilla_tplantilla (
 						       
 							    ELSEIF  v_operacion = 'UPDATE' THEN
 						               UPDATE 
-						                  CONTA.tplantilla  
+						                  PARAM.tplantilla  
 						                SET						 desc_plantilla=p_desc_plantilla
 						 ,estado_reg=p_estado_reg
 						 ,fecha_mod=p_fecha_mod
