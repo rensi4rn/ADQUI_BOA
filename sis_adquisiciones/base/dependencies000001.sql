@@ -125,6 +125,19 @@ ALTER TABLE adq.tsolicitud_det
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
     NOT DEFERRABLE;
+    
+ --------------- SQL ---------------
+ 
+ALTER TABLE adq.tcotizacion_det ADD CONSTRAINT fk_cotizacion_det__id_obliacion_det FOREIGN
+ KEY( id_obligacion_det) REFERENCES tes.tobligacion_det(id_obligacion_det);
+ 
+ --------------- SQL ---------------
+
+ALTER TABLE adq.tcotizacion_det
+  ADD UNIQUE (id_obligacion_det);
+ 
+ 
+ 
 
 /***********************************F-DEP-FRH-ADQ-0-15/02/2013*****************************************/
 

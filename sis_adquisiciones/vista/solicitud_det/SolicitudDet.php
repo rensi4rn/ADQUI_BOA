@@ -99,7 +99,7 @@ Phx.vista.SolicitudDet=Ext.extend(Phx.gridInterfaz,{
                             totalProperty: 'total',
                             fields: ['id_concepto_ingas','tipo','movimiento','desc_ingas'],
                             remoteSort: true,
-                            baseParams:{par_filtro:'desc_ingas'}
+                            baseParams:{par_filtro:'desc_ingas',movimiento:'gasto'}
                 }),
                 valueField: 'id_concepto_ingas',
                displayField: 'desc_ingas',

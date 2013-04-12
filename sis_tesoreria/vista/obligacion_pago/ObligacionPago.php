@@ -19,6 +19,20 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
 		this.init();
 		this.load({params:{start:0, limit:this.tam_pag}})
 		this.iniciarEventos();
+	    
+         this.addButton('ant_estado',{
+              argument: {estado: 'anterior'},
+              text:'Anterior',
+              iconCls: 'batras',
+              disabled:true,
+              handler:this.antEstado,
+              tooltip: '<b>Pasar al Anterior Estado</b>'
+          });
+          
+        this.addButton('fin_registro',{text:'Fin Reg.',iconCls: 'badelante',disabled:true,handler:this.fin_registro,tooltip: '<b>Finalizar</b><p>Finalizar registro de cotización</p>'});
+         
+	
+	
 	},
 	tam_pag:50,
 			
@@ -48,6 +62,28 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
 			grid:true,
 			form:false
 		},
+        {
+        config:{
+                name: 'numero',
+                fieldLabel: 'Numero',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 180,
+                renderer: function(value,p,record){
+                         if(record.data.comprometido=='si'){
+                             return String.format('<b><font color="green">{0}</font></b>', value);
+                        }
+                        else{
+                            return String.format('{0}', value);
+                        }},
+                maxLength:50
+            },
+            type:'Field',
+            filters:{pfiltro:'obpg.numero',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:false
+        },
 		{
 			config:{
 				name: 'tipo_obligacion',
@@ -55,9 +91,26 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: false,
 				anchor: '80%',
 				emptyText:'Tipo Obligacion',
-				store: ['adquisiciones','caja_chica','viaticos','fondo_en_avance'],
-				valueField: 'tipo_obligacion',
-				displayField: 'tipo_obligacion',
+				renderer:function (value, p, record){
+                        var dato='';
+                        dato = (dato==''&&value=='pago_directo')?'Pago Directo':dato;
+                        dato = (dato==''&&value=='caja_chica')?'Caja Chica':dato;
+                        dato = (dato==''&&value=='viaticos')?'Viáticos':dato;
+                        dato = (dato==''&&value=='fondo_en_avance')?'Fondo en Avance':dato;
+                        dato = (dato==''&&value=='aduisiciones')?'Adquisiciones':dato;
+                        return String.format('{0}', dato);
+                    },
+            
+                    store:new Ext.data.ArrayStore({
+                            fields: ['variable', 'valor'],
+                            data : [ ['pago_directo','Pago Directo'],
+                                     ['caja_chica','Caja Chica'],
+                                     ['viaticos','Viáticos'],
+                                     ['fondo_en_avance','Fondo en Avance']
+                                    ]
+                                    }),
+			    valueField: 'variable',
+				displayField: 'valor',
 				forceSelection: true,
 				triggerAction: 'all',
 				lazyRender: true,
@@ -70,7 +123,40 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
 			id_grupo:1,
 			grid:true,
 			form:true
-		},		
+		},
+        {
+            config:{
+                name: 'fecha',
+                fieldLabel: 'Fecha',
+                allowBlank: false,
+                gwidth: 100,
+                        format: 'd/m/Y', 
+                        renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
+            },
+            type:'DateField',
+            filters:{pfiltro:'obpg.fecha',type:'date'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        },
+        {
+            config:{
+                name: 'id_depto',
+                fieldLabel: 'Depto',
+                allowBlank: false,
+                anchor: '80%',
+                origen: 'DEPTO',
+                tinit: false,
+                baseParams:{tipo_filtro:'DEPTO_UO',estado:'activo',codigo_subsistema:'TES'},//parametros adicionales que se le pasan al store
+                gdisplayField:'nombre_depto',
+                gwidth: 100
+            },
+            type:'ComboRec',
+            filters:{pfiltro:'dep.nombre',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        },		
 		{
 			config: {
 				name: 'id_moneda',
@@ -88,95 +174,44 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
 			grid: true,
 			form: true
 		},
-		{
-			config: {
-				name: 'id_proceso_macro',
-				fieldLabel: 'Proceso',
-				typeAhead: false,
-				forceSelection: false,
-				hiddenName: 'id_proceso_macro',
-				allowBlank: false,
-				anchor:'80%',
-				emptyText: 'Lista de Procesos...',
-				store: new Ext.data.JsonStore({
-					url: '../../sis_workflow/control/ProcesoMacro/listarProcesoMacro',
-					id: 'id_proceso_macro',
-					root: 'datos',
-					sortInfo: {
-						field: 'nombre',
-						direction: 'ASC'
-					},
-					totalProperty: 'total',
-					fields: ['id_proceso_macro', 'nombre', 'codigo'],
-					// turn on remote sorting
-					remoteSort: true,
-					baseParams: {par_filtro: 'promac.nombre#promac.codigo',codigo_subsistema:'ADQ'}
-				}),
-				valueField: 'id_proceso_macro',
-				displayField: 'nombre',
-				gdisplayField: 'desc_proceso_macro',
-				triggerAction: 'all',
-				lazyRender: true,
-				mode: 'remote',
-				pageSize: 20,
-				queryDelay: 200,
-				listWidth:280,
-				minChars: 2,
-				gwidth: 170,
-				renderer: function(value, p, record) {
-					return String.format('{0}', record.data['desc_proceso_macro']);
-				},
-				tpl: '<tpl for="."><div class="x-combo-list-item"><p>{nombre}</p>Codigo: <strong>{codigo}</strong> </div></tpl>'
-			},
-			type: 'ComboBox',
-			id_grupo: 0,
-			filters: {
-				pfiltro: 'pm.nombre',
-				type: 'string'
-			},
-			grid: true,
-			form: true
-		},		
-		{
-			config:{
-				name: 'id_depto',
-				fieldLabel: 'Depto',
-				allowBlank: true,
-				anchor: '80%',
-				origen: 'DEPTO',
-				tinit: true,
-				gdisplayField:'nombre_depto',
-				gwidth: 100
-			},
-			type:'ComboRec',
-			filters:{pfiltro:'dep.nombre',type:'string'},
-			id_grupo:1,
-			grid:true,
-			form:true
-		},
-  {
-   config:{
-       name: 'funcionario_proveedor',
-       fieldLabel: 'Funcionario/<br/>Proveedor',
-       anchor: '80%',
-       gwidth: 100,
-       maxLength:30,
-       items: [
-           {boxLabel: 'Funcionario', name: 'rg-auto', inputValue: 'funcionario', checked:true},
-           {boxLabel: 'Proveedor', name: 'rg-auto', inputValue: 'proveedor'}
-       ]
-   },
-   type:'RadioGroup',
-   id_grupo:1,
-   grid:false,
-   form:true
-  },
+        {
+            config:{
+                name: 'tipo_cambio_conv',
+                fieldLabel: 'Tipo Cambio',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:131074
+            },
+            type:'NumberField',
+            filters:{pfiltro:'obpg.tipo_cambio_conv',type:'numeric'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        },
+	  {
+       config:{
+           name: 'funcionario_proveedor',
+           fieldLabel: 'Funcionario/<br/>Proveedor',
+           anchor: '80%',
+           gwidth: 100,
+           maxLength:30,
+           items: [
+               {boxLabel: 'Funcionario', name: 'rg-auto', inputValue: 'funcionario', checked:true},
+               {boxLabel: 'Proveedor', name: 'rg-auto', inputValue: 'proveedor'}
+           ]
+       },
+       type:'RadioGroup',
+       id_grupo:1,
+       grid:false,
+       form:true
+      },
 		{
 			config: {
 				name: 'id_proveedor',
 				fieldLabel: 'Proveedor',
 				anchor: '80%',
-				tinit: true,
+				tinit: false,
 				allowBlank: false,
 				origen: 'PROVEEDOR',
 				gdisplayField: 'desc_proveedor',
@@ -192,7 +227,7 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
 			config:{
 				name: 'id_funcionario',
 				fieldLabel: 'Funcionario',
-				tinit: true,
+				tinit: false,
 				allowBlank: false,
 				anchor: '80%',
 				origen: 'FUNCIONARIO',				
@@ -221,45 +256,14 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
 			form:true
 		},
 		{
-			config: {
-				name: 'id_subsistema',
-				fieldLabel: 'Subsistema',
-				anchor: '80%',
-				tinit: true,
-				allowBlank: true,
-				origen: 'SUBSISTEMA',
-				gdisplayField: 'nombre_subsistema',
-				gwidth: 180,
-			},
-			type: 'ComboRec',
-			id_grupo: 1,
-			filters:{pfiltro:'ss.nombre',type:'string'},
-			grid: true,
-			form: true
-		},
-		{
-			config:{
-				name: 'num_tramite',
-				fieldLabel: 'Num. Tramite',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:200
-			},
-			type:'TextField',
-			filters:{pfiltro:'obpg.num_tramite',type:'string'},
-			id_grupo:1,
-			grid:true,
-			form:true
-		},
-		{
 			config:{
 				name: 'porc_anticipo',
 				fieldLabel: 'Porc. Anticipo',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength:131074
+				maxLength:131074,
+				maxValue:100
 			},
 			type:'NumberField',
 			filters:{pfiltro:'obpg.porc_anticipo',type:'numeric'},
@@ -274,39 +278,37 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength:131074
+				maxLength:131074,
+				maxValue:100
 			},
 			type:'NumberField',
 			filters:{pfiltro:'obpg.porc_retgar',type:'numeric'},
 			id_grupo:1,
 			grid:true,
 			form:true
-		},		{
-			//configuracion del componente
-			config:{
-					labelSeparator:'',
-					inputType:'hidden',
-					name: 'id_obligacion_pago'
-			},
-			type:'Field',
-			form:true 
 		},
+        {
+            config:{
+                name: 'num_tramite',
+                fieldLabel: 'Num. Tramite',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:200
+            },
+            type:'TextField',
+            filters:{pfiltro:'obpg.num_tramite',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:false
+        },		
 		{
 			config:{
-				labelSeparator:'',
-				inputType:'hidden',
-				name: 'id_estado_wf'
-			},
-			type:'Field',
-			form:true
-		},		
-		{
-			config:{
-				labelSeparator:'',
-				inputType:'hidden',
+				labelSeparator:'Estado Reg.',
 				name: 'estado_reg'
 			},
 			type:'Field',
+			grid:true,
 			form:false
 		},
 		{
@@ -400,21 +402,15 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
 		{name:'num_tramite', type: 'string'},
 		{name:'id_proceso_wf', type: 'numeric'},
 		{name:'fecha_reg', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
+		{name:'fecha', type: 'date',dateFormat:'Y-m-d'},
 		{name:'id_usuario_reg', type: 'numeric'},
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},
+		{name:'usr_mod', type: 'string'},'numero','tipo_cambio_conv','id_gestion','comprometido'
 		
 	],
-	south:
-          { 
-          url:'../../../sis_tesoreria/vista/obligacion_det/ObligacionDet.php',
-          title:'Detalle', 
-          height:'50%',
-          cls:'ObligacionDet'
-         },
-         
+	
 	sortInfo:{
 		field: 'id_obligacion_pago',
 		direction: 'ASC'
@@ -422,57 +418,271 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
 	
 	iniciarEventos:function()
 	{
-		this.ocultarComponente(this.getComponente('id_proveedor'));
-		this.ocultarComponente(this.getComponente('id_funcionario'));
-		this.ocultarComponente(this.getComponente('funcionario_proveedor'));
 		
-		this.getComponente('tipo_obligacion').on('select',function(c,r,n){
+		
+		this.cmpProveedor = this.getComponente('id_proveedor');
+		this.cmpFuncionario = this.getComponente('id_funcionario');
+		this.cmpFuncionarioProveedor = this.getComponente('funcionario_proveedor');
+	    this.cmpFecha=this.getComponente('fecha');
+	    this.cmpTipoObligacion=this.getComponente('tipo_obligacion');
+	    this.cmpMoneda=this.getComponente('id_moneda');
+	    this.cmpDepto=this.getComponente('id_depto');
+	    this.cmpTipoCambioConv=this.getComponente('tipo_cambio_conv');
+	    
+	    this.cmpPorcAnticipo=this.getComponente('porc_anticipo');
+	    this.cmpPorcRetgar=this.getComponente('porc_retgar');
+		
+		this.ocultarComponente(this.cmpProveedor);
+		this.ocultarComponente(this.cmpFuncionario);
+		this.ocultarComponente(this.cmpFuncionarioProveedor);
+		
+		 this.cmpMoneda.on('select',function(com,dat){
+              
+              if(dat.data.tipo_moneda=='base'){
+                 this.cmpTipoCambioConv.disable();
+                 this.cmpTipoCambioConv.setValue(1); 
+                  
+              }
+              else{
+                   this.cmpTipoCambioConv.enable()
+                 this.obtenerTipoCambio();  
+              }
+             
+              
+          },this);
+		
+		this.cmpTipoObligacion.on('select',function(c,rec,ind){
 				
-				if(n=='adquisiciones' || n=='0'){
-					this.getComponente('id_proveedor').enable();
-					this.mostrarComponente(this.getComponente('id_proveedor'));
-					this.ocultarComponente(this.getComponente('id_funcionario'));
-					this.ocultarComponente(this.getComponente('funcionario_proveedor'));
-					this.getComponente('id_funcionario').reset();
+				n=rec.data.variable;
+				
+				if(n=='adquisiciones' ||n=='pago_directo'){
+					this.cmpProveedor.enable();
+					this.mostrarComponente(this.cmpProveedor);
+					this.ocultarComponente(this.cmpFuncionario);
+					this.ocultarComponente(this.cmpFuncionarioProveedor);
+					this.cmpFuncionario.reset();
 				}else{
-					if(n=='viatico' || n=='fondo_en_avance' || n=='2' || n=='3'){
-								this.getComponente('id_funcionario').enable();
-								this.mostrarComponente(this.getComponente('id_funcionario'));
-								this.ocultarComponente(this.getComponente('id_proveedor'));
-								this.ocultarComponente(this.getComponente('funcionario_proveedor'));								
-								this.getComponente('id_proveedor').reset();
+					if(n=='viatico' || n=='fondo_en_avance'){
+								this.cmpFuncionario.enable();
+								this.mostrarComponente(this.cmpFuncionario);
+								this.ocultarComponente(this.cmpProveedor);
+								this.ocultarComponente(this.cmpFuncionarioProveedor);								
+								this.cmpProveedor.reset();
 						}else{							
-							 this.getComponente('funcionario_proveedor').reset();
-							 this.getComponente('funcionario_proveedor').enable();
-							 this.mostrarComponente(this.getComponente('funcionario_proveedor'));							
-							 this.mostrarComponente(this.getComponente('id_funcionario'));
-							 this.ocultarComponente(this.getComponente('id_proveedor'));
-								var rbtItSer = this.getComponente('funcionario_proveedor');
-        rbtItSer.on('change',function(groupRadio,radio){
-            this.enableDisable(radio.inputValue);
-        },this);
+							 this.cmpFuncionarioProveedor.reset();
+							 this.cmpFuncionarioProveedor.enable();
+							 this.mostrarComponente(this.cmpFuncionarioProveedor);							
+							 this.mostrarComponente(this.cmpFuncionario);
+							 this.ocultarComponente(this.cmpProveedor);
+							
+                            this.cmpFuncionarioProveedor.on('change',function(groupRadio,radio){
+                                this.enableDisable(radio.inputValue);
+                            },this);
 						}
 				}				
 		},this);		
 		
 	},
+	
+	onButtonEdit:function(){
+       
+       var data= this.sm.getSelected().data;
+       this.cmpTipoObligacion.disable();
+       this.cmpDepto.disable(); 
+       this.cmpFecha.disable(); 
+       this.cmpTipoCambioConv.disable();
+       
+        
+       if(data.tipo_obligacion=='adquisiciones'){
+            this.mostrarComponente(this.cmpProveedor);
+            this.ocultarComponente(this.cmpFuncionario);
+            this.ocultarComponente(this.cmpFuncionarioProveedor);
+            this.cmpFuncionario.reset();
+            this.cmpProveedor.disable();
+            this.cmpMoneda.disable();
+       }
+       
+       if(data.tipo_obligacion=='pago_directo'){
+           
+           this.cmpProveedor.enable();
+           this.mostrarComponente(this.cmpProveedor);
+           this.cmpMoneda.enable();
+       }
+       
+       
+       Phx.vista.ObligacionPago.superclass.onButtonEdit.call(this);
+           
+    },
+    
+    onButtonNew:function(){
+        Phx.vista.ObligacionPago.superclass.onButtonNew.call(this);
+        this.cmpPorcAnticipo.setValue(0);
+        this.cmpPorcRetgar.setValue(0);
+       
+        this.ocultarComponente(this.cmpProveedor);
+        this.ocultarComponente(this.cmpFuncionario);
+        this.ocultarComponente(this.cmpFuncionarioProveedor);
+        
+        this.cmpTipoObligacion.enable();
+        this.cmpDepto.enable(); 
+        
+        
+        this.mostrarComponente(this.cmpProveedor);
+        this.ocultarComponente(this.cmpFuncionario);
+        this.ocultarComponente(this.cmpFuncionarioProveedor);
+        this.cmpFuncionario.reset();
+        this.cmpFecha.enable(); 
+        this.cmpTipoCambioConv.enable();
+        this.cmpProveedor.enable();
+        this.cmpDepto.enable(); 
+        this.cmpMoneda.enable();
+        
+    },
+    obtenerTipoCambio:function(){
+         
+         var fecha = this.cmpFecha.getValue().dateFormat(this.cmpFecha.format);
+         var id_moneda = this.cmpMoneda.getValue();
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                    // form:this.form.getForm().getEl(),
+                    url:'../../sis_parametros/control/TipoCambio/obtenerTipoCambio',
+                    params:{fecha:fecha,id_moneda:id_moneda},
+                    success:this.successTC,
+                    failure: this.conexionFailure,
+                    timeout:this.timeout,
+                    scope:this
+             });
+        }, 
+    successTC:function(resp){
+       Phx.CP.loadingHide();
+            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+            if(!reg.ROOT.error){
+                
+                this.cmpTipoCambioConv.setValue(reg.ROOT.datos.tipo_cambio);
+            }else{
+                
+                alert('ocurrio al obtener el tipo de Cambio')
+            } 
+    },
+	
 	enableDisable: function(val){
-   var cmbIt = this.getComponente('id_funcionario');
-   var cmbServ = this.getComponente('id_proveedor');
-   if(val=='funcionario'){   	   	
-							cmbServ.reset();
-							cmbIt.reset();
-							this.mostrarComponente(cmbIt);
-							this.ocultarComponente(cmbServ);
-   } else{   	
-   				cmbServ.reset();
-       cmbIt.reset();
-   				this.mostrarComponente(cmbServ);
-   				this.ocultarComponente(cmbIt);
-   }   
- },
-	bdel:true,
-	bsave:true
+       var cmbIt = this.getComponente('id_funcionario');
+       var cmbServ = this.getComponente('id_proveedor');
+       if(val=='funcionario'){   	   	
+			cmbServ.reset();
+			cmbIt.reset();
+			this.mostrarComponente(cmbIt);
+			this.ocultarComponente(cmbServ);
+       } else{   	
+			cmbServ.reset();
+            cmbIt.reset();
+			this.mostrarComponente(cmbServ);
+			this.ocultarComponente(cmbIt);
+       }   
+     },
+     fin_registro:function()
+        {                   
+            var d= this.sm.getSelected().data;
+           
+            Phx.CP.loadingShow();
+            
+            Ext.Ajax.request({
+                // form:this.form.getForm().getEl(),
+                url:'../../sis_tesoreria/control/ObligacionPago/finalizarRegistro',
+                params:{id_obligacion_pago:d.id_obligacion_pago,operacion:'fin_registro'},
+                success:this.successSinc,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });     
+      }, 
+     successSinc:function(resp){
+            Phx.CP.loadingHide();
+             var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+            if(!reg.ROOT.error){
+                
+                this.reload();
+             }else{
+                alert('ocurrio un error durante el proceso')
+            }
+     },
+     antEstado:function(res,eve)
+     {                   
+            var d= this.sm.getSelected().data;
+            Phx.CP.loadingShow();
+            var operacion = 'cambiar';
+            operacion=  res.argument.estado == 'inicio'?'inicio':operacion; 
+            
+            Ext.Ajax.request({
+                url:'../../sis_tesoreria/control/ObligacionPago/anteriorEstadoObligacion',
+                params:{id_obligacion_pago:d.id_obligacion_pago, 
+                        operacion: operacion},
+                success:this.successSinc,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });     
+      },
+     
+      preparaMenu:function(n){
+          var data = this.getSelectedData();
+          var tb =this.tbar;
+          
+          
+          Phx.vista.ObligacionPago.superclass.preparaMenu.call(this,n); 
+          if (data['estado']== 'borrador'){
+              this.getBoton('edit').enable();
+              this.getBoton('new').enable();
+              this.getBoton('del').enable();    
+              this.getBoton('fin_registro').enable();
+               this.getBoton('ant_estado').disable();
+          }
+          else{
+               if (data['estado']== 'borrador'){   
+                 this.getBoton('ant_estado').disable();
+              }
+              
+              this.getBoton('fin_registro').disable();
+              this.getBoton('edit').disable();
+              this.getBoton('new').disable();
+              this.getBoton('del').disable();
+          }
+          
+     },
+     
+     
+     liberaMenu:function(){
+        var tb = Phx.vista.ObligacionPago.superclass.liberaMenu.call(this);
+        if(tb){
+            this.getBoton('fin_registro').disable();
+             this.getBoton('ant_estado').disable();
+           
+
+        }
+        
+       return tb
+    }, 
+    
+    tabsouth:[
+            { 
+             url:'../../../sis_tesoreria/vista/obligacion_det/ObligacionDet.php',
+             title:'Detalle', 
+             height:'50%',
+             cls:'ObligacionDet'
+            },
+            {
+              url:'../../../sis_tesoreria/vista/plan_pago/PlanPago.php',
+              title:'Plan de Pagos', 
+              height:'50%',
+              cls:'PlanPago'
+            }
+    
+       ], 
+       
+      
+     
+    bdel:true,
+	bsave:false
 	}
 )
 </script>

@@ -1,3 +1,5 @@
+--------------- SQL ---------------
+
 CREATE OR REPLACE FUNCTION tes.ft_obligacion_det_sel (
   p_administrador integer,
   p_id_usuario integer,
@@ -67,7 +69,8 @@ BEGIN
 						obdet.fecha_mod,
 						obdet.id_usuario_mod,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod	
+						usu2.cuenta as usr_mod,
+                        obdet.descripcion	
 						from tes.tobligacion_det obdet
 						inner join segu.tusuario usu1 on usu1.id_usuario = obdet.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = obdet.id_usuario_mod

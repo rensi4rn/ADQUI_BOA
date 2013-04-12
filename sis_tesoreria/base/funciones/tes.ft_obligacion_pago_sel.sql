@@ -1,3 +1,5 @@
+--------------- SQL ---------------
+
 CREATE OR REPLACE FUNCTION tes.ft_obligacion_pago_sel (
   p_administrador integer,
   p_id_usuario integer,
@@ -43,6 +45,8 @@ BEGIN
 	if(p_transaccion='TES_OBPG_SEL')then
      				
     	begin
+        
+        
     		--Sentencia de la consulta
 			v_consulta:='select
 						obpg.id_obligacion_pago,
@@ -70,14 +74,19 @@ BEGIN
 						obpg.fecha_mod,
 						obpg.id_usuario_mod,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod	
+						usu2.cuenta as usr_mod,
+                        obpg.fecha,
+                        obpg.numero,
+                        obpg.tipo_cambio_conv,
+                        obpg.id_gestion,
+                        obpg.comprometido
 						from tes.tobligacion_pago obpg
 						inner join segu.tusuario usu1 on usu1.id_usuario = obpg.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = obpg.id_usuario_mod
-                        inner join param.vproveedor pv on pv.id_proveedor=obpg.id_proveedor
+                        left join param.vproveedor pv on pv.id_proveedor=obpg.id_proveedor
                         inner join param.tmoneda mn on mn.id_moneda=obpg.id_moneda
-                        left join segu.tsubsistema ss on ss.id_subsistema=obpg.id_subsistema
-						left join param.tdepto dep on dep.id_depto=obpg.id_depto
+                        inner join segu.tsubsistema ss on ss.id_subsistema=obpg.id_subsistema
+						inner join param.tdepto dep on dep.id_depto=obpg.id_depto
                         left join orga.vfuncionario fun on fun.id_funcionario=obpg.id_funcionario
                         where  ';
 			

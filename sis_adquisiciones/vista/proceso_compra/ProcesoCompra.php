@@ -24,6 +24,15 @@ Phx.vista.ProcesoCompra=Ext.extend(Phx.gridInterfaz,{
             handler : this.onButtonCotizacion,
             tooltip : '<b>Cotizacion de solicitud de Compra</b><br/><b>Cotizacion de solicitud de Compra</b>'
   });
+  
+		this.addButton('btnCuadroComparativo',{
+							 text :'Cuadro Comparativo',
+							 iconCls : 'bexcel',
+							 disabled: true,
+							 handler : this.onCuadroComparativo,
+							 tooltip : '<b>Cuadro Comparativo</b><br/><b>Cuadro Comparativo de Cotizaciones</b>'
+	 });
+	 
 		this.load({params:{start:0, limit:this.tam_pag}});
 		this.iniciarEventos();
 	
@@ -407,6 +416,23 @@ Phx.vista.ProcesoCompra=Ext.extend(Phx.gridInterfaz,{
         )
     },
     
+		onCuadroComparativo: function(){
+					var rec=this.sm.getSelected();
+         console.debug(rec);
+         Ext.Ajax.request({
+             url:'../../sis_adquisiciones/control/ProcesoCompra/cuadroComparativo',
+             params:{'id_proceso_compra':rec.data.id_proceso_compra},
+             success: this.successExport,
+             failure: function() {
+                 console.log("fail");
+             },
+             timeout: function() {
+                 console.log("timeout");
+             },
+             scope:this
+         });
+	   },
+    
     onButtonNew:function(){         
             Phx.vista.ProcesoCompra.superclass.onButtonNew.call(this);
             this.cmbSolicitud.enable();
@@ -428,10 +454,11 @@ Phx.vista.ProcesoCompra=Ext.extend(Phx.gridInterfaz,{
             this.getBoton('edit').disable();
             this.getBoton('del').disable();
             this.getBoton('btnCotizacion').disable();
+            this.getBoton('btnCuadroComparativo').disable();
         }
         else{
             this.getBoton('btnCotizacion').enable();
-            
+            this.getBoton('btnCuadroComparativo').enable();
         }
          return tb 
      },
