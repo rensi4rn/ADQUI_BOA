@@ -1055,45 +1055,47 @@ BEGIN
             )LOOP
             
                -- inserta detalle obligacion
-            
-               
-               INSERT INTO 
-                tes.tobligacion_det
-              (
-                id_usuario_reg,
-                fecha_reg,
-                 estado_reg,
-                id_obligacion_pago,
-                id_concepto_ingas,
-                id_centro_costo,
-                id_partida,
-                id_cuenta,
-                id_auxiliar,
-                id_partida_ejecucion_com,
-                monto_pago_mo,
-                monto_pago_mb,
-                descripcion) 
-              VALUES (
-                p_id_usuario,
-                now(),
-                'activo',
-                v_id_obligacion_pago,
-                v_registros.id_concepto_ingas,
-                v_registros.id_centro_costo,
-                v_registros.id_partida,
-                v_registros.id_cuenta,
-                v_registros.id_auxiliar,
-                v_registros.id_partida_ejecucion,
-                (v_registros.cantidad_adju *v_registros.precio_unitario),
-                (v_registros.cantidad_adju *v_registros.precio_unitario_mb),
-                v_registros.descripcion
-              )RETURNING id_obligacion_det into v_id_obligacion_det;
-               
-               -- actulizar detalle de cotizacion
-               
-               update adq.tcotizacion_det set 
-               id_obligacion_det = v_id_obligacion_det
-               where id_cotizacion_det=v_registros.id_cotizacion_det;
+                IF((v_registros.cantidad_adju *v_registros.precio_unitario) > 0)THEN
+                   
+                       INSERT INTO 
+                        tes.tobligacion_det
+                      (
+                        id_usuario_reg,
+                        fecha_reg,
+                         estado_reg,
+                        id_obligacion_pago,
+                        id_concepto_ingas,
+                        id_centro_costo,
+                        id_partida,
+                        id_cuenta,
+                        id_auxiliar,
+                        id_partida_ejecucion_com,
+                        monto_pago_mo,
+                        monto_pago_mb,
+                        descripcion) 
+                      VALUES (
+                        p_id_usuario,
+                        now(),
+                        'activo',
+                        v_id_obligacion_pago,
+                        v_registros.id_concepto_ingas,
+                        v_registros.id_centro_costo,
+                        v_registros.id_partida,
+                        v_registros.id_cuenta,
+                        v_registros.id_auxiliar,
+                        v_registros.id_partida_ejecucion,
+                        (v_registros.cantidad_adju *v_registros.precio_unitario),
+                        (v_registros.cantidad_adju *v_registros.precio_unitario_mb),
+                        v_registros.descripcion
+                      )RETURNING id_obligacion_det into v_id_obligacion_det;
+                       
+                       -- actulizar detalle de cotizacion
+                       
+                       update adq.tcotizacion_det set 
+                       id_obligacion_det = v_id_obligacion_det
+                       where id_cotizacion_det=v_registros.id_cotizacion_det;
+                   
+               END IF;
             
             END LOOP;
             -----------------------------------------

@@ -52,6 +52,12 @@ class ACTObligacionPago extends ACTbase{
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
     
+    function obtenerFaltante(){
+        $this->objFunc=$this->create('MODObligacionPago');  
+        $this->res=$this->objFunc->obtenerFaltante($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+    
     
         
 			

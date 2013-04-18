@@ -65,7 +65,7 @@ BEGIN
 						plapa.id_obligacion_pago,
 						plapa.id_plantilla,
 						plapa.descuento_anticipo,
-						plapa.otros_decuentos,
+						plapa.otros_descuentos,
 						plapa.tipo,
 						plapa.obs_monto_no_pagado,
 						plapa.obs_otros_descuentos,
@@ -84,11 +84,16 @@ BEGIN
 						plapa.fecha_mod,
 						plapa.id_usuario_mod,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod	
+						usu2.cuenta as usr_mod,
+                        plapa.fecha_tentativa,
+                        pla.desc_plantilla,
+                        plapa.liquido_pagable,
+                        plapa.total_prorrateado
 						from tes.tplan_pago plapa
+                        inner join param.tplantilla pla on pla.id_plantilla = plapa.id_plantilla
 						inner join segu.tusuario usu1 on usu1.id_usuario = plapa.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = plapa.id_usuario_mod
-				        where  ';
+				        where  plapa.estado_reg=''activo''  and  ';
 			
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -111,7 +116,8 @@ BEGIN
 		begin
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_plan_pago)
-					    from tes.tplan_pago plapa
+						from tes.tplan_pago plapa
+                        inner join param.tplantilla pla on pla.id_plantilla = plapa.id_plantilla
 					    inner join segu.tusuario usu1 on usu1.id_usuario = plapa.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = plapa.id_usuario_mod
 					    where ';

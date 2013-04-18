@@ -38,7 +38,7 @@ class MODPlanPago extends MODbase{
 		$this->captura('id_obligacion_pago','int4');
 		$this->captura('id_plantilla','int4');
 		$this->captura('descuento_anticipo','numeric');
-		$this->captura('otros_decuentos','numeric');
+		$this->captura('otros_descuentos','numeric');
 		$this->captura('tipo','varchar');
 		$this->captura('obs_monto_no_pagado','text');
 		$this->captura('obs_otros_descuentos','text');
@@ -58,6 +58,10 @@ class MODPlanPago extends MODbase{
 		$this->captura('id_usuario_mod','int4');
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
+		$this->captura('fecha_tentativa','date');
+		$this->captura('desc_plantilla','varchar');
+		$this->captura('liquido_pagable','numeric');
+		$this->captura('total_prorrateado','numeric');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -74,37 +78,24 @@ class MODPlanPago extends MODbase{
 		$this->tipo_procedimiento='IME';
 				
 		//Define los parametros para la funcion
-		$this->setParametro('estado_reg','estado_reg','varchar');
-		$this->setParametro('nro_cuota','nro_cuota','int4');
-		$this->setParametro('monto_ejecutar_total_mb','monto_ejecutar_total_mb','numeric');
-		$this->setParametro('nro_sol_pago','nro_sol_pago','varchar');
-		$this->setParametro('tipo_cambio','tipo_cambio','numeric');
-		$this->setParametro('fecha_pag','fecha_pag','date');
-		$this->setParametro('id_proceso_wf','id_proceso_wf','int4');
-		$this->setParametro('fecha_dev','fecha_dev','date');
-		$this->setParametro('estado','estado','varchar');
 		$this->setParametro('tipo_pago','tipo_pago','varchar');
 		$this->setParametro('monto_ejecutar_total_mo','monto_ejecutar_total_mo','numeric');
-		$this->setParametro('descuento_anticipo_mb','descuento_anticipo_mb','numeric');
 		$this->setParametro('obs_descuentos_anticipo','obs_descuentos_anticipo','text');
 		$this->setParametro('id_plan_pago_fk','id_plan_pago_fk','int4');
 		$this->setParametro('id_obligacion_pago','id_obligacion_pago','int4');
 		$this->setParametro('id_plantilla','id_plantilla','int4');
 		$this->setParametro('descuento_anticipo','descuento_anticipo','numeric');
-		$this->setParametro('otros_decuentos','otros_decuentos','numeric');
+		$this->setParametro('otros_descuentos','otros_descuentos','numeric');
 		$this->setParametro('tipo','tipo','varchar');
 		$this->setParametro('obs_monto_no_pagado','obs_monto_no_pagado','text');
 		$this->setParametro('obs_otros_descuentos','obs_otros_descuentos','text');
 		$this->setParametro('monto','monto','numeric');
-		$this->setParametro('id_comprobante','id_comprobante','int4');
 		$this->setParametro('nombre_pago','nombre_pago','varchar');
-		$this->setParametro('monto_no_pagado_mb','monto_no_pagado_mb','numeric');
-		$this->setParametro('monto_mb','monto_mb','numeric');
-		$this->setParametro('id_estado_wf','id_estado_wf','int4');
 		$this->setParametro('id_cuenta_bancaria','id_cuenta_bancaria','int4');
-		$this->setParametro('otros_descuentos_mb','otros_descuentos_mb','numeric');
 		$this->setParametro('forma_pago','forma_pago','varchar');
 		$this->setParametro('monto_no_pagado','monto_no_pagado','numeric');
+		$this->setParametro('fecha_tentativa','fecha_tentativa','date');
+		
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -122,24 +113,16 @@ class MODPlanPago extends MODbase{
 				
 		//Define los parametros para la funcion
 		$this->setParametro('id_plan_pago','id_plan_pago','int4');
-		$this->setParametro('estado_reg','estado_reg','varchar');
-		$this->setParametro('nro_cuota','nro_cuota','int4');
-		$this->setParametro('monto_ejecutar_total_mb','monto_ejecutar_total_mb','numeric');
-		$this->setParametro('nro_sol_pago','nro_sol_pago','varchar');
-		$this->setParametro('tipo_cambio','tipo_cambio','numeric');
-		$this->setParametro('fecha_pag','fecha_pag','date');
-		$this->setParametro('id_proceso_wf','id_proceso_wf','int4');
-		$this->setParametro('fecha_dev','fecha_dev','date');
-		$this->setParametro('estado','estado','varchar');
+		
+		
 		$this->setParametro('tipo_pago','tipo_pago','varchar');
 		$this->setParametro('monto_ejecutar_total_mo','monto_ejecutar_total_mo','numeric');
-		$this->setParametro('descuento_anticipo_mb','descuento_anticipo_mb','numeric');
 		$this->setParametro('obs_descuentos_anticipo','obs_descuentos_anticipo','text');
 		$this->setParametro('id_plan_pago_fk','id_plan_pago_fk','int4');
 		$this->setParametro('id_obligacion_pago','id_obligacion_pago','int4');
 		$this->setParametro('id_plantilla','id_plantilla','int4');
 		$this->setParametro('descuento_anticipo','descuento_anticipo','numeric');
-		$this->setParametro('otros_decuentos','otros_decuentos','numeric');
+		$this->setParametro('otros_descuentos','otros_descuentos','numeric');
 		$this->setParametro('tipo','tipo','varchar');
 		$this->setParametro('obs_monto_no_pagado','obs_monto_no_pagado','text');
 		$this->setParametro('obs_otros_descuentos','obs_otros_descuentos','text');
@@ -147,13 +130,11 @@ class MODPlanPago extends MODbase{
 		$this->setParametro('id_comprobante','id_comprobante','int4');
 		$this->setParametro('nombre_pago','nombre_pago','varchar');
 		$this->setParametro('monto_no_pagado_mb','monto_no_pagado_mb','numeric');
-		$this->setParametro('monto_mb','monto_mb','numeric');
-		$this->setParametro('id_estado_wf','id_estado_wf','int4');
 		$this->setParametro('id_cuenta_bancaria','id_cuenta_bancaria','int4');
-		$this->setParametro('otros_descuentos_mb','otros_descuentos_mb','numeric');
 		$this->setParametro('forma_pago','forma_pago','varchar');
 		$this->setParametro('monto_no_pagado','monto_no_pagado','numeric');
-
+        $this->setParametro('fecha_tentativa','fecha_tentativa','date');
+        
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();

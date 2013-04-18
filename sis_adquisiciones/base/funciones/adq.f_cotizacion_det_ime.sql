@@ -109,7 +109,7 @@ BEGIN
             
             --calcular el precio unitario en moneda base
             
-             v_precio_unitario_mb_coti= v_parametros.precio_unitario/v_tipo_cambio_conv;
+             v_precio_unitario_mb_coti= v_parametros.precio_unitario*v_tipo_cambio_conv;
              
          
             
@@ -205,7 +205,7 @@ BEGIN
             
             --calcular el precio unitario en moneda base
             
-              v_precio_unitario_mb_coti= v_parametros.precio_unitario/v_tipo_cambio_conv;
+              v_precio_unitario_mb_coti= v_parametros.precio_unitario*v_tipo_cambio_conv;
             
         
 			--Sentencia de la modificacion

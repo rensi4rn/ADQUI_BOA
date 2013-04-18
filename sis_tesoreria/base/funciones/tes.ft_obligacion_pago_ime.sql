@@ -64,6 +64,9 @@ DECLARE
     v_id_usuario_reg integer;
     v_id_estado_wf_ant  integer;
     v_comprometido varchar;
+    v_monto_total numeric;
+    v_id_obligacion_det integer;
+    v_factor numeric;
 			    
 BEGIN
 
@@ -225,7 +228,8 @@ BEGIN
             numero,
             fecha,
             id_gestion,
-            tipo_cambio_conv
+            tipo_cambio_conv,
+            pago_variable
           	) values(
 			v_parametros.id_proveedor,
 			v_codigo_estado,
@@ -248,7 +252,8 @@ BEGIN
             v_num,
             v_parametros.fecha,
             v_id_gestion,
-            v_parametros.tipo_cambio_conv
+            v_parametros.tipo_cambio_conv,
+            v_parametros.pago_variable
 							
 			)RETURNING id_obligacion_pago into v_id_obligacion_pago;
 			
@@ -282,7 +287,8 @@ BEGIN
 			porc_anticipo = v_parametros.porc_anticipo,
 		    id_depto = v_parametros.id_depto,
 			fecha_mod = now(),
-			id_usuario_mod = p_id_usuario
+			id_usuario_mod = p_id_usuario,
+            pago_variable=v_parametros.pago_variable
 			where id_obligacion_pago=v_parametros.id_obligacion_pago;
                
 			--Definicion de la respuesta
@@ -341,8 +347,8 @@ BEGIN
               v_id_proceso_wf,
               v_id_estado_wf,
               v_codigo_estado,
-               v_id_depto,
-               v_tipo_obligacion
+              v_id_depto,
+              v_tipo_obligacion
              from tes.tobligacion_pago op
              where op.id_obligacion_pago = v_parametros.id_obligacion_pago; 
              
@@ -356,7 +362,7 @@ BEGIN
              --validamos que el detalle tenga por lo menos un item con valor
              
              select 
-              sum(od.monto_pago_mb)
+              sum(od.monto_pago_mo)
              into
               v_total_detalle
              from tes.tobligacion_det od
@@ -422,15 +428,46 @@ BEGIN
             
              -- actualiza estado en la solicitud
             
-             update tes.tobligacion_pago op set 
+             update tes.tobligacion_pago  set 
                id_estado_wf =  v_id_estado_actual,
                estado = va_codigo_estado[1],
                id_usuario_mod=p_id_usuario,
                comprometido = 'si',
+               total_pago=v_total_detalle,
                fecha_mod=now()
-             where op.id_obligacion_pago  = v_parametros.id_obligacion_pago;
+             where id_obligacion_pago  = v_parametros.id_obligacion_pago;
         
-        
+            --------------------------------------
+            --calcula el factor de prorrateo de la obligacion  detalle
+            ---------------------------------------------
+            
+            update tes.tobligacion_det set
+            factor_porcentual = (monto_pago_mo/v_total_detalle)
+            where estado_reg = 'activo' and id_obligacion_pago=v_parametros.id_obligacion_pago;
+            
+            --testeo
+            select sum(od.factor_porcentual) into v_factor
+            from tes.tobligacion_det od
+            where od.id_obligacion_pago = v_parametros.id_obligacion_pago and od.estado_reg='activo';
+            
+            
+            v_factor = v_factor - 1;
+            
+            
+            select od.id_obligacion_det into v_id_obligacion_det
+            from tes.tobligacion_det od
+            where od.id_obligacion_pago = v_parametros.id_obligacion_pago
+            and od.estado_reg = 'activo'
+            limit 1 offset 0; 
+            
+            
+            --actualiza el factor del primer registro  para que la suma de siempre 1
+            update tes.tobligacion_det  set
+            factor_porcentual=  factor_porcentual - v_factor
+            where estado_reg = 'activo'
+            and id_obligacion_det= v_id_obligacion_det;
+            
+            
         
          
             --Definicion de la respuesta
@@ -544,6 +581,14 @@ BEGIN
                          END IF;
                          
                          
+                          IF v_codigo_estado = 'borrador' THEN
+                          
+                              --se modifica la bandera del comprometido
+                              update tes.tobligacion_pago op set
+                                 total_pago=NULL
+                              where id_obligacion_pago = v_parametros.id_obligacion_pago; 
+                         
+                          END IF;
                         -- si hay mas de un estado disponible  preguntamos al usuario
                         v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Se realizo el cambio de estado)'); 
                         v_resp = pxp.f_agrega_clave(v_resp,'operacion','cambio_exitoso');
@@ -576,8 +621,32 @@ BEGIN
             return v_resp;
 
 		end;
-      
-	else
+    /*********************************    
+ 	#TRANSACCION:  'TES_PAFPP_IME'
+ 	#DESCRIPCION:	Calcula el restante por registrar, devengar o pagar  segun filtro
+ 	#AUTOR:		admin	
+ 	#FECHA:		10-04-2013 15:43:23
+	***********************************/
+
+	elsif(p_transaccion='TES_PAFPP_IME')then
+
+		begin
+			
+            v_monto_total= tes.f_determinar_total_faltante(v_parametros.id_obligacion_pago, v_parametros.ope_filtro);
+            
+            
+            --Definicion de la respuesta
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','determina cuanto falta por pgar'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'id_obligacion_pago',v_parametros.id_obligacion_pago::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'monto_total_faltante',v_monto_total::varchar);
+              
+            --Devuelve la respuesta
+            return v_resp;
+
+		end;   
+	
+    
+    else
      
     	raise exception 'Transaccion inexistente: %',p_transaccion;
 

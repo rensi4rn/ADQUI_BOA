@@ -53,6 +53,8 @@ class MODObligacionPago extends MODbase{
 		$this->captura('comprometido','varchar');
 		$this->captura('nro_cuota_vigente','numeric');
 		$this->captura('tipo_moneda','varchar');
+		$this->captura('total_pago','numeric');
+		$this->captura('pago_variable','varchar');
 		
 		
 		
@@ -81,7 +83,7 @@ class MODObligacionPago extends MODbase{
 		$this->setParametro('id_depto','id_depto','int4');
 		$this->setParametro('fecha','fecha','date');
 		$this->setParametro('tipo_cambio_conv','tipo_cambio_conv','numeric');
-
+        $this->setParametro('pago_variable','pago_variable','varchar');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -109,7 +111,7 @@ class MODObligacionPago extends MODbase{
 		$this->setParametro('fecha','fecha','date');
 		$this->setParametro('id_depto','id_depto','int4');
 		$this->setParametro('tipo_cambio_conv','tipo_cambio_conv','numeric');
-		
+		$this->setParametro('pago_variable','pago_variable','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -164,6 +166,24 @@ class MODObligacionPago extends MODbase{
         //Define los parametros para la funcion
         $this->setParametro('id_obligacion_pago','id_obligacion_pago','int4');
         $this->setParametro('operacion','operacion','varchar');
+        
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    
+     function obtenerFaltante(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='tes.ft_obligacion_pago_ime';
+        $this->transaccion='TES_PAFPP_IME';
+        $this->tipo_procedimiento='IME';
+                
+        //Define los parametros para la funcion
+        $this->setParametro('id_obligacion_pago','id_obligacion_pago','int4');
+        $this->setParametro('ope_filtro','ope_filtro','varchar');
         
         //Ejecuta la instruccion
         $this->armarConsulta();

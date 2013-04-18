@@ -109,7 +109,9 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
 	    
 	    //verifica el precio unitario sea menor al precio ref en la moneda que le toca
 	     var data = this.getSelectedData();
-	     if(data.precio_unitario_mb <= data.precio_unitario_mb_sol){
+	     
+	     
+	     if(data.precio_unitario_mb*1 <= data.precio_unitario_mb_sol*1){
 	        
 	        console.log('datos....',data)
 	        
@@ -221,13 +223,13 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
 	    					remoteSort: true,
 	    					baseParams:{par_filtro:'codigo'}
 	    				}),
-	   valueField: 'id_solicitud_det',
-	   displayField: 'desc_concepto_ingas',
-	   //gdisplayField: 'otro',
-	   hiddenName: 'id_solicitud_det',
-	   triggerAction: 'all',
-	   //queryDelay:1000,
-	   pageSize:10,
+        	    valueField: 'id_solicitud_det',
+        	    displayField: 'desc_concepto_ingas',
+        	    gdisplayField: 'desc_solicitud_det',
+        	    hiddenName: 'id_solicitud_det',
+        	    triggerAction: 'all',
+        	    //queryDelay:1000,
+        	    pageSize:10,
 				forceSelection: true,
 				typeAhead: true,
 				allowBlank: false,
@@ -294,13 +296,14 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
         {
             config:{
                 name: 'precio_unitario_sol',
+                currencyChar:' ',
                 fieldLabel: 'P/U Ref.',
                 allowBlank: true,
                 anchor: '80%',
                 gwidth: 120,
                 maxLength:1245186
             },
-            type:'NumberField',
+            type:'MoneyField',
             filters:{pfiltro:'ctd.precio_unitario',type:'numeric'},
             id_grupo:1,
             grid:true,
@@ -325,13 +328,14 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'precio_unitario',
+				currencyChar:' ',
 				fieldLabel: 'P/U Ofer.',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 120,
 				maxLength:1245186
 			},
-			type:'NumberField',
+			type:'MoneyField',
 			filters:{pfiltro:'ctd.precio_unitario',type:'numeric'},
 			id_grupo:1,
 			grid:true,
@@ -575,6 +579,7 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
         
         //coloca el id_cotizacion al atributo id_solicitud_det
         this.getComponente('id_solicitud_det').store.baseParams.id_cotizacion=this.maestro.id_cotizacion;
+        this.getComponente('id_solicitud_det').disable();
         
         this.store.baseParams={id_cotizacion:this.maestro.id_cotizacion};        
         this.load({params:{start:0, limit:50}})       

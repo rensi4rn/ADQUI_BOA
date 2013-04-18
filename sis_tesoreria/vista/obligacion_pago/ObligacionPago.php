@@ -30,7 +30,7 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
           });
           
         this.addButton('fin_registro',{text:'Fin Reg.',iconCls: 'badelante',disabled:true,handler:this.fin_registro,tooltip: '<b>Finalizar</b><p>Finalizar registro de cotización</p>'});
-         
+          this.TabPanelSouth.get(1).disable()
 	
 	
 	},
@@ -155,6 +155,21 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
             id_grupo:1,
             grid:true,
             form:true
+        },
+        {
+            config:{
+                name: 'total_pago',
+                currencyChar:' ',
+                fieldLabel: 'Total a Pagar',
+                allowBlank: false,
+                gwidth: 130,
+                maxLength:1245184
+            },
+            type:'MoneyField',
+            filters:{pfiltro:'obdet.monto_pago_mo',type:'numeric'},
+            id_grupo:1,
+            grid:true,
+            form:false
         },		
 		{
 			config: {
@@ -172,8 +187,24 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
 			filters:{pfiltro:'mn.moneda',type:'string'},
 			grid: true,
 			form: true
-		},
-        {
+		},{
+           config:{
+               name: 'pago_variable',
+               fieldLabel: 'Pago Variable',
+               gwidth: 100,
+               maxLength:30,
+               items: [
+                   {boxLabel: 'Si',name: 'pg-var',  inputValue: 'si'},
+                   {boxLabel: 'No',name: 'pg-var', inputValue: 'no', checked:true}
+               ]
+           },
+           type:'RadioGroupField',
+           filters:{pfiltro:'pago_variable',type:'string'},
+           id_grupo:1,
+           grid:true,
+           form:true
+          },
+         {
             config:{
                 name: 'tipo_cambio_conv',
                 fieldLabel: 'Tipo Cambio',
@@ -406,7 +437,9 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},'numero','tipo_cambio_conv','id_gestion','comprometido'
+		{name:'usr_mod', type: 'string'},
+		'numero','pago_variable','total_pago',
+		'tipo_cambio_conv','id_gestion','comprometido','nro_cuota_vigente','tipo_moneda'
 		
 	],
 	
@@ -635,19 +668,29 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
               this.getBoton('del').enable();    
               this.getBoton('fin_registro').enable();
                this.getBoton('ant_estado').disable();
+          
+              this.TabPanelSouth.get(1).disable()
+          
           }
           else{
+              
+              
                if (data['estado']== 'registrado'){   
-                 this.getBoton('ant_estado').enable();
+                  this.getBoton('ant_estado').enable();
                   this.getBoton('fin_registro').disable();
-              }
+                  this.TabPanelSouth.get(1).enable()
+                }
+                
+                if (data['estado']== 'en_pago'){
+                    this.TabPanelSouth.get(1).enable()
+                    this.getBoton('ant_estado').disable();
+                }
               
              
               this.getBoton('edit').disable();
               this.getBoton('new').disable();
               this.getBoton('del').disable();
           }
-          
      },
      
      
@@ -659,6 +702,7 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
            
 
         }
+       this.TabPanelSouth.get(1).disable();
         
        return tb
     }, 
@@ -682,6 +726,7 @@ Phx.vista.ObligacionPago=Ext.extend(Phx.gridInterfaz,{
       
      
     bdel:true,
+    bedit:true,
 	bsave:false
 	}
 )
