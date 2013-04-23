@@ -119,8 +119,12 @@ BEGIN
 			v_sw_oec=p_sw_oec::int4;
 			v_sw_sigma=convert(p_sw_sigma::varchar, 'LATIN1', 'UTF8');
 			v_sw_sistema_actualizacion=convert(p_sw_sistema_actualizacion::varchar, 'LATIN1', 'UTF8');
-			v_sw_transaccional=convert(p_sw_transaccional::varchar, 'LATIN1', 'UTF8');
-			if p_tipo_cuenta=1 then
+			if p_sw_transaccional=1 then 
+				v_sw_transaccional=convert('titular'::varchar, 'LATIN1', 'UTF8');
+            else 
+            	v_sw_transaccional=convert('movimiento'::varchar, 'LATIN1', 'UTF8');
+            end if;
+            if p_tipo_cuenta=1 then
             	v_tipo_cuenta=convert('activo'::varchar, 'LATIN1', 'UTF8');
 			elsif p_tipo_cuenta=2 then
 				v_tipo_cuenta=convert('pasivo'::varchar, 'LATIN1', 'UTF8');

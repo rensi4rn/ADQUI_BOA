@@ -258,3 +258,20 @@ set id_proceso_macro = (select id_proceso_macro
 						where codigo = 'COMINT');
   
 /***********************************F-DAT-JRR-ADQ-104-04/04/2013****************************************/
+
+/***********************************I-DAT-GSS-ADQ-101-22/04/2013*****************************************/
+
+select pxp.f_insert_tfuncion ('adq.f_calcular_total_adj_cot_det', 'Funcion para tabla     ', 'ADQ');
+
+select pxp.f_insert_tprocedimiento ('ADQ_SOLDETCOT_CONT', 'Conteo de registros', 'si', '', '', 'adq.f_solicitud_det_sel');
+select pxp.f_insert_tprocedimiento ('ADQ_COTOC_REP', 'Reporte Orden Compra', 'si', '', '', 'adq.f_cotizacion_sel');
+select pxp.f_insert_tprocedimiento ('ADQ_TOTALADJ_IME', 'Recuperar Total adjudicado por item', 'si', '', '', 'adq.f_cotizacion_det_ime');
+select pxp.f_insert_tprocedimiento ('ADQ_ADJDET_IME', 'Adjudicada por detalle de la cotizacion', 'si', '', '', 'adq.f_cotizacion_det_ime');
+select pxp.f_insert_tprocedimiento ('ADQ_ADJTODO_IME', 'Adjudica todo el detalle de la cotizacion disponible', 'si', '', '', 'adq.f_cotizacion_ime');
+select pxp.f_insert_tprocedimiento ('ADQ_GENOC_IME', 'Generar el numero secuencial de Orden de compra y pasa al siguiente estado la cotizacion', 'si', '', '', 'adq.f_cotizacion_ime');
+select pxp.f_insert_tprocedimiento ('ADQ_ANTEST_IME', 'Retrocede estados en la cotizacion', 'si', '', '', 'adq.f_cotizacion_ime');
+select pxp.f_insert_tprocedimiento ('ADQ_PROCPED_SEL', 'Consulta de datos', 'si', '', '', 'adq.f_proceso_compra_sel');
+select pxp.f_insert_tprocedimiento ('ADQ_HABPAG_IME', 'Habilita los pagos en tesoreria en modulo de cuentas por pagar', 'si', '', '', 'adq.f_cotizacion_ime');
+
+/***********************************F-DAT-GSS-ADQ-101-22/04/2013*****************************************/
+
