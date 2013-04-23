@@ -193,13 +193,12 @@ Phx.vista.SolicitudReq = {
     },
     onButtonEdit:function(){
        this.cmpFechaSoli.disable();
-       this.cmpIdDepto.disable(); 
-       this.cmpIdProcesoMacro.disable(); 
+       this.cmpIdDepto.disable();        
        this.Cmp.id_categoria_compra.disable();
-       this.cmpIdFuncionarioAprobador.disable();
+       this.cmpIdFuncionarioAprobador.disable();       
        this.cmpIdUo.disable();
        Phx.vista.SolicitudReq.superclass.onButtonEdit.call(this);
-           
+       this.Cmp.fecha_soli.fireEvent('change');    
     },
     
     onFinalizarSol:function(){
@@ -315,7 +314,7 @@ Phx.vista.SolicitudReq = {
           else{
                this.getBoton('fin_requerimiento').disable();
                this.getBoton('edit').disable();
-               this.getBoton('new').disable();
+               //this.getBoton('new').disable();
                this.getBoton('del').disable();
               // this.getBoton('save').disable();
             

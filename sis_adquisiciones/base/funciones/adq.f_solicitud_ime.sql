@@ -121,7 +121,7 @@ BEGIN
             into v_codigo_tipo_proceso, v_id_proceso_macro
         from  adq.tcategoria_compra cc
         inner join wf.tproceso_macro pm
-        	on tp.id_tipo_proceso =  cc.id_proceso_macro
+        	on pm.id_proceso_macro =  cc.id_proceso_macro
         inner join wf.ttipo_proceso tp
         	on tp.id_proceso_macro = pm.id_proceso_macro
         where   cc.id_categoria_compra = v_parametros.id_categoria_compra
