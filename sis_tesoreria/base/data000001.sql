@@ -70,3 +70,42 @@ select wf.f_insert_testructura_estado ('registrado', 'TOPD', 'en_pago', 'TOPD', 
 select wf.f_insert_testructura_estado ('en_pago', 'TOPD', 'finalizado', 'TOPD', '1', '', 'activo');
 
 /********************************************F-DAT-GSS-TES-14-12/04/2013**********************************************/
+
+
+/***********************************I-DAT-GSS-TES-101-22/04/2013*****************************************/
+
+select pxp.f_insert_tfuncion ('tes.f_plan_pago_ime', 'Funcion para tabla     ', 'TES');
+select pxp.f_insert_tfuncion ('tes.f_determinar_total_prorrateo_faltante', 'Funcion para tabla     ', 'TES');
+select pxp.f_insert_tfuncion ('tes.f_prorrateo_ime', 'Funcion para tabla     ', 'TES');
+select pxp.f_insert_tfuncion ('tes.ft_obligacion_det_ime', 'Funcion para tabla     ', 'TES');
+select pxp.f_insert_tfuncion ('tes.ft_obligacion_pago_ime', 'Funcion para tabla     ', 'TES');
+select pxp.f_insert_tfuncion ('tes.f_determinar_total_faltante', 'Funcion para tabla     ', 'TES');
+select pxp.f_insert_tfuncion ('tes.ft_obligacion_pago_sel', 'Funcion para tabla     ', 'TES');
+select pxp.f_insert_tfuncion ('tes.f_plan_pago_sel', 'Funcion para tabla     ', 'TES');
+select pxp.f_insert_tfuncion ('tes.f_prorrateo_sel', 'Funcion para tabla     ', 'TES');
+select pxp.f_insert_tfuncion ('tes.ft_obligacion_det_sel', 'Funcion para tabla     ', 'TES');
+
+
+select pxp.f_insert_tprocedimiento ('TES_PLAPA_INS', 'Insercion de registros', 'si', '', '', 'tes.f_plan_pago_ime');
+select pxp.f_insert_tprocedimiento ('TES_PLAPA_MOD', 'Modificacion de registros', 'si', '', '', 'tes.f_plan_pago_ime');
+select pxp.f_insert_tprocedimiento ('TES_PLAPA_ELI', 'Eliminacion de registros', 'si', '', '', 'tes.f_plan_pago_ime');
+select pxp.f_insert_tprocedimiento ('TES_PRO_MOD', 'Modificacion de registros', 'si', '', '', 'tes.f_prorrateo_ime');
+select pxp.f_insert_tprocedimiento ('TES_OBDET_INS', 'Insercion de registros', 'si', '', '', 'tes.ft_obligacion_det_ime');
+select pxp.f_insert_tprocedimiento ('TES_OBDET_MOD', 'Modificacion de registros', 'si', '', '', 'tes.ft_obligacion_det_ime');
+select pxp.f_insert_tprocedimiento ('TES_OBDET_ELI', 'Eliminacion de registros', 'si', '', '', 'tes.ft_obligacion_det_ime');
+select pxp.f_insert_tprocedimiento ('TES_OBPG_INS', 'Insercion de registros', 'si', '', '', 'tes.ft_obligacion_pago_ime');
+select pxp.f_insert_tprocedimiento ('TES_OBPG_MOD', 'Modificacion de registros', 'si', '', '', 'tes.ft_obligacion_pago_ime');
+select pxp.f_insert_tprocedimiento ('TES_OBPG_ELI', 'Eliminacion de registros', 'si', '', '', 'tes.ft_obligacion_pago_ime');
+select pxp.f_insert_tprocedimiento ('TES_FINREG_IME', 'Finaliza el registro de obligacion de pago', 'si', '', '', 'tes.ft_obligacion_pago_ime');
+select pxp.f_insert_tprocedimiento ('TES_ANTEOB_IME', 'Retrocede estado de la obligacion', 'si', '', '', 'tes.ft_obligacion_pago_ime');
+select pxp.f_insert_tprocedimiento ('TES_PAFPP_IME', 'Calcula el restante por registrar, devengar o pagar  segun filtro', 'si', '', '', 'tes.ft_obligacion_pago_ime');
+select pxp.f_insert_tprocedimiento ('TES_OBPG_SEL', 'Consulta de datos', 'si', '', '', 'tes.ft_obligacion_pago_sel');
+select pxp.f_insert_tprocedimiento ('TES_OBPG_CONT', 'Conteo de registros', 'si', '', '', 'tes.ft_obligacion_pago_sel');
+select pxp.f_insert_tprocedimiento ('TES_PLAPA_SEL', 'Consulta de datos', 'si', '', '', 'tes.f_plan_pago_sel');
+select pxp.f_insert_tprocedimiento ('TES_PLAPA_CONT', 'Conteo de registros', 'si', '', '', 'tes.f_plan_pago_sel');
+select pxp.f_insert_tprocedimiento ('TES_PRO_SEL', 'Consulta de datos', 'si', '', '', 'tes.f_prorrateo_sel');
+select pxp.f_insert_tprocedimiento ('TES_PRO_CONT', 'Conteo de registros', 'si', '', '', 'tes.f_prorrateo_sel');
+select pxp.f_insert_tprocedimiento ('TES_OBDET_SEL', 'Consulta de datos', 'si', '', '', 'tes.ft_obligacion_det_sel');
+select pxp.f_insert_tprocedimiento ('TES_OBDET_CONT', 'Conteo de registros', 'si', '', '', 'tes.ft_obligacion_det_sel');
+
+/***********************************F-DAT-GSS-TES-101-22/04/2013*****************************************/
