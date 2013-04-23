@@ -73,20 +73,3 @@ WITHOUT OIDS;
 ALTER TABLE conta.tauxiliar OWNER TO postgres;
 
 /***********************************F-SCP-GSS-CONTA-48-20/02/2013****************************************/
-
-/***********************************I-SCP-GSS-CONTA-84-01/04/2013****************************************/
-
-CREATE TABLE conta.tplantilla (
-  id_plantilla SERIAL,  
-  nro_linea NUMERIC(2,0), 
-  desc_plantilla VARCHAR(255), 
-  tipo NUMERIC(1,0), 
-  sw_tesoro VARCHAR(2), 
-  sw_compro VARCHAR(2), 
-  CONSTRAINT pk_tplantilla__id_plantilla PRIMARY KEY(id_plantilla)
-) INHERITS (pxp.tbase)
-WITHOUT OIDS;
-
-ALTER TABLE conta.tplantilla OWNER TO postgres;
-
-/***********************************F-SCP-GSS-CONTA-84-01/04/2013****************************************/

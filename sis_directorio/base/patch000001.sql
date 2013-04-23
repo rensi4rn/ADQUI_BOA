@@ -47,12 +47,12 @@ CREATE TABLE dir.tempresa(
     nit varchar(200),
     domicilio text,
     tipo_sociedad varchar(50),
-    objeto text,
-    seccion varchar(100),
-    divission varchar(100),
-    clase varchar(255),
-    domicilio_legal varchar(255),
-    dir_comercial varchar(255),
+    actividad text,
+    departamento varchar(100),
+    municipio varchar(100),
+    actividad_gral varchar(255),
+    actividad_prim varchar(255),
+    actividad_esp varchar(255),
     PRIMARY KEY (id_empresa)
     )  INHERITS (pxp.tbase);  
   

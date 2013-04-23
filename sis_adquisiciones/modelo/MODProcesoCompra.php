@@ -54,6 +54,49 @@ class MODProcesoCompra extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+function listarProcesoCompraPedido(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='adq.f_proceso_compra_sel';
+		$this->transaccion='ADQ_PROCPED_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+				
+		$this->setParametro('id_proceso_compra','id_proceso_compra','int4');
+		//Definicion de la lista del resultado del query
+		$this->captura('id_proceso_compra','int4');
+		$this->captura('id_depto','int4');
+		$this->captura('num_convocatoria','varchar');
+		$this->captura('id_solicitud','int4');
+		$this->captura('id_estado_wf','int4');
+		$this->captura('fecha_ini_proc','date');
+		$this->captura('obs_proceso','varchar');
+		$this->captura('id_proceso_wf','int4');
+		$this->captura('num_tramite','varchar');
+		$this->captura('codigo_proceso','varchar');
+		$this->captura('estado_reg','varchar');
+		$this->captura('estado','varchar');
+		$this->captura('num_cotizacion','varchar');
+		$this->captura('id_usuario_reg','int4');
+		$this->captura('fecha_reg','timestamp');
+		$this->captura('fecha_mod','timestamp');
+		$this->captura('id_usuario_mod','int4');
+		$this->captura('usr_reg','varchar');
+		$this->captura('usr_mod','varchar');
+		
+		$this->captura('desc_depto','varchar');
+		$this->captura('desc_funcionario','text');
+		$this->captura('desc_solicitud','varchar');
+		$this->captura('desc_moneda','varchar');
+		
+		 
+		
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+		
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 			
 	function insertarProcesoCompra(){
 		//Definicion de variables para ejecucion del procedimiento

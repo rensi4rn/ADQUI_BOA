@@ -18,9 +18,10 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
 		Phx.vista.CotizacionDet.superclass.constructor.call(this,config);
 		this.init();
 		this.iniciarEventos();
+		this.bloquearMenus();
 		//this.load({params:{start:0, limit:this.tam_pag}})
 		
-		this.addButton('adjudicar_det',{text:'Adjudicar Item',iconCls: 'badelante',disabled:true,handler:this.adjudicar_det,tooltip: '<b>Adjudicar</b><p>Permite adjudicar de manera parcial</p>'});
+		this.addButton('adjudicar_det',{text:'Adjudicar Item',iconCls: 'bchecklist',disabled:true,handler:this.adjudicar_det,tooltip: '<b>Adjudicar</b><p>Permite adjudicar de manera parcial</p>'});
             
         
 		//formulario de adjudicacion parcil
@@ -108,12 +109,15 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
 	    
 	    //verifica el precio unitario sea menor al precio ref en la moneda que le toca
 	     var data = this.getSelectedData();
-	     if(data.precio_unitario_mb <= data.precio_unitario_mb_sol){
+	     
+	     
+	     if(data.precio_unitario_mb*1 <= data.precio_unitario_mb_sol*1){
+	        
+	        console.log('datos....',data)
 	        
 	        
 	        this.cmpCS.setValue(data.cantidad_sol); 
             this.cmpCC.setValue(data.cantidad_coti);
-            console.log('cantidad adjudicada',data.cantidad_adju)
             this.cmpCA.setValue(data.cantidad_adju);
            
             Phx.CP.loadingShow();
@@ -219,13 +223,13 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
 	    					remoteSort: true,
 	    					baseParams:{par_filtro:'codigo'}
 	    				}),
-	   valueField: 'id_solicitud_det',
-	   displayField: 'desc_concepto_ingas',
-	   //gdisplayField: 'otro',
-	   hiddenName: 'id_solicitud_det',
-	   triggerAction: 'all',
-	   //queryDelay:1000,
-	   pageSize:10,
+        	    valueField: 'id_solicitud_det',
+        	    displayField: 'desc_concepto_ingas',
+        	    gdisplayField: 'desc_solicitud_det',
+        	    hiddenName: 'id_solicitud_det',
+        	    triggerAction: 'all',
+        	    //queryDelay:1000,
+        	    pageSize:10,
 				forceSelection: true,
 				typeAhead: true,
 				allowBlank: false,
@@ -292,13 +296,14 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
         {
             config:{
                 name: 'precio_unitario_sol',
+                currencyChar:' ',
                 fieldLabel: 'P/U Ref.',
                 allowBlank: true,
                 anchor: '80%',
                 gwidth: 120,
                 maxLength:1245186
             },
-            type:'NumberField',
+            type:'MoneyField',
             filters:{pfiltro:'ctd.precio_unitario',type:'numeric'},
             id_grupo:1,
             grid:true,
@@ -323,13 +328,14 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'precio_unitario',
+				currencyChar:' ',
 				fieldLabel: 'P/U Ofer.',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 120,
 				maxLength:1245186
 			},
-			type:'NumberField',
+			type:'MoneyField',
 			filters:{pfiltro:'ctd.precio_unitario',type:'numeric'},
 			id_grupo:1,
 			grid:true,
@@ -518,59 +524,51 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
 	    
 	    
 	},
-	  preparaMenu:function(n){
-         
-         Phx.vista.SolicitudReqDet.superclass.preparaMenu.call(this,n); 
-          if(this.maestro.estado ==  'borrador'){
-               this.getBoton('edit').enable();
-               this.getBoton('new').enable();
-               this.getBoton('del').enable();
-               this.getBoton('save').enable();
-         }
-         else{
-             
-               this.getBoton('edit').disable();
-               this.getBoton('new').disable();
-               this.getBoton('del').disable();
-               this.getBoton('save').disable();
-         }
-          
-        
-          
-     },
-     liberaMenu: function() {
-         Phx.vista.SolicitudReqDet.superclass.liberaMenu.call(this); 
-           if(this.maestro&&(this.maestro.estado !=  'borrador' )){
-           }
-           else{      
-               this.getBoton('edit').disable();
-               this.getBoton('new').disable();
-               this.getBoton('del').disable();
-               this.getBoton('save').disable();
-         }
-    },
-    
-      preparaMenu:function(n){
-          var data = this.getSelectedData();
+	 preparaMenu:function(n){
+	      var data = this.getSelectedData();
           var tb =this.tbar;
           Phx.vista.Cotizacion.superclass.preparaMenu.call(this,n);  
               
-              if(this.maestro.estado==  'cotizado'){
+              if(this.maestro.estado ==  'cotizado'){
                  this.getBoton('adjudicar_det').enable();
                  
                }
               else{
                    this.getBoton('adjudicar_det').disable();
                }
+            
+            if(this.maestro.estado ==  'borrador'){ 
+                
+                this.getBoton('edit').enable();
+                this.getBoton('new').enable();
+                this.getBoton('del').enable();
+                this.getBoton('save').enable();
+             } 
+             else{
+                 
+                this.getBoton('edit').disable();
+                this.getBoton('new').disable();
+                this.getBoton('del').disable();
+                this.getBoton('save').disable(); 
+                 
+             }
+               
+               
             return tb 
      }, 
      liberaMenu:function(){
         var tb = Phx.vista.Cotizacion.superclass.liberaMenu.call(this);
         if(tb){
+             
             this.getBoton('adjudicar_det').disable();
-           
+            
+            if(this.maestro&&this.maestro.estado !=  'borrador'){ 
+                this.getBoton('edit').disable();
+                this.getBoton('new').disable();
+                this.getBoton('del').disable();
+                this.getBoton('save').disable();
+             } 
         }
-        
        return tb
     }, 
     
@@ -581,6 +579,7 @@ Phx.vista.CotizacionDet=Ext.extend(Phx.gridInterfaz,{
         
         //coloca el id_cotizacion al atributo id_solicitud_det
         this.getComponente('id_solicitud_det').store.baseParams.id_cotizacion=this.maestro.id_cotizacion;
+        this.getComponente('id_solicitud_det').disable();
         
         this.store.baseParams={id_cotizacion:this.maestro.id_cotizacion};        
         this.load({params:{start:0, limit:50}})       

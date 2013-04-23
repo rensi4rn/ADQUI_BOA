@@ -50,6 +50,9 @@ DECLARE
      v_cantidad_coti integer;
      
      v_cantidad_adju integer;
+     
+     
+     
 			    
 BEGIN
 
@@ -106,7 +109,7 @@ BEGIN
             
             --calcular el precio unitario en moneda base
             
-             v_precio_unitario_mb_coti= v_parametros.precio_unitario/v_tipo_cambio_conv;
+             v_precio_unitario_mb_coti= v_parametros.precio_unitario*v_tipo_cambio_conv;
              
          
             
@@ -202,7 +205,7 @@ BEGIN
             
             --calcular el precio unitario en moneda base
             
-              v_precio_unitario_mb_coti= v_parametros.precio_unitario/v_tipo_cambio_conv;
+              v_precio_unitario_mb_coti= v_parametros.precio_unitario*v_tipo_cambio_conv;
             
         
 			--Sentencia de la modificacion
@@ -295,18 +298,33 @@ BEGIN
                sd.id_solicitud_det, 
                sd.cantidad,
                cd.cantidad_coti,
-               cd.cantidad_adju
+               cd.cantidad_adju,
+               sd.precio_unitario_mb,
+               cd.precio_unitario_mb
             into 
-               v_cantidad_sol,
                v_id_solicitud_det,
+               v_cantidad_sol,
                v_cantidad_coti,
-               v_cantidad_adju
+               v_cantidad_adju,
+               v_precio_unitario_mb_sol,
+               v_precio_unitario_mb_coti
             from adq.tsolicitud_det sd
             inner join adq.tcotizacion_det cd on  cd.id_solicitud_det = sd.id_solicitud_det
             where cd.id_cotizacion_det = v_parametros.id_cotizacion_det;
             
+            
+            
+            IF v_precio_unitario_mb_coti > v_precio_unitario_mb_sol THEN
+            
+            
+              raise exception  'El precio referencial es menor que el precio cotizado ';
+            
+            
+            END IF;
+            
+            
            
-			--Sentencia de la eliminacion
+			--calcula el total adjudicado en otras cotizaciones
 			
              v_total_adj = adq.f_calcular_total_adj_cot_det(v_parametros.id_cotizacion_det);
             
@@ -317,11 +335,7 @@ BEGIN
             
             END IF;
             
-            
-            
-            
-            
-            
+            --raise exception 'c% o %  sol %,  adj  %',v_cantidad_coti,v_parametros.cantidad_adjudicada,v_cantidad_sol,v_total_adj;
            
             IF  (v_cantidad_sol - v_total_adj) >= v_parametros.cantidad_adjudicada THEN
             

@@ -74,9 +74,8 @@ Phx.vista.SolicitudReqDet = {
      
      liberaMenu: function() {
          Phx.vista.SolicitudReqDet.superclass.liberaMenu.call(this); 
-           if(this.maestro&&(this.maestro.estado !=  'borrador' || this.maestro.estado!=  'Borrador')){
-           }
-           else{      
+           if(this.maestro&&(this.maestro.estado !=  'borrador')){
+               
                this.getBoton('edit').disable();
                this.getBoton('new').disable();
                this.getBoton('del').disable();

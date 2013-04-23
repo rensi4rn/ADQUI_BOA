@@ -1,8 +1,11 @@
-CREATE OR REPLACE FUNCTION "dir"."f_empresa_ime" (	
-				p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
-RETURNS character varying AS
-$BODY$
-
+CREATE OR REPLACE FUNCTION dir.f_empresa_ime (
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
+)
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA:		Directorio
  FUNCION: 		dir.f_empresa_ime
@@ -47,19 +50,19 @@ BEGIN
         	insert into dir.tempresa(
 			estado_reg,
 			tipo_sociedad,
-			objeto,
-			dir_comercial,
+			actividad,
+			actividad_esp,
 			nit,
-			clase,
+			actividad_gral,
 			domicilio,
 			matricula,
-			renovado,
-			domicilio_legal,
+			--renovado,
+			actividad_prim,
 			nombre,
-			seccion,
+			departamento,
 			telefono,
-			divission,
-			estado_matricula,
+			municipio,
+			--estado_matricula,
 			mail,
 			fecha_reg,
 			id_usuario_reg,
@@ -68,19 +71,19 @@ BEGIN
           	) values(
 			'activo',
 			v_parametros.tipo_sociedad,
-			v_parametros.objeto,
-			v_parametros.dir_comercial,
+			v_parametros.actividad,
+			v_parametros.actividad_esp,
 			v_parametros.nit,
-			v_parametros.clase,
+			v_parametros.actividad_gral,
 			v_parametros.domicilio,
 			v_parametros.matricula,
-			v_parametros.renovado,
-			v_parametros.domicilio_legal,
+			--v_parametros.renovado,
+			v_parametros.actividad_prim,
 			v_parametros.nombre,
-			v_parametros.seccion,
+			v_parametros.departamento,
 			v_parametros.telefono,
-			v_parametros.divission,
-			v_parametros.estado_matricula,
+			v_parametros.municipio,
+			--v_parametros.estado_matricula,
 			v_parametros.mail,
 			now(),
 			p_id_usuario,
@@ -177,7 +180,9 @@ EXCEPTION
 		raise exception '%',v_resp;
 				        
 END;
-$BODY$
-LANGUAGE 'plpgsql' VOLATILE
+$body$
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
 COST 100;
-ALTER FUNCTION "dir"."f_empresa_ime"(integer, integer, character varying, character varying) OWNER TO postgres;

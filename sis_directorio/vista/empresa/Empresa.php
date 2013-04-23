@@ -17,6 +17,13 @@ Phx.vista.Empresa=Ext.extend(Phx.gridInterfaz,{
     	//llama al constructor de la clase padre
 		Phx.vista.Empresa.superclass.constructor.call(this,config);
 		this.init();
+		this.addButton('btnFundempresa',{
+            text :'Recupera datos de fundempresa',
+            iconCls : 'btransfer',
+            disabled: false,
+            handler : this.onButtonFundempresa,
+            tooltip : '<b>Recupera datos de fundempresa</b><br/><b>Recupera datos de fundempresa</b>'
+  });
 		this.load({params:{start:0, limit:this.tam_pag}})
 	},
 	tam_pag:50,
@@ -44,13 +51,13 @@ Phx.vista.Empresa=Ext.extend(Phx.gridInterfaz,{
 			type:'TextField',
 			filters:{pfiltro:'emp.estado_reg',type:'string'},
 			id_grupo:1,
-			grid:true,
+			grid:false,
 			form:false
 		},
 		{
 			config:{
 				name: 'tipo_sociedad',
-				fieldLabel: 'tipo_sociedad',
+				fieldLabel: 'Tipo Sociedad',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -64,30 +71,30 @@ Phx.vista.Empresa=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'objeto',
-				fieldLabel: 'objeto',
+				name: 'actividad',
+				fieldLabel: 'Actividad',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:-5
 			},
 			type:'TextField',
-			filters:{pfiltro:'emp.objeto',type:'string'},
+			filters:{pfiltro:'emp.actividad',type:'string'},
 			id_grupo:1,
-			grid:true,
+			grid:false,
 			form:true
 		},
 		{
 			config:{
-				name: 'dir_comercial',
-				fieldLabel: 'dir_comercial',
+				name: 'actividad_esp',
+				fieldLabel: 'Act. Especifica',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:255
 			},
 			type:'TextField',
-			filters:{pfiltro:'emp.dir_comercial',type:'string'},
+			filters:{pfiltro:'emp.actividad_esp',type:'string'},
 			id_grupo:1,
 			grid:true,
 			form:true
@@ -109,17 +116,17 @@ Phx.vista.Empresa=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'clase',
-				fieldLabel: 'clase',
+				name: 'actividad_gral',
+				fieldLabel: 'Act. Gral',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:255
 			},
 			type:'TextField',
-			filters:{pfiltro:'emp.clase',type:'string'},
+			filters:{pfiltro:'emp.actividad_gral',type:'string'},
 			id_grupo:1,
-			grid:true,
+			grid:false,
 			form:true
 		},
 		{
@@ -134,7 +141,7 @@ Phx.vista.Empresa=Ext.extend(Phx.gridInterfaz,{
 			type:'TextField',
 			filters:{pfiltro:'emp.domicilio',type:'string'},
 			id_grupo:1,
-			grid:true,
+			grid:false,
 			form:true
 		},
 		{
@@ -164,20 +171,20 @@ Phx.vista.Empresa=Ext.extend(Phx.gridInterfaz,{
 			type:'NumberField',
 			filters:{pfiltro:'emp.renovado',type:'numeric'},
 			id_grupo:1,
-			grid:true,
+			grid:false,
 			form:true
 		},
 		{
 			config:{
-				name: 'domicilio_legal',
-				fieldLabel: 'domicilio_legal',
+				name: 'actividad_prim',
+				fieldLabel: 'Act. Primaria',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:255
 			},
 			type:'TextField',
-			filters:{pfiltro:'emp.domicilio_legal',type:'string'},
+			filters:{pfiltro:'emp.actividad_prim',type:'string'},
 			id_grupo:1,
 			grid:true,
 			form:true
@@ -199,15 +206,15 @@ Phx.vista.Empresa=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'seccion',
-				fieldLabel: 'seccion',
+				name: 'departamento',
+				fieldLabel: 'Departamento',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:100
 			},
 			type:'TextField',
-			filters:{pfiltro:'emp.seccion',type:'string'},
+			filters:{pfiltro:'emp.departamento',type:'string'},
 			id_grupo:1,
 			grid:true,
 			form:true
@@ -229,15 +236,15 @@ Phx.vista.Empresa=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'divission',
-				fieldLabel: 'divission',
+				name: 'municipio',
+				fieldLabel: 'Municipio',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:100
 			},
 			type:'TextField',
-			filters:{pfiltro:'emp.divission',type:'string'},
+			filters:{pfiltro:'emp.municipio',type:'string'},
 			id_grupo:1,
 			grid:true,
 			form:true
@@ -345,18 +352,18 @@ Phx.vista.Empresa=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_empresa', type: 'numeric'},
 		{name:'estado_reg', type: 'string'},
 		{name:'tipo_sociedad', type: 'string'},
-		{name:'objeto', type: 'string'},
-		{name:'dir_comercial', type: 'string'},
+		{name:'actividad', type: 'string'},
+		{name:'actividad_esp', type: 'string'},
 		{name:'nit', type: 'string'},
-		{name:'clase', type: 'string'},
+		{name:'actividad_gral', type: 'string'},
 		{name:'domicilio', type: 'string'},
 		{name:'matricula', type: 'string'},
 		{name:'renovado', type: 'numeric'},
-		{name:'domicilio_legal', type: 'string'},
+		{name:'actividad_prim', type: 'string'},
 		{name:'nombre', type: 'string'},
-		{name:'seccion', type: 'string'},
+		{name:'departamento', type: 'string'},
 		{name:'telefono', type: 'string'},
-		{name:'divission', type: 'string'},
+		{name:'municipio', type: 'string'},
 		{name:'estado_matricula', type: 'string'},
 		{name:'mail', type: 'string'},
 		{name:'fecha_reg', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
@@ -370,6 +377,23 @@ Phx.vista.Empresa=Ext.extend(Phx.gridInterfaz,{
 	sortInfo:{
 		field: 'id_empresa',
 		direction: 'ASC'
+	},
+	
+	onButtonFundempresa:function(){
+	    //var rec=this.sm.getSelected();
+       //         console.debug(rec);
+                Ext.Ajax.request({
+                    url:'../../sis_directorio/control/RecuperaDatos/insertarEmpresa',
+                    params:{'id_solicitud':'hola'},
+                    success: this.successExport,
+                    failure: function() {
+                        console.log("fail");
+                    },
+                    timeout: function() {
+                        console.log("timeout");
+                    },
+                    scope:this
+                });  
 	},
 	bdel:true,
 	bsave:true

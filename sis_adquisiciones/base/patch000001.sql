@@ -103,7 +103,8 @@ CREATE TABLE adq.tsolicitud_det(
     id_moneda int4 NOT NULL,
     id_estado_wf int4,
     id_proceso_wf int4 ,
-    numero_oc int4,
+    id_obligacion_pago int4,
+    numero_oc varchar(50),
     estado varchar(30),
     fecha_coti date,
     fecha_adju date,
@@ -122,6 +123,7 @@ CREATE TABLE adq.tcotizacion_det(
     id_cotizacion_det SERIAL NOT NULL,
     id_cotizacion int4 NOT NULL,
     id_solicitud_det int4 NOT NULL,
+    id_obligacion_det integer,
     precio_unitario numeric(19, 2),
     precio_unitario_mb numeric(19,2),
     cantidad_coti numeric(19, 0),
@@ -129,41 +131,7 @@ CREATE TABLE adq.tcotizacion_det(
     obs varchar(500),
     PRIMARY KEY (id_cotizacion_det))INHERITS (pxp.tbase);
     
-    
-    
-   
-CREATE TABLE adq.tplan_pago(
-    id_plan_pago SERIAL NOT NULL,
-    id_cotizacion int4 NOT NULL,
-    id_moneda int4 NOT NULL,
-    id_plan_pago_dev int4,
-    id_plantilla int4,
-    id_gestion int4,
-    id_comprobante int4,
-    numero varchar(30),
-    cuota int4,
-    monto numeric(19, 2),
-    estado varchar(255),
-    tipo varchar(30),
-    fecha_dev date,
-    fecha_pag date,
-    boleta_garantia varchar(255),
-    obs_descuentos text,
-    descuento_anticipo numeric(19, 2),
-    PRIMARY KEY (id_plan_pago))INHERITS (pxp.tbase);   
-     
-CREATE TABLE adq.tplan_pago_det(
-    id_plan_pago_det SERIAL NOT NULL,
-    id_plan_pago int4 NOT NULL,
-    id_cotizacion_det int4 NOT NULL,
-    id_partida_ejecucion int4,
-    id_partida_ejecucion_pago int4,
-    id_transaccion int4,
-    monto_ejecutar_mc numeric(19, 2),
-    monto_ejecutar_mb numeric(19, 2),
-    PRIMARY KEY (id_plan_pago_det))INHERITS (pxp.tbase);
-    
-    
+
      
 
 /***********************************F-SCP-RAC-ADQ-1-01/01/2013****************************************/
