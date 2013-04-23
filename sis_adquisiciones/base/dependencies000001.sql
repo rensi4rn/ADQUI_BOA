@@ -32,3 +32,17 @@ ALTER TABLE adq.tsolicitud ADD CONSTRAINT
 
 
 /***********************************F-DEP-FRH-ADQ-0-15/02/2013*****************************************/
+
+/***********************************I-DEP-JRR-ADQ-104-04/04/2013****************************************/
+
+ALTER TABLE adq.tcategoria_compra
+  ALTER COLUMN id_proceso_macro SET NOT NULL;
+
+ALTER TABLE adq.tcategoria_compra
+  ADD CONSTRAINT fk_tcategoria_compra__id_proceso_macro FOREIGN KEY (id_proceso_macro)
+    REFERENCES wf.tproceso_macro(id_proceso_macro)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+  
+/***********************************F-DEP-JRR-ADQ-104-04/04/2013****************************************/

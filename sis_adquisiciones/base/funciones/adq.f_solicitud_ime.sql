@@ -1,5 +1,3 @@
---------------- SQL ---------------
-
 CREATE OR REPLACE FUNCTION adq.f_solicitud_ime (
   p_administrador integer,
   p_id_usuario integer,
@@ -38,6 +36,7 @@ DECLARE
     v_num_tramite varchar;
     v_id_proceso_wf integer;
     v_id_estado_wf integer;
+    v_id_proceso_macro	integer;
     v_codigo_estado varchar;
      v_codigo_estado_siguiente varchar;
     v_codigo_tipo_proceso varchar;
@@ -118,10 +117,14 @@ BEGIN
         
         -- obtener el codigo del tipo_proceso
        
-        select   tp.codigo 
-            into v_codigo_tipo_proceso
-        from  wf.ttipo_proceso tp 
-        where   tp.id_proceso_macro = v_parametros.id_proceso_macro
+        select   tp.codigo, pm.id_proceso_macro 
+            into v_codigo_tipo_proceso, v_id_proceso_macro
+        from  adq.tcategoria_compra cc
+        inner join wf.tproceso_macro pm
+        	on tp.id_tipo_proceso =  cc.id_proceso_macro
+        inner join wf.ttipo_proceso tp
+        	on tp.id_proceso_macro = pm.id_proceso_macro
+        where   cc.id_categoria_compra = v_parametros.id_categoria_compra
                 and tp.estado_reg = 'activo' and tp.inicio = 'si';
             
          
@@ -209,7 +212,7 @@ BEGIN
 			null,
 			null,
             v_parametros.id_uo,
-            v_parametros.id_proceso_macro
+            v_id_proceso_macro
 							
 			)RETURNING id_solicitud into v_id_solicitud;
 			
@@ -251,7 +254,6 @@ BEGIN
 			posibles_proveedores = v_parametros.posibles_proveedores,
 			--id_proceso_wf = v_parametros.id_proceso_wf,
 			comite_calificacion = v_parametros.comite_calificacion,
-			id_categoria_compra = v_parametros.id_categoria_compra,
 			id_funcionario = v_parametros.id_funcionario,
 			--id_estado_wf = v_parametros.id_estado_wf,
 			fecha_soli = v_parametros.fecha_soli,

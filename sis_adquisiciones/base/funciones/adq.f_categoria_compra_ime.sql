@@ -54,7 +54,8 @@ BEGIN
 			id_usuario_reg,
 			fecha_reg,
 			id_usuario_mod,
-			fecha_mod
+			fecha_mod,
+			id_proceso_macro
           	) values(
 			v_parametros.codigo,
 			v_parametros.nombre,
@@ -65,8 +66,8 @@ BEGIN
 			p_id_usuario,
 			now(),
 			null,
-			null
-							
+			null,
+			v_parametros.id_proceso_macro							
 			)RETURNING id_categoria_compra into v_id_categoria_compra;
 			
 			--Definicion de la respuesta
@@ -96,7 +97,8 @@ BEGIN
 			max = v_parametros.max,
 			min = v_parametros.min,
 			id_usuario_mod = p_id_usuario,
-			fecha_mod = now()
+			fecha_mod = now(),
+			id_proceso_macro = v_parametros.id_proceso_macro 
 			where id_categoria_compra=v_parametros.id_categoria_compra;
                
 			--Definicion de la respuesta

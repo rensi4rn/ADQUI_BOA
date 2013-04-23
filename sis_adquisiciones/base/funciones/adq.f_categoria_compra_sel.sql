@@ -1,7 +1,11 @@
-CREATE OR REPLACE FUNCTION "adq"."f_categoria_compra_sel"(	
-				p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
-RETURNS character varying AS
-$BODY$
+CREATE OR REPLACE FUNCTION adq.f_categoria_compra_sel (
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
+)
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA:		Sistema de Adquisiciones
  FUNCION: 		adq.f_categoria_compra_sel
@@ -53,9 +57,12 @@ BEGIN
 						catcomp.id_usuario_mod,
 						catcomp.fecha_mod,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod	
+						usu2.cuenta as usr_mod,
+                        catcomp.id_proceso_macro,
+                        pm.nombre
 						from adq.tcategoria_compra catcomp
 						inner join segu.tusuario usu1 on usu1.id_usuario = catcomp.id_usuario_reg
+                        inner join wf.tproceso_macro  pm on pm.id_proceso_macro = catcomp.id_proceso_macro
 						left join segu.tusuario usu2 on usu2.id_usuario = catcomp.id_usuario_mod
 				        where  ';
 			
@@ -82,6 +89,7 @@ BEGIN
 			v_consulta:='select count(id_categoria_compra)
 					    from adq.tcategoria_compra catcomp
 					    inner join segu.tusuario usu1 on usu1.id_usuario = catcomp.id_usuario_reg
+                        inner join wf.tproceso_macro  pm on pm.id_proceso_macro = catcomp.id_proceso_macro
 						left join segu.tusuario usu2 on usu2.id_usuario = catcomp.id_usuario_mod
 					    where ';
 			
@@ -108,7 +116,9 @@ EXCEPTION
 			v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
 			raise exception '%',v_resp;
 END;
-$BODY$
-LANGUAGE 'plpgsql' VOLATILE
+$body$
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
 COST 100;
-ALTER FUNCTION "adq"."f_categoria_compra_sel"(integer, integer, character varying, character varying) OWNER TO postgres;

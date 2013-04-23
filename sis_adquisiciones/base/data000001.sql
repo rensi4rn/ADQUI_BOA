@@ -227,3 +227,11 @@ select pxp.f_insert_tprocedimiento ('ADQ_SOLDETCOT_CONT', 'Conteo de registros',
 select pxp.f_insert_tprocedimiento ('ADQ_FINREGC_IME', 'Finaliza el registro de la cotizacion y pasa al siguiente este que es totizado donde estara listo para adjudicar', 'si', '', '', 'adq.f_cotizacion_ime');
 
 /***********************************F-DAT-GSS-ADQ-81-26/03/2013*****************************************/
+
+/***********************************I-DAT-JRR-ADQ-104-04/04/2013****************************************/
+update adq.tcategoria_compra
+set id_proceso_macro = (select id_proceso_macro 
+						from wf.tproceso_macro
+						where codigo = 'COMINT');
+  
+/***********************************F-DAT-JRR-ADQ-104-04/04/2013****************************************/

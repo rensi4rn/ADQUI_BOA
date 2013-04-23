@@ -116,46 +116,86 @@ Phx.vista.SolicitudReq = {
         
         this.cmpFechaSoli = this.getComponente('fecha_soli');
         this.cmpIdDepto = this.getComponente('id_depto');
-        this.cmpIdProcesoMacro = this.getComponente('id_proceso_macro');
         this.cmpIdGestion = this.getComponente('id_gestion');
         this.cmpIdUo = this.getComponente('id_uo');
         this.cmpIdFuncionarioAprobador = this.getComponente('id_funcionario_aprobador');
         
         //inicio de eventos 
         this.cmpFechaSoli.on('change',function(f){
-             this.obtenerGestion(f);
+        	
+             this.obtenerGestion(this.cmpFechaSoli);
              this.cmpIdUo.reset();
              this.cmpIdFuncionarioAprobador.reset();
              this.cmpIdUo.enable();
+             this.Cmp.id_funcionario.enable();             
+             this.Cmp.id_funcionario.store.baseParams.fecha = this.cmpFechaSoli.getValue().dateFormat(this.cmpFechaSoli.format);
              
              },this);
         
-        this.cmpIdUo.on('select',function(){   
-            this.cmpIdFuncionarioAprobador.store.baseParams.id_uo=this.cmpIdUo.getValue();
+        this.Cmp.id_funcionario.on('select',function(rec){ 
+        	
+        	//Aprobador  
+            this.cmpIdFuncionarioAprobador.store.baseParams.id_funcionario=this.Cmp.id_funcionario.getValue();
             this.cmpIdFuncionarioAprobador.store.baseParams.fecha = this.cmpFechaSoli.getValue().dateFormat(this.cmpFechaSoli.format);
             this.cmpIdFuncionarioAprobador.modificado=true;
+            //Unidad
+            this.Cmp.id_uo.store.baseParams.id_funcionario_uo_presupuesta=this.Cmp.id_funcionario.getValue();
+            this.Cmp.id_uo.store.baseParams.fecha = this.cmpFechaSoli.getValue().dateFormat(this.cmpFechaSoli.format);
+            this.Cmp.id_uo.store.load({params:{start:0,limit:this.tam_pag}, 
+		       callback : function (r) {	       				
+		    		if (r.length > 0 ) {	       				
+	    				this.Cmp.id_uo.setValue(r[0].data.id_uo);
+	    			}     
+		    			    		
+		    	}, scope : this
+		    });
+            
+            
             this.cmpIdFuncionarioAprobador.reset();
             this.cmpIdFuncionarioAprobador.enable();
            },this);
       
     },
-    
+         
     onButtonNew:function(){
-        
+       Phx.vista.SolicitudReq.superclass.onButtonNew.call(this); 
        this.cmpFechaSoli.enable();
        this.cmpIdDepto.enable(); 
-        this.cmpIdProcesoMacro.enable(); 
-       
+         
+       this.Cmp.id_categoria_compra.enable();
        this.cmpIdFuncionarioAprobador.disable();
        this.cmpIdUo.disable();
-       Phx.vista.SolicitudReq.superclass.onButtonNew.call(this);
+       this.Cmp.id_funcionario.disable();
+       this.Cmp.fecha_soli.setValue(new Date());
+       this.Cmp.fecha_soli.fireEvent('change');
+       
+       
+       this.Cmp.id_categoria_compra.store.load({params:{start:0,limit:this.tam_pag}, 
+	       callback : function (r) {
+	       		if (r.length > 0 ) {	       				
+	    			this.Cmp.id_categoria_compra.setValue(r[0].data.id_categoria_compra);
+	    		}    
+	    			    		
+	    	}, scope : this
+	    });
+	    
+	    this.Cmp.id_funcionario.store.load({params:{start:0,limit:this.tam_pag}, 
+	       callback : function (r) {
+	       		if (r.length == 1 ) {	       				
+	    			this.Cmp.id_funcionario.setValue(r[0].data.id_funcionario);
+	    			this.Cmp.id_funcionario.fireEvent('select', r[0]);
+	    		}    
+	    			    		
+	    	}, scope : this
+	    });
+		
            
     },
     onButtonEdit:function(){
        this.cmpFechaSoli.disable();
        this.cmpIdDepto.disable(); 
        this.cmpIdProcesoMacro.disable(); 
-       
+       this.Cmp.id_categoria_compra.disable();
        this.cmpIdFuncionarioAprobador.disable();
        this.cmpIdUo.disable();
        Phx.vista.SolicitudReq.superclass.onButtonEdit.call(this);

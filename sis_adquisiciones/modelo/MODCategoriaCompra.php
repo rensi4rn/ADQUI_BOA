@@ -33,6 +33,8 @@ class MODCategoriaCompra extends MODbase{
 		$this->captura('fecha_mod','timestamp');
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
+		$this->captura('id_proceso_macro','int4');
+		$this->captura('desc_proceso_macro','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -55,6 +57,7 @@ class MODCategoriaCompra extends MODbase{
 		$this->setParametro('max','max','numeric');
 		$this->setParametro('min','min','numeric');
 		$this->setParametro('estado_reg','estado_reg','varchar');
+		$this->setParametro('id_proceso_macro','id_proceso_macro','int4');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -78,6 +81,7 @@ class MODCategoriaCompra extends MODbase{
 		$this->setParametro('max','max','numeric');
 		$this->setParametro('min','min','numeric');
 		$this->setParametro('estado_reg','estado_reg','varchar');
+		$this->setParametro('id_proceso_macro','id_proceso_macro','int4');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

@@ -62,6 +62,54 @@ Phx.vista.CategoriaCompra=Ext.extend(Phx.gridInterfaz,{
             form:true
         },
         {
+			config: {
+				name: 'id_proceso_macro',
+				fieldLabel: 'Proceso',
+				typeAhead: false,
+				forceSelection: false,
+				 hiddenName: 'id_proceso_macro',
+				allowBlank: false,
+				emptyText: 'Lista de Procesos...',
+				store: new Ext.data.JsonStore({
+					url: '../../sis_workflow/control/ProcesoMacro/listarProcesoMacro',
+					id: 'id_proceso_macro',
+					root: 'datos',
+					sortInfo: {
+						field: 'nombre',
+						direction: 'ASC'
+					},
+					totalProperty: 'total',
+					fields: ['id_proceso_macro', 'nombre', 'codigo'],
+					// turn on remote sorting
+					remoteSort: true,
+					baseParams: {par_filtro: 'promac.nombre#promac.codigo',codigo_subsistema:'ADQ'}
+				}),
+				valueField: 'id_proceso_macro',
+				displayField: 'nombre',
+				gdisplayField: 'desc_proceso_macro',
+				triggerAction: 'all',
+				lazyRender: true,
+				mode: 'remote',
+				pageSize: 20,
+				queryDelay: 200,
+				listWidth:280,
+				minChars: 2,
+				gwidth: 170,
+				renderer: function(value, p, record) {
+					return String.format('{0}', record.data['desc_proceso_macro']);
+				},
+				tpl: '<tpl for="."><div class="x-combo-list-item"><p>{nombre}</p>Codigo: <strong>{codigo}</strong> </div></tpl>'
+			},
+			type: 'ComboBox',
+			id_grupo: 0,
+			filters: {
+				pfiltro: 'pm.nombre',
+				type: 'string'
+			},
+			grid: true,
+			form: true
+		},
+        {
             config:{
                 name: 'obs',
                 fieldLabel: 'Observaciones',
@@ -81,7 +129,7 @@ Phx.vista.CategoriaCompra=Ext.extend(Phx.gridInterfaz,{
                 name: 'min',
                 fieldLabel: 'Mínimo ',
                 allowBlank: true,
-                anchor: '20%',
+                anchor: '40%',
                 gwidth: 100,
                 maxLength:1245184
             },
@@ -96,7 +144,7 @@ Phx.vista.CategoriaCompra=Ext.extend(Phx.gridInterfaz,{
                 name: 'max',
                 fieldLabel: 'Máximo',
                 allowBlank: true,
-                anchor: '20%',
+                anchor: '40%',
                 gwidth: 100,
                 maxLength:1245184
             },
@@ -192,6 +240,8 @@ Phx.vista.CategoriaCompra=Ext.extend(Phx.gridInterfaz,{
     id_store:'id_categoria_compra',
     fields: [
         {name:'id_categoria_compra', type: 'numeric'},
+        {name:'id_proceso_macro', type: 'numeric'},
+        {name:'desc_proceso_macro', type: 'string'},
         {name:'codigo', type: 'string'},
         {name:'nombre', type: 'string'},
         {name:'obs', type: 'string'},
