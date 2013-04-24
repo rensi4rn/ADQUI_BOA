@@ -109,3 +109,18 @@ select pxp.f_insert_tprocedimiento ('TES_OBDET_SEL', 'Consulta de datos', 'si', 
 select pxp.f_insert_tprocedimiento ('TES_OBDET_CONT', 'Conteo de registros', 'si', '', '', 'tes.ft_obligacion_det_sel');
 
 /***********************************F-DAT-GSS-TES-101-22/04/2013*****************************************/
+
+/***********************************I-DAT-GSS-TES-121-24/04/2013*****************************************/
+
+select pxp.f_insert_tgui ('Cuenta Bancaria', 'cuentas bancarias de la empresa', 'CTABAN', 'si', 2, 'sis_tesoreria/vista/cuenta_bancaria/CuentaBancaria.php', 2, '', 'CuentaBancaria', 'TES');
+select pxp.f_insert_tfuncion ('tes.f_cuenta_bancaria_ime', 'Funcion para tabla     ', 'TES');
+select pxp.f_insert_tfuncion ('tes.f_cuenta_bancaria_sel', 'Funcion para tabla     ', 'TES');
+select pxp.f_insert_tprocedimiento ('TES_CTABAN_INS', 'Insercion de registros', 'si', '', '', 'tes.f_cuenta_bancaria_ime');
+select pxp.f_insert_tprocedimiento ('TES_CTABAN_MOD', 'Modificacion de registros', 'si', '', '', 'tes.f_cuenta_bancaria_ime');
+select pxp.f_insert_tprocedimiento ('TES_CTABAN_ELI', 'Eliminacion de registros', 'si', '', '', 'tes.f_cuenta_bancaria_ime');
+select pxp.f_insert_tprocedimiento ('TES_CTABAN_SEL', 'Consulta de datos', 'si', '', '', 'tes.f_cuenta_bancaria_sel');
+select pxp.f_insert_tprocedimiento ('TES_CTABAN_CONT', 'Conteo de registros', 'si', '', '', 'tes.f_cuenta_bancaria_sel');
+
+select pxp.f_insert_testructura_gui ('CTABAN', 'TES');
+
+/***********************************F-DAT-GSS-TES-121-24/04/2013*****************************************/

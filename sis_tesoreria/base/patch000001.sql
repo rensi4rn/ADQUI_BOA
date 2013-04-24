@@ -121,3 +121,31 @@ CREATE TABLE tes.tplan_pago(
     
 
 /***********************************F-SCP-GSS-TES-45-01/04/2013****************************************/
+
+/***********************************I-SCP-GSS-TES-121-24/04/2013****************************************/
+--tabla tes.tplan_pago
+
+CREATE TABLE tes.tcuenta_bancaria (
+  id_cuenta_bancaria SERIAL, 
+  id_institucion INTEGER NOT NULL, 
+  id_cuenta INTEGER NOT NULL, 
+  id_auxiliar INTEGER, 
+  nro_cuenta VARCHAR, 
+  fecha_alta DATE, 
+  fecha_baja DATE, 
+  CONSTRAINT pk_tcuenta_bancaria_id_cuenta_bancaria PRIMARY KEY(id_cuenta_bancaria)
+) INHERITS (pxp.tbase)
+WITHOUT OIDS;
+
+--tabla tes.chequera
+
+CREATE TABLE tes.tchequera (
+  id_chequera SERIAL,  
+  id_cuenta_bancaria INTEGER NOT NULL,  
+  codigo VARCHAR, 
+  nro_chequera INTEGER NOT NULL, 
+  CONSTRAINT pk_tchequera_id_chequera PRIMARY KEY(id_chequera)
+) INHERITS (pxp.tbase)
+WITHOUT OIDS;
+
+/***********************************F-SCP-GSS-TES-121-24/04/2013****************************************/

@@ -52,6 +52,10 @@ select pxp.f_insert_tprocedimiento_gui ('TES_PRO_SEL', 'OBPG', 'no');
 select pxp.f_insert_tprocedimiento_gui ('TES_PLAPA_MOD', 'OBPG', 'no');
 select pxp.f_insert_tprocedimiento_gui ('TES_PLAPA_ELI', 'OBPG', 'no');
 select pxp.f_insert_tprocedimiento_gui ('TES_PRO_MOD', 'OBPG', 'no');
+select pxp.f_insert_tprocedimiento_gui ('TES_CTABAN_INS', 'CTABAN', 'no');
+select pxp.f_insert_tprocedimiento_gui ('TES_CTABAN_MOD', 'CTABAN', 'no');
+select pxp.f_insert_tprocedimiento_gui ('TES_CTABAN_ELI', 'CTABAN', 'no');
+select pxp.f_insert_tprocedimiento_gui ('TES_CTABAN_SEL', 'CTABAN', 'no');
 
 --rol_procedimiento_gui
 
