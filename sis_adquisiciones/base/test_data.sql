@@ -325,17 +325,6 @@ VALUES (4, 1, E'marco', E'f5888d0bb58d611107e11f7cbc41c97a', E'2013-04-30', E'20
 INSERT INTO segu.tusuario ("id_usuario", "id_clasificador", "cuenta", "contrasena", "fecha_caducidad", "fecha_reg", "estilo", "contrasena_anterior", "id_persona", "estado_reg", "autentificacion")
 VALUES (75, 2, E'rocio', E'325daa03a34823cef2fc367c779561ba', E'2013-04-30', E'2013-04-22', E'xtheme-gray.css', E'85741b002a62a335b970190271b9cadf', 8415, E'activo', E'local');
 
-/* Data for the 'param.tmoneda' table  (Records 1 - 3) */
-
-INSERT INTO param.tmoneda ("id_usuario_reg", "id_usuario_mod", "fecha_reg", "fecha_mod", "estado_reg", "id_moneda", "moneda", "codigo", "tipo_moneda", "prioridad", "tipo_actualizacion", "origen")
-VALUES (1, NULL, E'2013-04-22 11:28:25.715', NULL, E'activo', 2, E'Dólares Americanos', E'US$', NULL, 2, E'por_saldo', E'extranjera');
-
-INSERT INTO param.tmoneda ("id_usuario_reg", "id_usuario_mod", "fecha_reg", "fecha_mod", "estado_reg", "id_moneda", "moneda", "codigo", "tipo_moneda", "prioridad", "tipo_actualizacion", "origen")
-VALUES (1, NULL, E'2013-04-22 11:28:25.715', NULL, E'activo', 3, E'Unidad de Fomento a la Vivienda', E'UFV', NULL, 3, E'por_transaccion', E'nacional');
-
-INSERT INTO param.tmoneda ("id_usuario_reg", "id_usuario_mod", "fecha_reg", "fecha_mod", "estado_reg", "id_moneda", "moneda", "codigo", "tipo_moneda", "prioridad", "tipo_actualizacion", "origen")
-VALUES (1, NULL, E'2013-04-22 11:28:25.715', NULL, E'activo', 1, E'Bolivianos', E'Bs', E'base', 1, E'sin_actualizacion', E'nacional');
-
 INSERT INTO orga.tfuncionario ("id_usuario_reg", "id_usuario_mod", "fecha_reg", "fecha_mod", "estado_reg", "id_funcionario", "id_persona", "codigo", "email_empresa", "interno", "fecha_ingreso", "telefono_ofi")
 VALUES (1, NULL, E'2012-06-04 00:00:00', NULL, E'activo', 300, 8716, E'63-0526-BAR', NULL, NULL, E'2013-04-22', NULL);
 
